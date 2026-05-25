@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Shader/Additive_Base.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Shader/Additive_Base.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ExplosiveLLC/Demo Elements/Prefabs/Camera.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ExplosiveLLC/Demo Elements/Prefabs/Camera.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +36,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/CharacterStats.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@02433b2481ab/InputSystem/Utilities/DelegateHelpers.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@52e65280e89e/Runtime/UGUI/EventSystem/InputModules/BaseInput.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -109,6 +115,7 @@
       <workItem from="1776845697215" duration="5204000" />
       <workItem from="1778049939748" duration="8164000" />
       <workItem from="1779266645127" duration="398000" />
+      <workItem from="1779713483835" duration="1276000" />
     </task>
     <servers />
   </component>
