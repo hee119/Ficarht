@@ -4,22 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Attack_A/InPlace/1Hand_Up_Attack_A_3_InPlace.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Attack_A/InPlace/1Hand_Up_Attack_A_3_InPlace.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Prefab/MageBasicSkillMom.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Prefab/MageBasicSkillMom.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Prefab/MageBigSkillMom.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Prefab/MageBigSkillMom.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Prefab/MageStrongSkillMom.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Prefab/MageStrongSkillMom.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Scripts/CameraRotation.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Scripts/CameraRotation.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Prefabs/Buff_01a.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Prefabs/Buff_01a.prefab.meta" beforeDir="false" />
-    </list>
+    <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -122,7 +107,7 @@
       <workItem from="1776845697215" duration="5204000" />
       <workItem from="1778049939748" duration="8164000" />
       <workItem from="1779266645127" duration="398000" />
-      <workItem from="1779713483835" duration="2490000" />
+      <workItem from="1779713483835" duration="4088000" />
     </task>
     <servers />
   </component>
