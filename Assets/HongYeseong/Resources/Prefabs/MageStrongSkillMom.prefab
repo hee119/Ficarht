@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2310392177743285014}
+  - component: {fileID: 4509017003765337245}
   m_Layer: 0
   m_Name: MageStrongSkillMom
   m_TagString: Untagged
@@ -32,6 +33,19 @@ Transform:
   - {fileID: 5551554494793844138}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4509017003765337245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220475180673309345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38e09c73346f340f4b5202ad4937e480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
+  id: 3
 --- !u!1 &4163459329110958648
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,11 +1,8 @@
 fileFormatVersion: 2
-guid: 54a60ea4e1f9da84097e5c4cd5bcdabd
-MonoImporter:
+guid: b53a6b47fddb7cb4196a8d66e6689589
+NativeFormatImporter:
   externalObjects: {}
-  serializedVersion: 2
-  defaultReferences: []
-  executionOrder: 0
-  icon: {instanceID: 0}
+  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -14,5 +11,5 @@ AssetOrigin:
   productId: 295209
   packageName: Slash Effects FREE
   packageVersion: 1.0
-  assetPath: Assets/Matthew Guz/Status and Auras FREE/Scripts/CameraRotation.cs
+  assetPath: Assets/Matthew Guz/Slash Effects FREE/Materials/Basic Slash/Hit.mat
   uploadId: 693331

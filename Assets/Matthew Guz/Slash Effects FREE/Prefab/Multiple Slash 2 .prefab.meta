@@ -1,11 +1,7 @@
 fileFormatVersion: 2
-guid: 54a60ea4e1f9da84097e5c4cd5bcdabd
-MonoImporter:
+guid: 6c21e7a6e514dd9499418cbbb66211cf
+PrefabImporter:
   externalObjects: {}
-  serializedVersion: 2
-  defaultReferences: []
-  executionOrder: 0
-  icon: {instanceID: 0}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -14,5 +10,5 @@ AssetOrigin:
   productId: 295209
   packageName: Slash Effects FREE
   packageVersion: 1.0
-  assetPath: Assets/Matthew Guz/Status and Auras FREE/Scripts/CameraRotation.cs
+  assetPath: Assets/Matthew Guz/Slash Effects FREE/Prefab/Multiple Slash 2 .prefab
   uploadId: 693331
