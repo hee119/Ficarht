@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1231740799838009829}
   - component: {fileID: 7047409975252356364}
   - component: {fileID: -3099834701285031372}
+  - component: {fileID: 3592727649926982124}
   m_Layer: 0
   m_Name: 'Shiny Slash '
   m_TagString: Untagged
@@ -27,14 +28,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 158789456559184324}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.38268343, w: 0.92387956}
+  m_LocalPosition: {x: -0.2, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6808627955635479459}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
 --- !u!198 &1231740799838009829
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4908,7 +4909,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e09c73346f340f4b5202ad4937e480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
-  id: 4
+  id: Default_Slash
+--- !u!114 &3592727649926982124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158789456559184324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1956ebf6a431fc42bd19e3505efadf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitEffect
+  hitEffefct: {fileID: 0}
 --- !u!1 &8111811156769411746
 GameObject:
   m_ObjectHideFlags: 0

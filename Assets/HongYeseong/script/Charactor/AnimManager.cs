@@ -17,6 +17,8 @@ public class AnimManager : MonoBehaviour
     [SerializeField]
     private CharactorType charactorType;
 
+    int currentLayer = 1;
+
     public enum CharactorType
     {
         Mage,
@@ -28,10 +30,19 @@ public class AnimManager : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        for (int i = 0; i < animator.layerCount; i++)
+        {
+            Debug.Log("Layer " + i + ": " + animator.GetLayerName(i));
+        }
     }
 
     public void OnKey(InputAction.CallbackContext context)
     {
+        if (charactorType == CharactorType.Paladin && context.canceled)
+        {
+            animator.SetBool("Defense", false);
+        }
+
         if (!context.started)
             return;
 
@@ -40,7 +51,7 @@ public class AnimManager : MonoBehaviour
         for (int i = 0; i < KeyList.Count; i++)
         {
             if (context.control.name == KeyList[i] &&
-                animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1.0f)
+                animator.GetCurrentAnimatorStateInfo(currentLayer).normalizedTime >= 1.0f)
             {
                 Anim(i);
                 break;
@@ -50,6 +61,20 @@ public class AnimManager : MonoBehaviour
 
     public void Anim(int i)
     {
-        animator.Play(AnimatorState[i], 1, 0f);
+
+        for (currentLayer = 1; currentLayer < animator.layerCount; currentLayer++)
+        {
+            if (animator.HasState(currentLayer, Animator.StringToHash(AnimatorState[i])))
+            {
+                animator.Play(AnimatorState[i], currentLayer, 0f);
+                return;
+            }
+        }
+    }
+
+    public void GetEffect(string effectName)
+    {
+        Debug.Log(effectName);
+        PoolManager.Instance.GetPrefab(effectName, transform);
     }
 }

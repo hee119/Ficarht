@@ -4914,7 +4914,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2762556979926600680
 Transform:
   m_ObjectHideFlags: 0
@@ -19556,6 +19556,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4749229447059166215}
   - component: {fileID: -6116424837778450527}
+  - component: {fileID: 8630478294253730290}
   m_Layer: 0
   m_Name: MageBasicSkillMom
   m_TagString: Untagged
@@ -19591,7 +19592,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e09c73346f340f4b5202ad4937e480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
-  id: 1
+  id: MageBasicSkill
+--- !u!114 &8630478294253730290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6221502313494676343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1956ebf6a431fc42bd19e3505efadf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitEffect
+  hitEffefct: {fileID: 3459313277956893703}
 --- !u!1 &7265212806867460728
 GameObject:
   m_ObjectHideFlags: 0
@@ -19674,7 +19688,7 @@ TrailRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Time: 0.25
-  m_PreviewTimeScale: 0
+  m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1

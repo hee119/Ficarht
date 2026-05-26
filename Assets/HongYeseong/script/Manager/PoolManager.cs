@@ -123,11 +123,9 @@ public class PoolManager : MonoBehaviour
     }
 
     // 프리팹 자체 반환
-    public GameObject GetPrefab(string id)
+    public void GetPrefab(string id, Transform transform)
     {
-        if (!prefabDictionary.ContainsKey(id))
-            return null;
-
-        return prefabDictionary[id];
+        GameObject obj = poolDictionary[id].Get();
+        obj.transform.position += transform.position;
     }
 }

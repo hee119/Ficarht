@@ -63,9 +63,9 @@ ModelImporter:
       curves: []
       events:
       - time: 0.28311262
-        functionName: GetPrefab
-        data: 4
-        objectReferenceParameter: {fileID: 11500000, guid: 74edbc343435d4e1899ce0e7a6ac3773, type: 3}
+        functionName: GetEffect
+        data: Default_Slash
+        objectReferenceParameter: {fileID: 11500000, guid: 6dd991aa1db0342f29456249abb7b190, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
