@@ -40,7 +40,7 @@ public class PoolManager : MonoBehaviour
                 continue;
             }
 
-            string id = info.id;
+            string id = info.skillData.skillId;
 
             if (string.IsNullOrEmpty(id))
             {
@@ -123,9 +123,10 @@ public class PoolManager : MonoBehaviour
     }
 
     // 프리팹 자체 반환
-    public void GetPrefab(string id, Transform transform)
+    public GameObject GetPrefab(string id, Transform transform)
     {
         GameObject obj = poolDictionary[id].Get();
         obj.transform.position += transform.position;
+        return obj;
     }
 }

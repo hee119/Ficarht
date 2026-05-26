@@ -19592,7 +19592,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e09c73346f340f4b5202ad4937e480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
-  id: MageBasicSkill
+  skillData: {fileID: 11400000, guid: 1f1fe0bdf125c494f8466338e4c85bed, type: 2}
+  attack: 0
+  speed: 0
+  cooldown: 0
+  coolTime: 0
 --- !u!114 &8630478294253730290
 MonoBehaviour:
   m_ObjectHideFlags: 0

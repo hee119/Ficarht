@@ -46,7 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e09c73346f340f4b5202ad4937e480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
-  id: MageStrongSkill
+  skillData: {fileID: 11400000, guid: fae8028babe50450aad01b8b05b53af0, type: 2}
+  attack: 0
+  speed: 0
+  cooldown: 0
+  coolTime: 0
 --- !u!114 &5191559500704412361
 MonoBehaviour:
   m_ObjectHideFlags: 0

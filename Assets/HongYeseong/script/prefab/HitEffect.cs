@@ -12,6 +12,6 @@ public class HitEffect : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         hitEffefct?.SetActive(true);
-        PoolManager.Instance.Release(prefabInfo.id, gameObject);
+        PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
     }
 }

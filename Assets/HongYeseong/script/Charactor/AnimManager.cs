@@ -16,6 +16,8 @@ public class AnimManager : MonoBehaviour
 
     [SerializeField]
     private CharactorType charactorType;
+    
+    ICharacterSkill characterSkill;
 
     int currentLayer = 1;
 
@@ -29,6 +31,7 @@ public class AnimManager : MonoBehaviour
 
     private void Awake()
     {
+        characterSkill = GetComponent<ICharacterSkill>();
         animator = GetComponent<Animator>();
         for (int i = 0; i < animator.layerCount; i++)
         {
@@ -50,31 +53,38 @@ public class AnimManager : MonoBehaviour
 
         for (int i = 0; i < KeyList.Count; i++)
         {
-            if (context.control.name == KeyList[i] &&
-                animator.GetCurrentAnimatorStateInfo(currentLayer).normalizedTime >= 1.0f)
             {
-                Anim(i);
-                break;
+                if (context.control.name == KeyList[i] &&
+                    animator.GetCurrentAnimatorStateInfo(currentLayer).normalizedTime >= 0.95f)
+                {
+
+                    Anim(i);
+                    break;
+                }
             }
         }
     }
 
     public void Anim(int i)
+{
+    string stateName = AnimatorState[i];
+    
+    // 1. 데이터가 잘 들어오는지 확인
+    Debug.Log($"재생 시도: {stateName} (인덱스: {i})");
+
+    // 2. 0번 레이어(Base Layer)에서 강제 재생 시도
+    animator.Play(stateName, 1, 0f);
+
+    // 3. 실제로 해당 이름의 상태가 애니메이터에 있는지 검증
+    bool hasState = animator.HasState(1, Animator.StringToHash(stateName));
+    if(!hasState)
     {
-
-        for (currentLayer = 1; currentLayer < animator.layerCount; currentLayer++)
-        {
-            if (animator.HasState(currentLayer, Animator.StringToHash(AnimatorState[i])))
-            {
-                animator.Play(AnimatorState[i], currentLayer, 0f);
-                return;
-            }
-        }
+        Debug.LogError($"{stateName} 이라는 이름의 상태가 1번 레이어에 없습니다! 이름을 다시 확인하세요.");
     }
-
+}
+    
     public void GetEffect(string effectName)
     {
-        Debug.Log(effectName);
-        PoolManager.Instance.GetPrefab(effectName, transform);
+        characterSkill.UseSkill(effectName, transform);
     }
 }

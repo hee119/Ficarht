@@ -4851,7 +4851,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e09c73346f340f4b5202ad4937e480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
-  id: Slow_Debuff
+  skillData: {fileID: 11400000, guid: a86a5559e1c1146189e543b45b9a4fbe, type: 2}
+  attack: 0
+  speed: 0
+  cooldown: 0
+  coolTime: 0
 --- !u!1 &4205394521937406286
 GameObject:
   m_ObjectHideFlags: 0

@@ -226,7 +226,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.38416696, g: 0.8396226, b: 0.82567185, a: 1}
+      maxColor: {r: 0.8392157, g: 0.8173091, b: 0.38431373, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4909,7 +4909,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e09c73346f340f4b5202ad4937e480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
-  id: Default_Slash
+  skillData: {fileID: 11400000, guid: 7d0adf48901c044dea98913eaff98cd5, type: 2}
+  attack: 0
+  speed: 0
+  cooldown: 0
+  coolTime: 0
 --- !u!114 &3592727649926982124
 MonoBehaviour:
   m_ObjectHideFlags: 0
