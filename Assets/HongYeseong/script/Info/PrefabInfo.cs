@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PrefabInfo : MonoBehaviour
 {
     public SkillData skillData;
-
-    public float attack;
+    
+    public float power;
     public float speed;
     public float cooldown;
     public float coolTime;
@@ -25,7 +26,7 @@ public class PrefabInfo : MonoBehaviour
 
     public void Init()
     {
-        attack = skillData.attack;
+        power = skillData.attack;
         speed = skillData.speed;
         cooldown = skillData.cooldown;
         coolTime = skillData.coolTime;
@@ -34,7 +35,7 @@ public class PrefabInfo : MonoBehaviour
     }
     public void SkillDataUpdate(float _attack, float _speed, float _cooldown, float _duration)
     {
-        attack += _attack;
+        power += _attack;
         speed += _speed;
         cooldown += _cooldown;
         duration += _duration;

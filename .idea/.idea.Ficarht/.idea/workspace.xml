@@ -6,42 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura Buff.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura Buff.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Materials/Shiny Slash/Slash.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Materials/Shiny Slash/Slash.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Materials/Shiny Slash/Stars.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Materials/Shiny Slash/Stars.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Buff.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Buff.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Smoke.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Smoke.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Sparks.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Sparks.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_PointGlow_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_PointGlow_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_Trail_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_Trail_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_Twinkle_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_Twinkle_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_MagicCircle_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_MagicCircle_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_PointGlowBig_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_PointGlowBig_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_PointGlowBig_02.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_PointGlowBig_02.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_PointGlow_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Debuff_03_PointGlow_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Demo/Resources/Materials/M_Grid.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Demo/Resources/Materials/M_Grid.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Arrows.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Arrows.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Flames_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Flames_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Part_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Part_01.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Part_02.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Part_02.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Particles/VFX_Debuff_Loop.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Particles/VFX_Debuff_Loop.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Shaders/SH_VFX_Stylized_Dissolve_BIRP.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Shaders/SH_VFX_Stylized_Dissolve_BIRP.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized AoE VFX/Shared/Shaders/SH_Vefects_BIRP_Dust_Puffs_01.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized AoE VFX/Shared/Shaders/SH_Vefects_BIRP_Dust_Puffs_01.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized AoE VFX/Shared/Shaders/SH_Vefects_BIRP_Energy_Disc_Thin_01.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized AoE VFX/Shared/Shaders/SH_Vefects_BIRP_Energy_Disc_Thin_01.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_AB_BIRP_New.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_AB_BIRP_New.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_BIRP_New.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_BIRP_New.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_Color_BIRP_New.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_Color_BIRP_New.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_DissolveEmissive_BIRP_New.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_DissolveEmissive_BIRP_New.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_DissolveTex_BIRP_New.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_DissolveTex_BIRP_New.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_Dissolve_BIRP_New.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Shared/Shaders/SH_VFX_Vefects_Add_Dissolve_BIRP_New.shader" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Skills/Slashes Piercing/Dark/VFX_Slash_Dark.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Skills/Slashes Piercing/Dark/VFX_Slash_Dark.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Skills/Slashes Piercing/Fire/VFX_Slash_Circle_Fire.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Skills/Slashes Piercing/Fire/VFX_Slash_Circle_Fire.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Skills/Slashes Piercing/Void/VFX_Slash_Void.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Stylized VFX/Stylized VFX Shuriken/Skills/Slashes Piercing/Void/VFX_Slash_Void.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/PackageManagerSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/PackageManagerSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PaladinLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PaladinLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/CharacterStats.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/CharacterStats.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +116,7 @@
       <workItem from="1779713483835" duration="7309000" />
       <workItem from="1779864779412" duration="2000" />
       <workItem from="1779864853735" duration="1000" />
-      <workItem from="1779864910937" duration="3521000" />
+      <workItem from="1779864910937" duration="5367000" />
     </task>
     <servers />
   </component>
