@@ -66,22 +66,29 @@ public class AnimManager : MonoBehaviour
     }
 
     public void Anim(int i)
-{
-    string stateName = AnimatorState[i];
-    
-    // 1. 데이터가 잘 들어오는지 확인
-    Debug.Log($"재생 시도: {stateName} (인덱스: {i})");
-
-    // 2. 0번 레이어(Base Layer)에서 강제 재생 시도
-    animator.Play(stateName, 1, 0f);
-
-    // 3. 실제로 해당 이름의 상태가 애니메이터에 있는지 검증
-    bool hasState = animator.HasState(1, Animator.StringToHash(stateName));
-    if(!hasState)
     {
-        Debug.LogError($"{stateName} 이라는 이름의 상태가 1번 레이어에 없습니다! 이름을 다시 확인하세요.");
+        string stateName = AnimatorState[i];
+        int stateHash = Animator.StringToHash(stateName);
+        bool played = false;
+
+        // 애니메이터에 설정된 모든 레이어를 검사 (0부터 끝까지)
+        for (int layerIndex = 0; layerIndex < animator.layerCount; layerIndex++)
+        {
+            // 해당 레이어에 stateName이 있는지 확인
+            if (animator.HasState(layerIndex, stateHash))
+            {
+                animator.Play(stateHash, layerIndex, 0f);
+                Debug.Log($"[재생 성공] 레이어 {layerIndex}에서 '{stateName}' 재생 시작");
+                played = true;
+                break; // 찾았으면 다른 레이어 검사를 중단하고 나감
+            }
+        }
+
+        if (!played)
+        {
+            Debug.LogError($"[재생 실패] '{stateName}' 상태를 모든 레이어({animator.layerCount}개)에서 찾을 수 없습니다.");
+        }
     }
-}
     
     public void GetEffect(string effectName)
     {
