@@ -190,7 +190,8 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 30a6eca3b6bd144779b08a636f7ee546, type: 2}
   cardFrontRenderer: {fileID: 0}
   cardBackObject: {fileID: 0}
-  hoverHeight: 0.3
+  hoverHeight: 0.1
+  moveSpeed: 15
 --- !u!1 &2809465515681592320
 GameObject:
   m_ObjectHideFlags: 0
