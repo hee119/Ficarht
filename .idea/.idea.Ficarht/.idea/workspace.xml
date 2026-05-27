@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PaladinLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PaladinLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/CharacterStats.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/CharacterStats.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_NeonSwords_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_NeonSwords_01.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_PointGlowBig_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_PointGlowBig_01.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_PointGlowBig_02.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_PointGlowBig_02.mat" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +126,7 @@
       <workItem from="1779713483835" duration="7309000" />
       <workItem from="1779864779412" duration="2000" />
       <workItem from="1779864853735" duration="1000" />
-      <workItem from="1779864910937" duration="5367000" />
+      <workItem from="1779864910937" duration="7383000" />
     </task>
     <servers />
   </component>
