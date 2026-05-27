@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
@@ -10,222 +11,547 @@ public class CardObject : MonoBehaviour
 
     [Header("프리팹 연결")]
     public SpriteRenderer cardFrontRenderer;
-    public GameObject     cardBackObject;
+    public GameObject cardBackObject;
 
     [Header("호버 설정")]
     public float hoverHeight = 0.1f;
-    public float moveSpeed   = 15f;
 
-    private Camera    cam;
+    public float moveSpeed = 15f;
+
+    [Header("배치 축소 비율")]
+    [Range(0.1f, 1f)]
+    public float placedScaleMultiplier = 0.7f;
+
+    private Camera cam;
+
     private Rigidbody rb;
 
     private bool isDragging;
     private bool isHovered;
+    private bool isPlaced;
 
-    private Vector3    worldOffset;
-    private float      dragDepth;
-    private Vector3    originPosition;
-    private Vector3    targetPosition;
-    private Quaternion fanRotation;    // 부채꼴 회전값
+    private Vector3 originPosition;
+    private Vector3 targetPosition;
+    private Vector3 dragOffset;
+
+    private Quaternion fanRotation;
     private Quaternion targetRotation;
 
-    private CardSlot hoveredSlot;
+    private Vector3 originalScale;
+
+    private Quaternion originalRotation;
 
     private static CardObject currentHoveredCard;
 
     private void Awake()
     {
         cam = Camera.main;
-        rb  = GetComponent<Rigidbody>();
-        rb.useGravity     = false;
-        rb.isKinematic    = true;
+
+        rb = GetComponent<Rigidbody>();
+
+        rb.useGravity = false;
+        rb.isKinematic = true;
         rb.freezeRotation = true;
+
+        originalScale = transform.localScale;
+
+        originalRotation = transform.rotation;
     }
 
     private void Update()
     {
-        // 부드러운 이동 / 회전
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * moveSpeed);
+        if (isPlaced)
+            return;
+
+        transform.position = Vector3.Lerp(
+            transform.position,
+            targetPosition,
+            Time.deltaTime * moveSpeed
+        );
+
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            targetRotation,
+            Time.deltaTime * moveSpeed
+        );
 
         HandleHover();
 
-        if (!isDragging) return;
+        if (!isDragging)
+            return;
+
         DragUpdate();
-        if (Mouse.current.leftButton.wasReleasedThisFrame) StopDrag();
+
+        if (
+            Mouse.current.leftButton
+                .wasReleasedThisFrame
+        )
+        {
+            StopDrag();
+        }
     }
 
     // -------------------------------------------------------
-    //  초기화
+    // 초기화
     // -------------------------------------------------------
     public void Setup(CardData newData)
     {
         data = newData;
+
         if (cardFrontRenderer != null)
-            cardFrontRenderer.color = GetColorByType(data.cardType);
+        {
+            cardFrontRenderer.color =
+                GetColorByType(data.cardType);
+        }
+
         ShowFront();
     }
 
     public void InitPosition()
     {
         originPosition = transform.position;
+
         targetPosition = transform.position;
-        fanRotation    = transform.rotation; // 부채꼴 회전 저장
+
+        fanRotation = transform.rotation;
+
         targetRotation = transform.rotation;
     }
 
     public void SetVisible(bool visible)
     {
-        foreach (var rend in GetComponentsInChildren<Renderer>())
+        foreach (
+            var rend
+            in GetComponentsInChildren<Renderer>()
+        )
+        {
             rend.enabled = visible;
+        }
     }
 
     // -------------------------------------------------------
-    //  앞면 / 뒷면
+    // 앞면 / 뒷면
     // -------------------------------------------------------
     public void ShowFront()
     {
-        if (cardFrontRenderer != null) cardFrontRenderer.gameObject.SetActive(true);
-        if (cardBackObject    != null) cardBackObject.SetActive(false);
+        if (cardFrontRenderer != null)
+        {
+            cardFrontRenderer
+                .gameObject
+                .SetActive(true);
+        }
+
+        if (cardBackObject != null)
+        {
+            cardBackObject.SetActive(false);
+        }
     }
 
     public void ShowBack()
     {
-        if (cardFrontRenderer != null) cardFrontRenderer.gameObject.SetActive(false);
-        if (cardBackObject    != null) cardBackObject.SetActive(true);
+        if (cardFrontRenderer != null)
+        {
+            cardFrontRenderer
+                .gameObject
+                .SetActive(false);
+        }
+
+        if (cardBackObject != null)
+        {
+            cardBackObject.SetActive(true);
+        }
     }
 
     // -------------------------------------------------------
-    //  호버
+    // 슬롯 배치
+    // -------------------------------------------------------
+    public void PlaceToSlot(
+        Vector3 slotPosition,
+        Quaternion slotRotation
+    )
+    {
+        isPlaced = true;
+
+        isDragging = false;
+
+        isHovered = false;
+
+        StopAllCoroutines();
+
+        StartCoroutine(
+            MoveToSlot(
+                slotPosition,
+                slotRotation
+            )
+        );
+    }
+
+    private System.Collections.IEnumerator MoveToSlot(
+        Vector3 targetPos,
+        Quaternion targetRot
+    )
+    {
+        float elapsed = 0f;
+
+        float duration = 0.2f;
+
+        Vector3 startPos =
+            transform.position;
+
+        Quaternion startRot =
+            transform.rotation;
+
+        Vector3 startScale =
+            transform.localScale;
+
+        Vector3 targetScale =
+            originalScale
+            * placedScaleMultiplier;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float t = Mathf.SmoothStep(
+                0f,
+                1f,
+                elapsed / duration
+            );
+
+            transform.position = Vector3.Lerp(
+                startPos,
+                targetPos,
+                t
+            );
+
+            transform.rotation = Quaternion.Lerp(
+                startRot,
+                targetRot,
+                t
+            );
+
+            transform.localScale = Vector3.Lerp(
+                startScale,
+                targetScale,
+                t
+            );
+
+            yield return null;
+        }
+
+        transform.position = targetPos;
+
+        transform.rotation = targetRot;
+
+        transform.localScale = targetScale;
+    }
+
+    // -------------------------------------------------------
+    // 호버
     // -------------------------------------------------------
     private void HandleHover()
     {
-        if (isDragging) return;
+        if (isDragging || isPlaced)
+            return;
 
-        Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Ray ray =
+            cam.ScreenPointToRay(
+                Mouse.current.position.ReadValue()
+            );
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (
+            Physics.Raycast(
+                ray,
+                out RaycastHit hit
+            )
+        )
         {
-            CardObject card = hit.collider.GetComponent<CardObject>();
+            CardObject card =
+                hit.collider.GetComponent<CardObject>();
 
             if (card == this)
             {
-                if (!isHovered) HoverEnter();
-                if (Mouse.current.leftButton.wasPressedThisFrame) StartDrag();
+                if (!isHovered)
+                {
+                    HoverEnter();
+                }
+
+                if (
+                    Mouse.current
+                        .leftButton
+                        .wasPressedThisFrame
+                )
+                {
+                    StartDrag();
+                }
             }
             else
             {
-                if (isHovered) HoverExit();
+                if (isHovered)
+                {
+                    HoverExit();
+                }
             }
         }
         else
         {
-            if (isHovered) HoverExit();
+            if (isHovered)
+            {
+                HoverExit();
+            }
         }
     }
 
     private void HoverEnter()
     {
-        if (currentHoveredCard != null && currentHoveredCard != this)
+        if (
+            currentHoveredCard != null &&
+            currentHoveredCard != this
+        )
+        {
             currentHoveredCard.HoverExit();
+        }
 
         currentHoveredCard = this;
-        isHovered          = true;
-        targetPosition     = new Vector3(originPosition.x, originPosition.y + hoverHeight, originPosition.z);
+
+        isHovered = true;
+
+        targetPosition = new Vector3(
+            originPosition.x,
+            originPosition.y + hoverHeight,
+            originPosition.z
+        );
     }
 
     private void HoverExit()
     {
-        if (isDragging) return;
-        isHovered      = false;
+        if (isDragging)
+            return;
+
+        isHovered = false;
+
         targetPosition = originPosition;
+
         targetRotation = fanRotation;
 
-        if (currentHoveredCard == this) currentHoveredCard = null;
+        if (currentHoveredCard == this)
+        {
+            currentHoveredCard = null;
+        }
     }
 
     // -------------------------------------------------------
-    //  드래그
+    // 드래그 시작
     // -------------------------------------------------------
     public void StartDrag()
     {
-        if (CardSystemManager.Instance == null || !CardSystemManager.Instance.IsTurnActive) return;
+        if (
+            CardSystemManager.Instance == null ||
+            !CardSystemManager.Instance.IsTurnActive
+        )
+        {
+            return;
+        }
 
-        isDragging     = true;
-        isHovered      = false;
-        dragDepth      = cam.WorldToScreenPoint(originPosition).z;
-        worldOffset    = originPosition - ScreenToWorld(Mouse.current.position.ReadValue());
+        isDragging = true;
 
-        // 드래그 중 각도 원래대로 (부채꼴 각도 제거)
+        isHovered = false;
+
         targetRotation = Quaternion.Euler(
             fanRotation.eulerAngles.x,
             fanRotation.eulerAngles.y,
             0f
         );
+
+        Ray ray =
+            cam.ScreenPointToRay(
+                Mouse.current.position.ReadValue()
+            );
+
+        Plane plane = new Plane(
+            Vector3.up,
+            new Vector3(
+                0f,
+                originPosition.y,
+                0f
+            )
+        );
+
+        if (
+            plane.Raycast(
+                ray,
+                out float distance
+            )
+        )
+        {
+            Vector3 hitPoint =
+                ray.GetPoint(distance);
+
+            dragOffset =
+                transform.position - hitPoint;
+        }
+
+        SlotGuideManager.Instance
+            ?.ShowGuidesForType(data.cardType);
     }
 
+    // -------------------------------------------------------
+    // 드래그 업데이트
+    // -------------------------------------------------------
     private void DragUpdate()
     {
-        Vector3 target = ScreenToWorld(Mouse.current.position.ReadValue()) + worldOffset;
-        target.y       = originPosition.y + hoverHeight;
-        targetPosition = target;
+        Ray ray =
+            cam.ScreenPointToRay(
+                Mouse.current.position.ReadValue()
+            );
+
+        Plane plane = new Plane(
+            Vector3.up,
+            new Vector3(
+                0f,
+                originPosition.y,
+                0f
+            )
+        );
+
+        if (
+            plane.Raycast(
+                ray,
+                out float distance
+            )
+        )
+        {
+            Vector3 target =
+                ray.GetPoint(distance);
+
+            target += dragOffset;
+
+            target.y =
+                originPosition.y
+                + hoverHeight;
+
+            targetPosition = target;
+        }
     }
 
+    // -------------------------------------------------------
+    // 드래그 종료
+    // -------------------------------------------------------
     private void StopDrag()
     {
         isDragging = false;
 
-        if (hoveredSlot != null)
+        SlotGuideManager.Instance
+            ?.HideAllGuides();
+
+        CardSlot targetSlot =
+            FindAvailableSlot();
+
+        if (targetSlot != null)
         {
-            bool placed = hoveredSlot.TryPlaceCard(this);
-            if (!placed) ReturnToOrigin();
+            bool placed =
+                targetSlot.TryPlaceCard(this);
+
+            if (!placed)
+            {
+                ReturnToOrigin();
+            }
+
+            return;
         }
-        else
-        {
-            ReturnToOrigin();
-        }
+
+        ReturnToOrigin();
     }
 
+    // -------------------------------------------------------
+    // 자동 슬롯 찾기
+    // -------------------------------------------------------
+    private CardSlot FindAvailableSlot()
+    {
+        if (CardSystemManager.Instance == null)
+            return null;
+
+        List<CardSlot> targetSlots = null;
+
+        switch (data.cardType)
+        {
+            case CardType.Character:
+                targetSlots =
+                    CardSystemManager.Instance.characterSlots;
+                break;
+
+            case CardType.Buff:
+                targetSlots =
+                    CardSystemManager.Instance.buffSlots;
+                break;
+
+            case CardType.Skill:
+                targetSlots =
+                    CardSystemManager.Instance.skillSlots;
+                break;
+        }
+
+        if (targetSlots == null)
+            return null;
+
+        foreach (var slot in targetSlots)
+        {
+            if (
+                slot != null &&
+                slot.currentCard == null
+            )
+            {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
+    // -------------------------------------------------------
+    // 원위치
+    // -------------------------------------------------------
     private void ReturnToOrigin()
     {
         targetPosition = originPosition;
-        targetRotation = fanRotation; // 부채꼴 회전으로 복원
+
+        targetRotation = fanRotation;
+
+        transform.localScale =
+            originalScale;
     }
 
     // -------------------------------------------------------
-    //  슬롯 감지
+    // 원래 회전 반환
     // -------------------------------------------------------
-    private void OnTriggerEnter(Collider other)
+    public Quaternion GetOriginalRotation()
     {
-        CardSlot slot = other.GetComponent<CardSlot>();
-        if (slot != null) hoveredSlot = slot;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        CardSlot slot = other.GetComponent<CardSlot>();
-        if (slot != null && hoveredSlot == slot) hoveredSlot = null;
+        return originalRotation;
     }
 
     // -------------------------------------------------------
-    //  유틸
+    // 유틸
     // -------------------------------------------------------
-    private Vector3 ScreenToWorld(Vector2 screenPos)
-    {
-        Vector3 pos = screenPos;
-        pos.z = dragDepth;
-        return cam.ScreenToWorldPoint(pos);
-    }
-
-    private Color GetColorByType(CardType type)
+    private Color GetColorByType(
+        CardType type
+    )
     {
         switch (type)
         {
-            case CardType.Character: return Color.cyan;
-            case CardType.Buff:      return Color.green;
-            case CardType.Skill:     return Color.magenta;
-            case CardType.Trap:      return Color.red;
-            default:                 return Color.white;
+            case CardType.Character:
+                return Color.cyan;
+
+            case CardType.Buff:
+                return Color.green;
+
+            case CardType.Skill:
+                return Color.magenta;
+
+            case CardType.Trap:
+                return Color.red;
+
+            default:
+                return Color.white;
         }
     }
 }
