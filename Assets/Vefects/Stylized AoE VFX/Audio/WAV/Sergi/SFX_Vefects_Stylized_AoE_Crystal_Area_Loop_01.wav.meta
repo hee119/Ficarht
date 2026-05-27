@@ -1,14 +1,20 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 guid: 0264299422f2848e483fbd69c0ed3d8e
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
 =======
+=======
+>>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
 guid: e70b41dad5406fe41a125b40cb11ba2d
 AudioImporter:
   externalObjects: {}
   serializedVersion: 7
+<<<<<<< HEAD
+>>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
+=======
 >>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
   defaultSettings:
     serializedVersion: 2
@@ -29,7 +35,10 @@ AudioImporter:
   assetBundleName: 
   assetBundleVariant: 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
 AssetOrigin:
   serializedVersion: 1
   productId: 340466
@@ -37,4 +46,7 @@ AssetOrigin:
   packageVersion: 1.0.1
   assetPath: Assets/Vefects/Stylized AoE VFX/Audio/WAV/Sergi/SFX_Vefects_Stylized_AoE_Crystal_Area_Loop_01.wav
   uploadId: 860344
+<<<<<<< HEAD
+>>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
+=======
 >>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
