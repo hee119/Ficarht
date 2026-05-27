@@ -13,10 +13,10 @@ public class CardObject : MonoBehaviour
     public GameObject     cardBackObject;
 
     [Header("호버 설정")]
-    public float hoverHeight  = 0.1f;
-    public float moveSpeed    = 15f;
+    public float hoverHeight = 0.1f;
+    public float moveSpeed   = 15f;
 
-    private Camera   cam;
+    private Camera    cam;
     private Rigidbody rb;
 
     private bool isDragging;
@@ -25,8 +25,9 @@ public class CardObject : MonoBehaviour
     private Vector3    worldOffset;
     private float      dragDepth;
     private Vector3    originPosition;
-    private Quaternion originRotation;
     private Vector3    targetPosition;
+    private Quaternion fanRotation;    // 부채꼴 회전값
+    private Quaternion targetRotation;
 
     private CardSlot hoveredSlot;
 
@@ -36,15 +37,16 @@ public class CardObject : MonoBehaviour
     {
         cam = Camera.main;
         rb  = GetComponent<Rigidbody>();
-        rb.useGravity    = false;
-        rb.isKinematic   = true;
+        rb.useGravity     = false;
+        rb.isKinematic    = true;
         rb.freezeRotation = true;
     }
 
     private void Update()
     {
-        // 부드러운 이동
+        // 부드러운 이동 / 회전
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * moveSpeed);
 
         HandleHover();
 
@@ -64,18 +66,14 @@ public class CardObject : MonoBehaviour
         ShowFront();
     }
 
-    /// <summary>
-    /// HandLayoutManager 정렬 후 호출. 현재 위치를 기준점으로 저장.
-    /// </summary>
     public void InitPosition()
     {
         originPosition = transform.position;
         targetPosition = transform.position;
+        fanRotation    = transform.rotation; // 부채꼴 회전 저장
+        targetRotation = transform.rotation;
     }
 
-    /// <summary>
-    /// 렌더러 표시/숨김 (SetActive 대신 사용)
-    /// </summary>
     public void SetVisible(bool visible)
     {
         foreach (var rend in GetComponentsInChildren<Renderer>())
@@ -133,15 +131,15 @@ public class CardObject : MonoBehaviour
 
         currentHoveredCard = this;
         isHovered          = true;
-
-        targetPosition = new Vector3(originPosition.x, originPosition.y + hoverHeight, originPosition.z);
+        targetPosition     = new Vector3(originPosition.x, originPosition.y + hoverHeight, originPosition.z);
     }
 
     private void HoverExit()
     {
         if (isDragging) return;
-        isHovered = false;
+        isHovered      = false;
         targetPosition = originPosition;
+        targetRotation = fanRotation;
 
         if (currentHoveredCard == this) currentHoveredCard = null;
     }
@@ -155,9 +153,15 @@ public class CardObject : MonoBehaviour
 
         isDragging     = true;
         isHovered      = false;
-        originRotation = transform.rotation;
         dragDepth      = cam.WorldToScreenPoint(originPosition).z;
         worldOffset    = originPosition - ScreenToWorld(Mouse.current.position.ReadValue());
+
+        // 드래그 중 각도 원래대로 (부채꼴 각도 제거)
+        targetRotation = Quaternion.Euler(
+            fanRotation.eulerAngles.x,
+            fanRotation.eulerAngles.y,
+            0f
+        );
     }
 
     private void DragUpdate()
@@ -185,7 +189,7 @@ public class CardObject : MonoBehaviour
     private void ReturnToOrigin()
     {
         targetPosition = originPosition;
-        transform.rotation = originRotation;
+        targetRotation = fanRotation; // 부채꼴 회전으로 복원
     }
 
     // -------------------------------------------------------

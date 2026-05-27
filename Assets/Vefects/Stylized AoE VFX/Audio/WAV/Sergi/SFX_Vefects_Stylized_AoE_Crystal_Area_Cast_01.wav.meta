@@ -1,8 +1,15 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: ef42ecff771d5493dba3f948e9990f0d
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
+=======
+guid: ef8ce5f35a1ad2c4cafc9c9a270478ab
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 7
+>>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
   defaultSettings:
     serializedVersion: 2
     loadType: 0
@@ -21,3 +28,13 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+<<<<<<< HEAD
+=======
+AssetOrigin:
+  serializedVersion: 1
+  productId: 340466
+  packageName: Stylized VFX Bundle
+  packageVersion: 1.0.1
+  assetPath: Assets/Vefects/Stylized AoE VFX/Audio/WAV/Sergi/SFX_Vefects_Stylized_AoE_Crystal_Area_Cast_01.wav
+  uploadId: 860344
+>>>>>>> 55f4d9b925b09de75b37a67e03ef919deee6884a
