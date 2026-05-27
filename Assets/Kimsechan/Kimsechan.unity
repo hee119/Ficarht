@@ -983,6 +983,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7582188109018444819, guid: a29469768230046a68f0c8082a0c58f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1124051753}
+    - targetCorrespondingSourceObject: {fileID: 7582188109018444819, guid: a29469768230046a68f0c8082a0c58f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1124051757}
   m_SourcePrefab: {fileID: 100100000, guid: a29469768230046a68f0c8082a0c58f2, type: 3}
 --- !u!1 &1124051742 stripped
 GameObject:
@@ -1002,8 +1005,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimManager
   AnimatorState:
-  - 
-  KeyList: []
+  - MageBasicSkill
+  - MageBigAttack
+  - MageStrongAttack
+  KeyList:
+  - leftButton
+  - q
+  - e
   charactorType: 3
 --- !u!114 &1124051745
 MonoBehaviour:
@@ -1161,6 +1169,18 @@ CapsuleCollider:
   m_Height: 1.9925302
   m_Direction: 1
   m_Center: {x: 0, y: 0.9135433, z: 0}
+--- !u!114 &1124051757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124051742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17338fc22873c462f99a5864a1c9703f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MageLogic
 --- !u!1 &1347870678
 GameObject:
   m_ObjectHideFlags: 0
