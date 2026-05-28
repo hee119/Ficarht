@@ -7,10 +7,6 @@
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardObject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSlot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSlot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSystemManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSystemManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Handlayoutmanager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Handlayoutmanager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CardMap.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CardMap.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
