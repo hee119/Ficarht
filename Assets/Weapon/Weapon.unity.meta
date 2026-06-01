@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 45ebc55d49e62c24687a882d5293549b
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 178481
+  packageName: Shield,Sword,Spear
+  packageVersion: 1.0
+  assetPath: Assets/Weapon/Weapon.unity
+  uploadId: 388830

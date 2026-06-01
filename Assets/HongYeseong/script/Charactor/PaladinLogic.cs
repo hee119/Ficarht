@@ -1,9 +1,11 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PaladinLogic : MonoBehaviour, ICharacterSkill
 {
     CharaStat charaStat;
+    public List<GameObject> SkillPrefabs = new List<GameObject>();
     
     void Awake()
     {
