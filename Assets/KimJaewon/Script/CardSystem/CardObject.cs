@@ -22,6 +22,14 @@ public class CardObject : MonoBehaviour
     [Range(0.1f, 1f)]
     public float placedScaleMultiplier = 0.7f;
 
+    [Header("드래그 판정")]
+    public float dragThreshold = 50f;
+
+    public float dragHoldTime = 0.08f;
+
+    [Header("드롭 최소 이동 거리")]
+    public float minDropDistance = 1.2f;
+
     private Camera cam;
 
     private Rigidbody rb;
@@ -30,9 +38,17 @@ public class CardObject : MonoBehaviour
     private bool isHovered;
     private bool isPlaced;
 
+    private bool isMouseDown;
+
+    private Vector2 mouseDownPosition;
+
+    private float mouseDownTimer;
+
     private Vector3 originPosition;
     private Vector3 targetPosition;
     private Vector3 dragOffset;
+
+    private Vector3 dragStartWorldPos;
 
     private Quaternion fanRotation;
     private Quaternion targetRotation;
@@ -259,38 +275,32 @@ public class CardObject : MonoBehaviour
                 Mouse.current.position.ReadValue()
             );
 
-        if (
+        bool isThisCard =
             Physics.Raycast(
                 ray,
                 out RaycastHit hit
             )
-        )
+            &&
+            hit.collider.GetComponent<CardObject>() == this;
+
+        if (isThisCard)
         {
-            CardObject card =
-                hit.collider.GetComponent<CardObject>();
-
-            if (card == this)
+            if (!isHovered)
             {
-                if (!isHovered)
-                {
-                    HoverEnter();
-                }
-
-                if (
-                    Mouse.current
-                        .leftButton
-                        .wasPressedThisFrame
-                )
-                {
-                    StartDrag();
-                }
+                HoverEnter();
             }
-            else
+
+            if (
+                Mouse.current.leftButton
+                    .wasPressedThisFrame
+            )
             {
-                if (isHovered)
-                {
-                    HoverExit();
-                }
+                isMouseDown = true;
+
+                mouseDownTimer = 0f;
+
+                mouseDownPosition =
+                    Mouse.current.position.ReadValue();
             }
         }
         else
@@ -299,6 +309,43 @@ public class CardObject : MonoBehaviour
             {
                 HoverExit();
             }
+        }
+
+        // 누르고 있는 중
+        if (
+            isMouseDown &&
+            Mouse.current.leftButton.isPressed
+        )
+        {
+            mouseDownTimer += Time.deltaTime;
+
+            float distance =
+                Vector2.Distance(
+                    mouseDownPosition,
+                    Mouse.current.position.ReadValue()
+                );
+
+            // 시간 + 거리 둘다 만족
+            if (
+                distance >= dragThreshold &&
+                mouseDownTimer >= dragHoldTime
+            )
+            {
+                isMouseDown = false;
+
+                StartDrag();
+            }
+        }
+
+        // 마우스 떼면 초기화
+        if (
+            Mouse.current.leftButton
+                .wasReleasedThisFrame
+        )
+        {
+            isMouseDown = false;
+
+            mouseDownTimer = 0f;
         }
     }
 
@@ -357,6 +404,9 @@ public class CardObject : MonoBehaviour
 
         isHovered = false;
 
+        dragStartWorldPos =
+            transform.position;
+
         targetRotation = Quaternion.Euler(
             fanRotation.eulerAngles.x,
             fanRotation.eulerAngles.y,
@@ -390,9 +440,6 @@ public class CardObject : MonoBehaviour
             dragOffset =
                 transform.position - hitPoint;
         }
-
-        SlotGuideManager.Instance
-            ?.ShowGuidesForType(data.cardType);
     }
 
     // -------------------------------------------------------
@@ -441,8 +488,21 @@ public class CardObject : MonoBehaviour
     {
         isDragging = false;
 
-        SlotGuideManager.Instance
-            ?.HideAllGuides();
+        float movedDistance =
+            Vector3.Distance(
+                dragStartWorldPos,
+                transform.position
+            );
+
+        // 너무 조금 움직였으면 취소
+        if (
+            movedDistance <
+            minDropDistance
+        )
+        {
+            ReturnToOrigin();
+            return;
+        }
 
         CardSlot targetSlot =
             FindAvailableSlot();
