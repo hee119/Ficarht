@@ -81,13 +81,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaBoldness: 1
+    - _AlphaBoldness: 3
     - _AlphaCutoff: 0.5
     - _Brightness: 2
     - _CameraDirPush: 0
     - _ColorRotation: 0
     - _ColorRotation2: 0
-    - _CoreIntensity: 0
+    - _CoreIntensity: 1
     - _CorePower: 1
     - _Cull: 2
     - _CustomPanSwitch: 0
@@ -133,3 +133,4 @@ Material:
     - _TextureChannel: {r: 0, g: 1, b: 0, a: 0}
     - _TexturePanSpeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

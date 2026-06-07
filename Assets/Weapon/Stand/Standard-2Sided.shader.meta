@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3ea3792dae07c164caace915dc8f3be8
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 178481
+  packageName: Shield,Sword,Spear
+  packageVersion: 1.0
+  assetPath: Assets/Weapon/Stand/Standard-2Sided.shader
+  uploadId: 388830

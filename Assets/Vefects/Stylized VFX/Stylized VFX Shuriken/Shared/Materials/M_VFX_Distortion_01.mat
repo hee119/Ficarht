@@ -58,6 +58,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
+    - _BaseAlpha: 1
     - _Cull: 0
     - _CutoutErosion: 0
     - _CutoutErosionSmoothness: 0.05
@@ -85,3 +86,4 @@ Material:
     - _DistortionNoiseSelector: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
