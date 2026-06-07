@@ -6,7 +6,82 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ExplosiveLLC/Editor/SetupInputLayers.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ExplosiveLLC/Editor/SetupInputLayers.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Buff_Exercise.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Buff_Exercise.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Bard.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Bard.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Berserker.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Berserker.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Mage.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Mage.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Paladin.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/Char_Paladin.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 10.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 10.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 11.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 11.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 12.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 12.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 13.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 13.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 14.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 14.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 15.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 15.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 16.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 16.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 17.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 17.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 18.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 18.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 19.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 19.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 20.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 20.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 21.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 21.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 5.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 5.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 6.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 6.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 7.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 7.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 8.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 8.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 9.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Data/NewCard 9.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Bard.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Bard.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Berserker.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Berserker.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Mage.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Mage.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Paladin.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card Stats/CharacterStats_Paladin.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Bard_Card.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Bard_Card.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Berserker_Card.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Berserker_Card.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Paladin_Card.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Paladin_Card.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/Bard_Card.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/Bard_Card.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/Berserker_Card.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/Berserker_Card.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/Paladin.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/Paladin.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/magician_Card.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Prefab/magician_Card.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/magician_Card.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/magician_Card.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSystemManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSystemManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CardMap.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CardMap.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,6 +196,7 @@
       <workItem from="1778049939748" duration="8164000" />
       <workItem from="1779266645127" duration="398000" />
       <workItem from="1779713483835" duration="7309000" />
+      <workItem from="1780284107777" duration="4944000" />
     </task>
     <servers />
   </component>
