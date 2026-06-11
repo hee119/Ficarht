@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 80172a9c72b12074e802676ebbab134e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8574412962073106934
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 178481
+  packageName: Shield,Sword,Spear
+  packageVersion: 1.0
+  assetPath: Assets/Weapon/Texture/NewLayer.terrainlayer
+  uploadId: 388830

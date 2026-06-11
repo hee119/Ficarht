@@ -17,9 +17,6 @@ public class CardSystemManager : MonoBehaviour
     public List<CardData> skillDeck =
         new List<CardData>();
 
-    [Header("--- 카드 프리팹 ---")]
-    public GameObject cardPrefab;
-
     [Header("--- 드로우 포지션 (월드) ---")]
     public List<Transform> characterDrawPositions =
         new List<Transform>();
@@ -114,22 +111,32 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     public void StartGame()
     {
+        
+        CheckAllCardPrefabs();
+
+        Debug.Log("[CardSystemManager] 게임 시작!");
+
+        ClearAll();
+        
         Debug.Log("[CardSystemManager] 게임 시작!");
 
         ClearAll();
 
+        // 캐릭터 1장
         DrawCards(
             characterDeck,
             1,
             characterDrawPositions
         );
 
+        // 버프 3장
         DrawCards(
             buffDeck,
             3,
             buffDrawPositions
         );
 
+        // 스킬 2장
         DrawCards(
             skillDeck,
             2,
@@ -157,22 +164,34 @@ public class CardSystemManager : MonoBehaviour
         List<Transform> positions
     )
     {
-        if (
-            deck == null ||
-            deck.Count == 0 ||
-            cardPrefab == null
-        )
+        if (deck == null || deck.Count == 0)
         {
+            Debug.LogWarning("덱이 비어있습니다.");
+            return;
+        }
+
+        List<CardData> availableCards =
+            new List<CardData>();
+
+        foreach (var card in deck)
+        {
+            if (card != null)
+                availableCards.Add(card);
+        }
+
+        if (availableCards.Count == 0)
+        {
+            Debug.LogWarning("유효한 카드가 없습니다.");
             return;
         }
 
         for (int i = 0; i < count; i++)
         {
-            if (
-                positions == null ||
-                positions.Count == 0
-            )
+            if (availableCards.Count == 0)
             {
+                Debug.LogWarning(
+                    $"카드 부족! 요청:{count}"
+                );
                 break;
             }
 
@@ -184,16 +203,27 @@ public class CardSystemManager : MonoBehaviour
                     )
                 ];
 
+            int randomIndex =
+                Random.Range(
+                    0,
+                    availableCards.Count
+                );
+
             CardData data =
-                deck[
-                    Random.Range(
-                        0,
-                        deck.Count
-                    )
-                ];
+                availableCards[randomIndex];
+
+            availableCards.RemoveAt(randomIndex);
+
+            if (data.cardPrefab == null)
+            {
+                Debug.LogError(
+                    $"[프리팹 누락] {data.cardName}"
+                );
+                continue;
+            }
 
             GameObject go = Instantiate(
-                cardPrefab,
+                data.cardPrefab,
                 spawnTf.position,
                 spawnTf.rotation
             );
@@ -201,18 +231,23 @@ public class CardSystemManager : MonoBehaviour
             CardObject card =
                 go.GetComponent<CardObject>();
 
-            if (card != null)
+            if (card == null)
             {
-                card.SetVisible(false);
-
-                card.Setup(data);
-
-                playerHand.Add(card);
-
-                Debug.Log(
-                    $"[CardSystemManager] '{data.cardName}' 드로우"
+                Debug.LogError(
+                    $"{data.cardName} 프리팹에 CardObject가 없습니다."
                 );
+                Destroy(go);
+                continue;
             }
+
+            card.SetVisible(false);
+            card.Setup(data);
+
+            playerHand.Add(card);
+
+            Debug.Log(
+                $"[CardSystemManager] '{data.cardName}' 드로우"
+            );
         }
     }
 
@@ -224,10 +259,8 @@ public class CardSystemManager : MonoBehaviour
         if (card == null)
             return;
 
-        // 손패 제거
         playerHand.Remove(card);
 
-        // 남은 카드 재정렬
         HandLayoutManager.Instance
             ?.ReArrange(playerHand);
 
@@ -286,12 +319,6 @@ public class CardSystemManager : MonoBehaviour
             ?.RevealAllCards();
 
         FinalizeCards();
-
-        // TODO:
-        // PlayerController.Instance.Initialize(
-        //     myStats,
-        //     SkillRegistry.Instance.GetSkills()
-        // );
     }
 
     // -------------------------------------------------------
@@ -423,6 +450,45 @@ public class CardSystemManager : MonoBehaviour
         if (timerText != null)
         {
             timerText.text = msg;
+        }
+    }
+    
+    private void CheckAllCardPrefabs()
+    {
+        Debug.Log("===== 카드 프리팹 검사 시작 =====");
+
+        CheckDeck(characterDeck);
+        CheckDeck(buffDeck);
+        CheckDeck(skillDeck);
+
+        Debug.Log("===== 카드 프리팹 검사 종료 =====");
+    }
+
+    private void CheckDeck(List<CardData> deck)
+    {
+        foreach (var card in deck)
+        {
+            if (card == null)
+            {
+                Debug.LogError(
+                    "[카드 데이터 누락] CardData가 비어있음"
+                );
+
+                continue;
+            }
+
+            if (card.cardPrefab == null)
+            {
+                Debug.LogError(
+                    $"[프리팹 누락] 이름:{card.cardName} 타입:{card.cardType} 에셋:{card.name}"
+                );
+            }
+            else
+            {
+                Debug.Log(
+                    $"[정상] 이름:{card.cardName} → {card.cardPrefab.name}"
+                );
+            }
         }
     }
 }

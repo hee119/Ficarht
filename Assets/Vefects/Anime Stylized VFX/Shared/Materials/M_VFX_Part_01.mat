@@ -11,9 +11,9 @@ Material:
   m_Shader: {fileID: 4800000, guid: b8316386d8e5ff84093866f81e518acc, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _USEDEPTHFADE_ON
-  m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -134,3 +134,4 @@ Material:
     - _TextureChannel: {r: 0, g: 1, b: 0, a: 0}
     - _TexturePanSpeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

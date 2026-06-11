@@ -1,6 +1,12 @@
 using UnityEngine;
 
-public enum CardType { Character, Buff, Skill, Trap }
+public enum CardType
+{
+    Character,
+    Buff,
+    Skill,
+    Trap
+}
 
 public enum SkillID
 {
@@ -25,24 +31,36 @@ public enum SkillID
 public class BuffEffect
 {
     public float healthMod;
+
     public float staminaMod;
+
     public float powerMod;
+
     public float defenseMod;
+
     public float intelligenceMod;
 }
 
-[CreateAssetMenu(fileName = "NewCard", menuName = "Ficarght/CardData")]
+[CreateAssetMenu(
+    fileName = "NewCard",
+    menuName = "Ficarght/CardData"
+)]
 public class CardData : ScriptableObject
 {
     [Header("공통")]
     public int cardID;
+
     public string cardName;
+
     public CardType cardType;
+
     public Sprite cardImage;
+
+    // 모든 카드 공용 프리팹
+    public GameObject cardPrefab;
 
     [Header("캐릭터 카드 전용")]
     public CharacterCardStats characterStats;
-    public GameObject characterPrefab;
 
     [Header("버프 카드 전용")]
     public BuffEffect buffEffect;
