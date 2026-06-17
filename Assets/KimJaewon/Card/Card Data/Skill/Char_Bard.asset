@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardID: 0
   cardName: Bard
-  cardType: 2
+  cardType: 3
   cardImage: {fileID: 21300000, guid: 664c294f9e7a34fefbbf63f56899e0a7, type: 3}
   cardPrefab: {fileID: 4836435101460711670, guid: 92b9ff0043fdf4ae0aac93fb9d5ac10c, type: 3}
   characterStats: {fileID: 11400000, guid: 72da7d133ec714962b01eca9453d524c, type: 2}

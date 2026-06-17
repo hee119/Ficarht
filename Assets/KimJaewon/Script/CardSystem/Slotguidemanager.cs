@@ -9,7 +9,7 @@ public class SlotGuideManager : MonoBehaviour
     [Header("슬롯 연결")]
     public List<CardSlot> characterSlots = new List<CardSlot>();
     public List<CardSlot> buffSlots = new List<CardSlot>();
-    public List<CardSlot> skillSlots = new List<CardSlot>();
+    public List<CardSlot> trapSlots = new List<CardSlot>();
 
     [Header("홀로그램 설정")]
     public float pulseSpeed = 2f;
@@ -51,7 +51,7 @@ public class SlotGuideManager : MonoBehaviour
     {
         ShowSlotsGuide(characterSlots, CardType.Character);
         ShowSlotsGuide(buffSlots, CardType.Buff);
-        ShowSlotsGuide(skillSlots, CardType.Skill);
+        ShowSlotsGuide(trapSlots, CardType.Trap);
     }
 
     private void ShowSlotsGuide(List<CardSlot> slots, CardType type)
@@ -103,8 +103,8 @@ public class SlotGuideManager : MonoBehaviour
                 ShowSlotsGuide(buffSlots, type);
                 break;
 
-            case CardType.Skill:
-                ShowSlotsGuide(skillSlots, type);
+            case CardType.Trap:
+                ShowSlotsGuide(trapSlots, type);
                 break;
         }
     }
@@ -244,8 +244,8 @@ public class SlotGuideManager : MonoBehaviour
             case CardType.Buff:
                 return new Color(0f, 1f, 0f, 0.5f);
 
-            case CardType.Skill:
-                return new Color(1f, 0f, 1f, 0.5f);
+            case CardType.Trap:
+                return new Color(1f, 0f, 0f, 0.5f);
 
             default:
                 return new Color(1f, 1f, 1f, 0.5f);
