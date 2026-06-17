@@ -63,7 +63,6 @@ public class PoolManager : MonoBehaviour
                 createFunc: () =>
                 {
                     GameObject obj = Instantiate(prefab);
-                    obj.SetActive(false);
                     return obj;
                 },
 
@@ -120,6 +119,7 @@ public class PoolManager : MonoBehaviour
         }
 
         poolDictionary[id].Release(obj);
+        obj.SetActive(false);
     }
 
     // 프리팹 자체 반환
