@@ -69,6 +69,19 @@ public class CardObject : MonoBehaviour
 
     private static CardObject currentHoveredCard;
 
+    private static readonly RaycastHit[] hoverHits =
+        new RaycastHit[32];
+
+    private static int lastHoverUpdateFrame = -1;
+
+    private static Vector2 pointerPosition;
+
+    private static bool pointerPressedThisFrame;
+
+    private static bool pointerReleasedThisFrame;
+
+    private static bool pointerIsPressed;
+
     private void Awake()
     {
         cam = Camera.main;
@@ -101,7 +114,9 @@ public class CardObject : MonoBehaviour
             Time.deltaTime * moveSpeed
         );
 
-        HandleHover();
+        UpdateHoverState();
+
+        HandleHoverInput();
 
         if (!isDragging)
             return;
@@ -275,64 +290,32 @@ public class CardObject : MonoBehaviour
     // -------------------------------------------------------
     // 호버
     // -------------------------------------------------------
-    private void HandleHover()
+    private void HandleHoverInput()
     {
         if (isDragging || isPlaced)
             return;
 
-        Ray ray =
-            cam.ScreenPointToRay(
-                Mouse.current.position.ReadValue()
-            );
+        if (currentHoveredCard != this)
+            return;
 
-        bool isThisCard =
-            Physics.Raycast(
-                ray,
-                out RaycastHit hit
-            )
-            &&
-            hit.collider.GetComponent<CardObject>() == this;
-
-        if (isThisCard)
+        if (pointerPressedThisFrame)
         {
-            if (!isHovered)
-            {
-                HoverEnter();
-            }
+            isMouseDown = true;
 
-            if (
-                Mouse.current.leftButton
-                    .wasPressedThisFrame
-            )
-            {
-                isMouseDown = true;
+            mouseDownTimer = 0f;
 
-                mouseDownTimer = 0f;
-
-                mouseDownPosition =
-                    Mouse.current.position.ReadValue();
-            }
-        }
-        else
-        {
-            if (isHovered)
-            {
-                HoverExit();
-            }
+            mouseDownPosition = pointerPosition;
         }
 
         // 누르고 있는 중
-        if (
-            isMouseDown &&
-            Mouse.current.leftButton.isPressed
-        )
+        if (isMouseDown && pointerIsPressed)
         {
             mouseDownTimer += Time.deltaTime;
 
             float distance =
                 Vector2.Distance(
                     mouseDownPosition,
-                    Mouse.current.position.ReadValue()
+                    pointerPosition
                 );
 
             // 시간 + 거리 둘다 만족
@@ -348,14 +331,101 @@ public class CardObject : MonoBehaviour
         }
 
         // 마우스 떼면 초기화
-        if (
-            Mouse.current.leftButton
-                .wasReleasedThisFrame
-        )
+        if (pointerReleasedThisFrame)
         {
             isMouseDown = false;
 
             mouseDownTimer = 0f;
+        }
+    }
+
+    private static void UpdateHoverState()
+    {
+        if (lastHoverUpdateFrame == Time.frameCount)
+            return;
+
+        lastHoverUpdateFrame = Time.frameCount;
+
+        if (Mouse.current == null || Camera.main == null)
+        {
+            SetHoveredCard(null);
+            return;
+        }
+
+        pointerPosition =
+            Mouse.current.position.ReadValue();
+
+        pointerPressedThisFrame =
+            Mouse.current.leftButton.wasPressedThisFrame;
+
+        pointerReleasedThisFrame =
+            Mouse.current.leftButton.wasReleasedThisFrame;
+
+        pointerIsPressed =
+            Mouse.current.leftButton.isPressed;
+
+        Ray ray =
+            Camera.main.ScreenPointToRay(pointerPosition);
+
+        int hitCount =
+            Physics.RaycastNonAlloc(ray, hoverHits);
+
+        CardObject hoveredCard =
+            FindClosestHoverCard(hitCount);
+
+        SetHoveredCard(hoveredCard);
+    }
+
+    private static CardObject FindClosestHoverCard(
+        int hitCount
+    )
+    {
+        CardObject closestCard = null;
+
+        float closestDistance = float.MaxValue;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            CardObject card = hoverHits[i]
+                .collider
+                .GetComponentInParent<CardObject>();
+
+            if (card == null || !card.CanHover())
+                continue;
+
+            if (hoverHits[i].distance < closestDistance)
+            {
+                closestDistance = hoverHits[i].distance;
+
+                closestCard = card;
+            }
+        }
+
+        return closestCard;
+    }
+
+    private bool CanHover()
+    {
+        return isActiveAndEnabled &&
+            !isDragging &&
+            !isPlaced;
+    }
+
+    private static void SetHoveredCard(
+        CardObject nextCard
+    )
+    {
+        if (currentHoveredCard == nextCard)
+            return;
+
+        if (currentHoveredCard != null)
+        {
+            currentHoveredCard.HoverExit();
+        }
+
+        if (nextCard != null)
+        {
+            nextCard.HoverEnter();
         }
     }
 
