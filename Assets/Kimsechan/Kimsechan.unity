@@ -1961,6 +1961,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -319093997611787684, guid: b17ccb0a29141430e851f9ec68527c06, type: 3}
+      propertyPath: skillData
+      value: 
+      objectReference: {fileID: 11400000, guid: 8fc19dc6defd746ce892ed24c4cbb92e, type: 2}
     - target: {fileID: 1315324474620319471, guid: b17ccb0a29141430e851f9ec68527c06, type: 3}
       propertyPath: m_Name
       value: SM_Wep_Sword_03
