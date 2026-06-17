@@ -22,6 +22,16 @@ public class CardObject : MonoBehaviour
     [Range(0.1f, 1f)]
     public float placedScaleMultiplier = 0.7f;
 
+    [Header("타입별 배치 크기")]
+    [Range(0.1f, 1f)]
+    public float characterPlacedScale = 0.68f;
+
+    [Range(0.1f, 1f)]
+    public float buffPlacedScale = 0.58f;
+
+    [Range(0.1f, 1f)]
+    public float trapPlacedScale = 0.4f;
+
     [Header("드래그 판정")]
     public float dragThreshold = 50f;
 
@@ -222,7 +232,7 @@ public class CardObject : MonoBehaviour
 
         Vector3 targetScale =
             originalScale
-            * placedScaleMultiplier;
+            * GetPlacedScaleMultiplier();
 
         while (elapsed < duration)
         {
@@ -592,6 +602,27 @@ public class CardObject : MonoBehaviour
     // -------------------------------------------------------
     // 유틸
     // -------------------------------------------------------
+    private float GetPlacedScaleMultiplier()
+    {
+        if (data == null)
+            return placedScaleMultiplier;
+
+        switch (data.cardType)
+        {
+            case CardType.Character:
+                return characterPlacedScale;
+
+            case CardType.Buff:
+                return buffPlacedScale;
+
+            case CardType.Trap:
+                return trapPlacedScale;
+
+            default:
+                return placedScaleMultiplier;
+        }
+    }
+
     private Color GetColorByType(
         CardType type
     )

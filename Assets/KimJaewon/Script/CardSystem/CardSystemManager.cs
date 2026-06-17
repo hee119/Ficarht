@@ -140,10 +140,10 @@ public class CardSystemManager : MonoBehaviour
             buffDrawPositions
         );
 
-        // 함정 3장
+        // 함정 2장
         DrawCards(
             trapDeck,
-            3,
+            2,
             trapDrawPositions
         );
 

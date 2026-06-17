@@ -101,7 +101,10 @@ MonoBehaviour:
   cardBackObject: {fileID: 0}
   hoverHeight: 0.1
   moveSpeed: 15
-  placedScaleMultiplier: 0.7
+  placedScaleMultiplier: 0.55
+  characterPlacedScale: 0.68
+  buffPlacedScale: 0.58
+  trapPlacedScale: 0.4
   dragThreshold: 50
   dragHoldTime: 0.08
   minDropDistance: 1.2
