@@ -1649,10 +1649,12 @@ MonoBehaviour:
   - Jump Attack
   - DefaltAttack
   - how
+  - Roar
   KeyList:
   - e
   - leftButton
   - r
+  - f
   charactorType: 2
 --- !u!114 &741354723
 MonoBehaviour:

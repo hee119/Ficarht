@@ -55,16 +55,16 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.796526
-        functionName: SetBool
-        data: 
+      - time: 0.5139147
+        functionName: GetEffect
+        data: MagicCircle
         objectReferenceParameter: {fileID: 11500000, guid: 6dd991aa1db0342f29456249abb7b190, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.65399253
-        functionName: GetEffect
-        data: MagicCircle
+      - time: 0.796526
+        functionName: SetBool
+        data: 
         objectReferenceParameter: {fileID: 11500000, guid: 6dd991aa1db0342f29456249abb7b190, type: 3}
         floatParameter: 0
         intParameter: 0

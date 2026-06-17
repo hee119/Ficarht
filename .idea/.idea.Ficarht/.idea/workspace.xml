@@ -6,23 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Attack_A/InPlace/1Hand_Up_Attack_A_3_InPlace.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Attack_A/InPlace/1Hand_Up_Attack_A_3_InPlace.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Movement/Idle/Idle/Sword And Shield Casting (2) 1.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Movement/Idle/Idle/Sword And Shield Casting (2) 1.anim" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Movement/Idle/Idle/Sword And Shield Casting (2) 2.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DoubleL/One Hand Up/Movement/Idle/Idle/Sword And Shield Casting (2) 2.anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Eric VFX Studio/Free Game VFX/Scene/Free Game VFX/Global Volume Profile.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Eric VFX Studio/Free Game VFX/Scene/Free Game VFX/Global Volume Profile.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Standing 2H Cast Spell 01.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Standing 2H Cast Spell 01.fbx.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim.controller" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim.controller.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/CharAnimAsset/Mage/AnimatorControllers/MageAnim.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/CharAnimAsset/Mage/AnimatorControllers/MageAnim.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Charprefap/Berserker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Charprefap/Berserker.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Call/HumanM@MagicAttackCall1H01_L 1.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Call/HumanM@MagicAttackCall1H01_L 1.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Call/HumanM@MagicAttackCall1H01_L.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Call/HumanM@MagicAttackCall1H01_L.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Directional/HumanM@MagicAttackDirect1H01_L.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Directional/HumanM@MagicAttackDirect1H01_L.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Directional/HumanM@MagicAttackDirect1H01_R.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Directional/HumanM@MagicAttackDirect1H01_R.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Directional/HumanM@MagicAttackDirect2H01.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Kevin Iglesias/Human Animations/Animations/Male/Combat/Spellcasting/MagicAttacks/Directional/HumanM@MagicAttackDirect2H01.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Mutant@Jump Attack.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Mutant@Jump Attack.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing melee attack horizontal.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing melee attack horizontal.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing taunt battlecry.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing taunt battlecry.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura_1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura_1.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 2.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Manager/PoolManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Manager/PoolManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Double Slash.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Double Slash.prefab.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,6 +134,7 @@
       <workItem from="1780021486565" duration="1184000" />
       <workItem from="1780909143383" duration="686000" />
       <workItem from="1780924357675" duration="3920000" />
+      <workItem from="1781571028444" duration="2725000" />
     </task>
     <servers />
   </component>
