@@ -1503,13 +1503,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimManager
   AnimatorState:
-  - MageBasicSkill
-  - MageBigAttack
-  - MageStrongAttack
+  - Attack1
+  - Attack2
   KeyList:
   - leftButton
-  - q
-  - e
+  - E
   charactorType: 3
 --- !u!114 &1124051745
 MonoBehaviour:
