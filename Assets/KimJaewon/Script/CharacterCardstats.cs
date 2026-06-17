@@ -10,6 +10,10 @@ public class CharacterCardStats : ScriptableObject
     [Header("캐릭터 정보")]
     public string characterName;
 
+    [Header("캐릭터 프리팹 인덱스 (GameNetworkManager.characterPrefabs 순서)")]
+    [Tooltip("0=Paladin, 1=Bard, 2=Berserker, 3=Mage")]
+    public int characterId;
+
     [Header("기본 스탯 (0 ~ 100)")]
     [Range(0, 100)] public float health;       // 체력
     [Range(0, 100)] public float stamina;      // 스테미너
