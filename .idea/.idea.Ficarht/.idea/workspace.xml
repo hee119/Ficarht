@@ -6,17 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Eric VFX Studio/Free Game VFX/Scene/Free Game VFX/Global Volume Profile.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Eric VFX Studio/Free Game VFX/Scene/Free Game VFX/Global Volume Profile.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Standing 2H Cast Spell 01.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Standing 2H Cast Spell 01.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Mutant@Jump Attack.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Mutant@Jump Attack.fbx.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing melee attack horizontal.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing melee attack horizontal.fbx.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing taunt battlecry.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing taunt battlecry.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura_1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura_1.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 2.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Double Slash.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Double Slash.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Double Slash.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Double Slash.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/DoubleSlash.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/DoubleSlash.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Basic Slash Blue.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Basic Slash Blue.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Flies.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Flies.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Smoke.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Smoke.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_NeonSwords_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_NeonSwords_01.mat" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +133,7 @@
       <workItem from="1780021486565" duration="1184000" />
       <workItem from="1780909143383" duration="686000" />
       <workItem from="1780924357675" duration="3920000" />
-      <workItem from="1781571028444" duration="2725000" />
+      <workItem from="1781571028444" duration="4378000" />
     </task>
     <servers />
   </component>

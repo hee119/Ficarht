@@ -57,7 +57,7 @@ ModelImporter:
       events:
       - time: 0.5139147
         functionName: GetEffect
-        data: MagicCircle
+        data: Attack_Boost
         objectReferenceParameter: {fileID: 11500000, guid: 6dd991aa1db0342f29456249abb7b190, type: 3}
         floatParameter: 0
         intParameter: 0
