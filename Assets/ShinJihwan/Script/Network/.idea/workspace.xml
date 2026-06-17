@@ -5,20 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="539aec6e-0f06-44ec-b379-06ca0a1e2497" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/AutoStartNetwork.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GameNetworkManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LobbyUIManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NetworkAPI.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NetworkLobbyController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NetworkRoomConnector.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PlayerNetwork.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RoomManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HongYeseong/Charprefap/Paladin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HongYeseong/Charprefap/Paladin.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HongYeseong/Scene/Mage.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HongYeseong/Scene/Mage.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../HongYeseong/script/Charactor/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../../HongYeseong/script/Charactor/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../KimJaewon/Script/CharacterCardstats.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../../KimJaewon/Script/CharacterCardstats.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Kimsechan/CardMap_MainDesplay.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Kimsechan/CardMap_MainDesplay.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +63,7 @@
       <workItem from="1778050661451" duration="3014000" />
       <workItem from="1779261036403" duration="6517000" />
       <workItem from="1779868488504" duration="4750000" />
-      <workItem from="1781682679177" duration="1240000" />
+      <workItem from="1781682679177" duration="1840000" />
     </task>
     <servers />
   </component>
