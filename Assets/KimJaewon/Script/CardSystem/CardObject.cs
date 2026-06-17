@@ -45,7 +45,6 @@ public class CardObject : MonoBehaviour
     private Rigidbody rb;
 
     private bool isDragging;
-    private bool isHovered;
     private bool isPlaced;
 
     private bool isMouseDown;
@@ -215,7 +214,14 @@ public class CardObject : MonoBehaviour
 
         isDragging = false;
 
-        isHovered = false;
+        isMouseDown = false;
+
+        mouseDownTimer = 0f;
+
+        if (currentHoveredCard == this)
+        {
+            currentHoveredCard = null;
+        }
 
         StopAllCoroutines();
 
@@ -441,8 +447,6 @@ public class CardObject : MonoBehaviour
 
         currentHoveredCard = this;
 
-        isHovered = true;
-
         targetPosition = new Vector3(
             originPosition.x,
             originPosition.y + hoverHeight,
@@ -455,7 +459,9 @@ public class CardObject : MonoBehaviour
         if (isDragging)
             return;
 
-        isHovered = false;
+        isMouseDown = false;
+
+        mouseDownTimer = 0f;
 
         targetPosition = originPosition;
 
@@ -482,7 +488,14 @@ public class CardObject : MonoBehaviour
 
         isDragging = true;
 
-        isHovered = false;
+        isMouseDown = false;
+
+        mouseDownTimer = 0f;
+
+        if (currentHoveredCard == this)
+        {
+            currentHoveredCard = null;
+        }
 
         dragStartWorldPos =
             transform.position;
