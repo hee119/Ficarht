@@ -2,41 +2,66 @@ using UnityEngine;
 using Mirror;
 
 /// <summary>
-/// 메인메뉴 버튼 이벤트 연결용 스크립트.
-/// 빈 오브젝트에 붙이고 Inspector에서 패널 연결 후
-/// M3D 버튼의 onClick 이벤트에 각 메서드를 등록한다.
+/// 메인메뉴 버튼 이벤트 연결용.
+/// 씬의 MenuController 오브젝트에 붙이고 Inspector 연결.
+///
+/// [버튼 연결 방법]
+/// - Start 버튼       → Press Complete → MenuController.ShowHostUI
+/// - Make Room 버튼   → Press Complete → MenuController.CreateRoom
+/// - Join 버튼        → Press Complete → MenuController.JoinRoom
 /// </summary>
 public class MenuController : MonoBehaviour
 {
-    [Header("패널")]
+    [Header("UI 패널")]
     [Tooltip("__________UI_Host__________ 오브젝트 드래그")]
     public GameObject hostUIPanel;
 
-    [Header("NetworkLobbyController 연결")]
-    public NetworkLobbyController lobbyController;
+    [Header("M3D Input Field (IP/코드 입력창)")]
+    [Tooltip("씬의 Input Field (M3D) 오브젝트 드래그")]
+    public TinyGiantStudio.Text.InputField m3dInputField;
 
-    // ─── Start 버튼 onClick에 연결 ───
+    // ─────────────────────────────────────────────
+    // Start 버튼 → Press Complete에 연결
+    // ─────────────────────────────────────────────
     public void ShowHostUI()
     {
         if (hostUIPanel != null)
             hostUIPanel.SetActive(true);
     }
 
-    // ─── 방 만들기 버튼 onClick에 연결 ───
+    // ─────────────────────────────────────────────
+    // Make Room 버튼 → Press Complete에 연결
+    // ─────────────────────────────────────────────
     public void CreateRoom()
     {
-        lobbyController?.CreateRoom();
+        if (NetworkServer.active || NetworkClient.isConnected)
+        {
+            Debug.Log("[MenuController] 이미 연결 중");
+            return;
+        }
+
+        NetworkManager.singleton.StartHost();
+        Debug.Log("[MenuController] Host 시작 (방 만들기)");
     }
 
-    // ─── 방 참가 버튼 onClick에 연결 ───
-    // Input Field (M3D)의 텍스트를 읽어서 IP로 참가
+    // ─────────────────────────────────────────────
+    // Join 버튼 → Press Complete에 연결
+    // ─────────────────────────────────────────────
     public void JoinRoom()
     {
-        // M3D Input Field에서 텍스트 읽기
-        TinyGiantStudio.Text.InputField inputField =
-            FindObjectOfType<TinyGiantStudio.Text.InputField>();
+        if (NetworkClient.isConnected)
+        {
+            Debug.Log("[MenuController] 이미 연결 중");
+            return;
+        }
 
-        string ip = inputField != null ? inputField.Text : "localhost";
-        lobbyController?.JoinRoom(ip);
+        // M3D Input Field에서 IP 읽기 (비어있으면 localhost)
+        string ip = "localhost";
+        if (m3dInputField != null && !string.IsNullOrEmpty(m3dInputField.Text))
+            ip = m3dInputField.Text.Trim();
+
+        NetworkManager.singleton.networkAddress = ip;
+        NetworkManager.singleton.StartClient();
+        Debug.Log($"[MenuController] Client 시작 → {ip}");
     }
 }
