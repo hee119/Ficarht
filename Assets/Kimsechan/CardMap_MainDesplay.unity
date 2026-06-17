@@ -2039,7 +2039,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 145578074}
-  - component: {fileID: 145578075}
   m_Layer: 0
   m_Name: __________UI_Basic__________
   m_TagString: Untagged
@@ -2065,26 +2064,6 @@ Transform:
   - {fileID: 112508003}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &145578075
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 145578073}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 249fd9fb4f8e8473e9ccbe19b615fbc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NextUI_Animation
-  targetObjects:
-  - {fileID: 398485488}
-  - {fileID: 1753613791}
-  - {fileID: 112508000}
-  fallStartY: 10
-  duration: 0.5
-  ease: 26
-  nextUI: {fileID: 610237087}
 --- !u!4 &153933082 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 464236, guid: 94b12f9327756b340b4379482320a5c8, type: 3}
@@ -2772,7 +2751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212020
+  GUIID: 56510
 --- !u!4 &197798881 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8320302932082593524, guid: dcc3240582fd179409b393c6a9752fec, type: 3}
@@ -2889,7 +2868,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.92, y: 2, z: 1}
+  m_Size: {x: 15, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0.5}
 --- !u!114 &209039938
 MonoBehaviour:
@@ -2915,19 +2894,7 @@ MonoBehaviour:
       m_Calls: []
   pressCompleteEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610237089}
-        m_TargetAssemblyTypeName: NextUI_Animation, Assembly-CSharp
-        m_MethodName: Next_UI
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   interactable: 1
   interactableByMouse: 1
   _text: {fileID: 1068195354}
@@ -3465,7 +3432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212058
+  GUIID: 56548
 --- !u!4 &233719759
 Transform:
   m_ObjectHideFlags: 0
@@ -3479,7 +3446,7 @@ Transform:
   m_LocalScale: {x: 0.08680995, y: 0.08680995, z: 0.04466597}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1831471482}
+  m_Father: {fileID: 524749523}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &234978765
 GameObject:
@@ -3988,7 +3955,7 @@ GameObject:
   - component: {fileID: 294664807}
   - component: {fileID: 294664806}
   m_Layer: 0
-  m_Name: Tilte
+  m_Name: Text (M3D) (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4251,7 +4218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212112
+  GUIID: 56602
 --- !u!4 &294664811
 Transform:
   m_ObjectHideFlags: 0
@@ -4265,7 +4232,7 @@ Transform:
   m_LocalScale: {x: 0.11980641, y: 0.11980641, z: 0.061643507}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1831471482}
+  m_Father: {fileID: 524749523}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &298641835
 Mesh:
@@ -4896,7 +4863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212144
+  GUIID: 63258
 --- !u!1001 &320917272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6331,19 +6298,7 @@ MonoBehaviour:
       m_Calls: []
   pressCompleteEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 145578075}
-        m_TargetAssemblyTypeName: NextUI_Animation, Assembly-CSharp
-        m_MethodName: Next_UI
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   interactable: 1
   interactableByMouse: 1
   _text: {fileID: 758934118}
@@ -7905,7 +7860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212308
+  GUIID: 63422
 --- !u!1001 &505840413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8176,7 +8131,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 524749523}
-  - component: {fileID: 524749524}
   m_Layer: 0
   m_Name: "__________UI_\uCEE4\uB125\uD2F0\uB4DC__________ "
   m_TagString: Untagged
@@ -8198,33 +8152,14 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 852780026}
-  - {fileID: 592758387}
+  - {fileID: 294664811}
+  - {fileID: 233719759}
+  - {fileID: 1043844464}
   - {fileID: 671179239}
+  - {fileID: 592758387}
   - {fileID: 1144462474}
-  - {fileID: 1831471482}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &524749524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 524749522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 249fd9fb4f8e8473e9ccbe19b615fbc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NextUI_Animation
-  targetObjects:
-  - {fileID: 852780020}
-  - {fileID: 592758386}
-  - {fileID: 671179238}
-  - {fileID: 1831471481}
-  fallStartY: 500
-  duration: 0.5
-  ease: 29
-  nextUI: {fileID: 0}
 --- !u!4 &532094851 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8320302932082593524, guid: dcc3240582fd179409b393c6a9752fec, type: 3}
@@ -8656,7 +8591,7 @@ GameObject:
   - component: {fileID: 592758389}
   - component: {fileID: 592758388}
   m_Layer: 0
-  m_Name: GameStart
+  m_Name: Button (M3D) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8888,7 +8823,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 610237088}
-  - component: {fileID: 610237089}
   m_Layer: 0
   m_Name: __________UI_Host__________
   m_TagString: Untagged
@@ -8914,26 +8848,6 @@ Transform:
   - {fileID: 209039936}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &610237089
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 610237087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 249fd9fb4f8e8473e9ccbe19b615fbc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NextUI_Animation
-  targetObjects:
-  - {fileID: 555713685}
-  - {fileID: 1284978319}
-  - {fileID: 209039935}
-  fallStartY: 10
-  duration: 0.5
-  ease: 29
-  nextUI: {fileID: 524749522}
 --- !u!4 &621858742 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 876012771406191229, guid: bc96a176a96d2ad4f9a0c97e053d764b, type: 3}
@@ -9351,7 +9265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212388
+  GUIID: 224896
 --- !u!1001 &629699459
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9879,7 +9793,7 @@ GameObject:
   - component: {fileID: 671179241}
   - component: {fileID: 671179240}
   m_Layer: 0
-  m_Name: Leave the room
+  m_Name: Button (M3D)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10589,7 +10503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212474
+  GUIID: 63584
 --- !u!4 &758934123
 Transform:
   m_ObjectHideFlags: 0
@@ -11699,7 +11613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212534
+  GUIID: 57020
 --- !u!4 &852780026
 Transform:
   m_ObjectHideFlags: 0
@@ -13142,7 +13056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212620
+  GUIID: 57106
 --- !u!1 &1043844458
 GameObject:
   m_ObjectHideFlags: 0
@@ -13462,7 +13376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212634
+  GUIID: 57120
 --- !u!4 &1043844464
 Transform:
   m_ObjectHideFlags: 0
@@ -13476,7 +13390,7 @@ Transform:
   m_LocalScale: {x: 0.08680995, y: 0.08680995, z: 0.04466597}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1831471482}
+  m_Father: {fileID: 524749523}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1047019055 stripped
 Transform:
@@ -13890,7 +13804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212658
+  GUIID: 225166
 --- !u!1 &1075757965
 GameObject:
   m_ObjectHideFlags: 0
@@ -16456,7 +16370,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 6.9, y: 2, z: 1}
+  m_Size: {x: 15, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0.5}
 --- !u!114 &1284978322
 MonoBehaviour:
@@ -16482,19 +16396,7 @@ MonoBehaviour:
       m_Calls: []
   pressCompleteEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610237089}
-        m_TargetAssemblyTypeName: NextUI_Animation, Assembly-CSharp
-        m_MethodName: Next_UI
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   interactable: 1
   interactableByMouse: 1
   _text: {fileID: 627407173}
@@ -18205,7 +18107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212840
+  GUIID: 63950
 --- !u!4 &1508753359
 Transform:
   m_ObjectHideFlags: 0
@@ -20543,6 +20445,138 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6882792798800254788, guid: 3b4cdf2efaa683f468a9008d97d3b216, type: 3}
   m_PrefabInstance: {fileID: 931535227}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1741421693
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1741421697}
+  - component: {fileID: 1741421696}
+  - component: {fileID: 1741421695}
+  - component: {fileID: 1741421694}
+  m_Layer: 0
+  m_Name: NetworkManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1741421694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741421693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkManagerHUD
+  offsetX: 0
+  offsetY: 0
+--- !u!114 &1741421695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741421693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Transports::kcp2k.KcpTransport
+  port: 7777
+  DualMode: 1
+  NoDelay: 1
+  Interval: 10
+  Timeout: 10000
+  RecvBufferSize: 7361536
+  SendBufferSize: 7361536
+  FastResend: 2
+  ReceiveWindowSize: 4096
+  SendWindowSize: 4096
+  MaxRetransmit: 40
+  MaximizeSocketBuffers: 1
+  ReliableMaxMessageSize: 297433
+  UnreliableMaxMessageSize: 1194
+  debugLog: 0
+  statisticsGUI: 0
+  statisticsLog: 0
+--- !u!114 &1741421696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741421693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfb442632e8364f2cb5b7115f4dd0811, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameNetworkManager
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  headlessStartMode: 0
+  editorAutoStart: 0
+  sendRate: 60
+  offlineScene: 
+  onlineScene: 
+  offlineSceneLoadDelay: 0
+  transport: {fileID: 1741421695}
+  networkAddress: localhost
+  maxConnections: 100
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 60
+  authenticator: {fileID: 0}
+  playerPrefab: {fileID: 0}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 0
+  spawnPrefabs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  exceptionsDisconnect: 1
+  snapshotSettings:
+    bufferTimeMultiplier: 2
+    bufferLimit: 32
+    catchupNegativeThreshold: -1
+    catchupPositiveThreshold: 1
+    catchupSpeed: 0.019999999552965164
+    slowdownSpeed: 0.03999999910593033
+    driftEmaDuration: 1
+    dynamicAdjustment: 1
+    dynamicAdjustmentTolerance: 1
+    deliveryTimeEmaDuration: 2
+  evaluationMethod: 0
+  evaluationInterval: 3
+  timeInterpolationGui: 0
+  testCharacterPrefab: {fileID: 0}
+  characterPrefabs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!4 &1741421697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741421693}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.77729, y: 2.81567, z: -5.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1753613791
 GameObject:
   m_ObjectHideFlags: 0
@@ -21291,7 +21325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212978
+  GUIID: 64098
 --- !u!4 &1814983582
 Transform:
   m_ObjectHideFlags: 0
@@ -21693,7 +21727,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 212992
+  GUIID: 225500
 --- !u!1 &1825575759
 GameObject:
   m_ObjectHideFlags: 0
@@ -22100,40 +22134,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5ffa8ec27fcf036439322b0ef74ca02f, type: 3}
---- !u!1 &1831471481
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1831471482}
-  m_Layer: 0
-  m_Name: Players
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1831471482
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1831471481}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 294664811}
-  - {fileID: 233719759}
-  - {fileID: 1043844464}
-  m_Father: {fileID: 524749523}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1838326207
 GameObject:
   m_ObjectHideFlags: 0
@@ -24420,7 +24420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 213110
+  GUIID: 64230
 --- !u!4 &2087518430
 Transform:
   m_ObjectHideFlags: 0
@@ -25067,3 +25067,4 @@ SceneRoots:
   - {fileID: 145578074}
   - {fileID: 610237088}
   - {fileID: 524749523}
+  - {fileID: 1741421697}

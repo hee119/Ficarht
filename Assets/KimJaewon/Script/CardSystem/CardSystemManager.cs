@@ -177,26 +177,34 @@ public class CardSystemManager : MonoBehaviour
         List<CardData> availableCards =
             new List<CardData>();
 
+        List<CardData> validCards =
+            new List<CardData>();
+
         foreach (var card in deck)
         {
             if (card != null)
-                availableCards.Add(card);
+            {
+                validCards.Add(card);
+            }
         }
 
-        if (availableCards.Count == 0)
+        if (validCards.Count == 0)
         {
             Debug.LogWarning("유효한 카드가 없습니다.");
             return;
         }
+
+        availableCards.AddRange(validCards);
 
         for (int i = 0; i < count; i++)
         {
             if (availableCards.Count == 0)
             {
                 Debug.LogWarning(
-                    $"카드 부족! 요청:{count}"
+                    $"카드 종류 부족! 요청:{count}, 덱:{validCards.Count}. 같은 카드가 다시 나올 수 있습니다."
                 );
-                break;
+
+                availableCards.AddRange(validCards);
             }
 
             Transform spawnTf =
