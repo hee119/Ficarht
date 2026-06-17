@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.InputSystem;
@@ -14,7 +15,8 @@ public class CardSystemManager : MonoBehaviour
     public List<CardData> buffDeck =
         new List<CardData>();
 
-    public List<CardData> skillDeck =
+    [FormerlySerializedAs("skillDeck")]
+    public List<CardData> trapDeck =
         new List<CardData>();
 
     [Header("--- 드로우 포지션 (월드) ---")]
@@ -24,7 +26,8 @@ public class CardSystemManager : MonoBehaviour
     public List<Transform> buffDrawPositions =
         new List<Transform>();
 
-    public List<Transform> skillDrawPositions =
+    [FormerlySerializedAs("skillDrawPositions")]
+    public List<Transform> trapDrawPositions =
         new List<Transform>();
 
     [Header("--- 슬롯 ---")]
@@ -34,7 +37,8 @@ public class CardSystemManager : MonoBehaviour
     public List<CardSlot> buffSlots =
         new List<CardSlot>();
 
-    public List<CardSlot> skillSlots =
+    [FormerlySerializedAs("skillSlots")]
+    public List<CardSlot> trapSlots =
         new List<CardSlot>();
 
     [Header("--- UI ---")]
@@ -129,18 +133,18 @@ public class CardSystemManager : MonoBehaviour
             characterDrawPositions
         );
 
-        // 버프 3장
+        // 버프 2장
         DrawCards(
             buffDeck,
-            3,
+            2,
             buffDrawPositions
         );
 
-        // 스킬 2장
+        // 함정 3장
         DrawCards(
-            skillDeck,
-            2,
-            skillDrawPositions
+            trapDeck,
+            3,
+            trapDrawPositions
         );
 
         // 부채꼴 정렬
@@ -312,9 +316,6 @@ public class CardSystemManager : MonoBehaviour
             );
         }
 
-        SkillRegistry.Instance
-            ?.RegisterFromSlots(skillSlots);
-
         CardRevealSystem.Instance
             ?.RevealAllCards();
 
@@ -375,7 +376,7 @@ public class CardSystemManager : MonoBehaviour
 
         allSlots.AddRange(characterSlots);
         allSlots.AddRange(buffSlots);
-        allSlots.AddRange(skillSlots);
+        allSlots.AddRange(trapSlots);
 
         foreach (var slot in allSlots)
         {
@@ -422,7 +423,7 @@ public class CardSystemManager : MonoBehaviour
 
         allSlots.AddRange(characterSlots);
         allSlots.AddRange(buffSlots);
-        allSlots.AddRange(skillSlots);
+        allSlots.AddRange(trapSlots);
 
         foreach (var slot in allSlots)
         {
@@ -459,7 +460,7 @@ public class CardSystemManager : MonoBehaviour
 
         CheckDeck(characterDeck);
         CheckDeck(buffDeck);
-        CheckDeck(skillDeck);
+        CheckDeck(trapDeck);
 
         Debug.Log("===== 카드 프리팹 검사 종료 =====");
     }

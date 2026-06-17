@@ -545,9 +545,9 @@ public class CardObject : MonoBehaviour
                     CardSystemManager.Instance.buffSlots;
                 break;
 
-            case CardType.Skill:
+            case CardType.Trap:
                 targetSlots =
-                    CardSystemManager.Instance.skillSlots;
+                    CardSystemManager.Instance.trapSlots;
                 break;
         }
 
