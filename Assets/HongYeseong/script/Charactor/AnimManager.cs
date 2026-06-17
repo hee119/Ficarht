@@ -12,14 +12,12 @@ public class AnimManager : MonoBehaviour
 
     private Animator animator;
 
-    private bool isRightAttack;
-
     [SerializeField]
     private CharactorType charactorType;
-    
-    ICharacterSkill characterSkill;
 
-    int currentLayer = 1;
+    private ICharacterSkill characterSkill;
+
+    private bool isTriggerPlaying = false;
 
     public enum CharactorType
     {
@@ -33,6 +31,7 @@ public class AnimManager : MonoBehaviour
     {
         characterSkill = GetComponent<ICharacterSkill>();
         animator = GetComponent<Animator>();
+
         for (int i = 0; i < animator.layerCount; i++)
         {
             Debug.Log("Layer " + i + ": " + animator.GetLayerName(i));
@@ -41,57 +40,102 @@ public class AnimManager : MonoBehaviour
 
     public void OnKey(InputAction.CallbackContext context)
     {
-        if (charactorType == CharactorType.Paladin && context.canceled)
-        {
-            animator.SetBool("Defense", false);
-        }
-
-        if (!context.started)
-            return;
-
+        Debug.Log(
+            $"Action : {context.action.name}, Control : {context.control.name}, phase : {context.phase}"
+        );
         Debug.Log(context.control.name);
 
         for (int i = 0; i < KeyList.Count; i++)
         {
-            {
-                if (context.control.name == KeyList[i] &&
-                    animator.GetCurrentAnimatorStateInfo(currentLayer).normalizedTime >= 0.95f)
-                {
+            if (context.control.name != KeyList[i])
+                continue;
 
-                    Anim(i);
+            string animName = AnimatorState[i];
+
+            if (context.started)
+            {
+                if (IsTrigger(animName))
+                {
+                    // 다른 트리거 애니메이션 재생 중이면 무시
+                    if (isTriggerPlaying)
+                    {
+                        Debug.Log("[Trigger 차단] 현재 다른 트리거 애니메이션 재생 중");
+                        break;
+                    }
+
+                    isTriggerPlaying = true;
+                    animator.SetTrigger(animName);
+
+                    Debug.Log($"[Trigger 재생] '{animName}'");
+                    break;
+                }
+
+                if (IsBool(animName))
+                {
+                    if (isTriggerPlaying)
+                    {
+                        Debug.Log("[Trigger 차단] 현재 다른 트리거 애니메이션 재생 중");
+                        break;
+                    }
+                    animator.SetBool(animName, true);
+                    Debug.Log($"[Bool 변경] '{animName}' = true");
                     break;
                 }
             }
+
+            if (context.canceled)
+            {
+                if (IsBool(animName))
+                {
+                    animator.SetBool(animName, false);
+                    Debug.Log($"[Bool 변경] '{animName}' = false");
+                    break;
+                }
+            }
+
+            break;
         }
     }
 
-    public void Anim(int i)
+    bool IsTrigger(string parameterName)
     {
-        string stateName = AnimatorState[i];
-        int stateHash = Animator.StringToHash(stateName);
-        bool played = false;
-
-        // 애니메이터에 설정된 모든 레이어를 검사 (0부터 끝까지)
-        for (int layerIndex = 0; layerIndex < animator.layerCount; layerIndex++)
+        for (int i = 0; i < animator.parameterCount; i++)
         {
-            // 해당 레이어에 stateName이 있는지 확인
-            if (animator.HasState(layerIndex, stateHash))
+            AnimatorControllerParameter parameter = animator.parameters[i];
+
+            if (parameter.name == parameterName &&
+                parameter.type == AnimatorControllerParameterType.Trigger)
             {
-                animator.Play(stateHash, layerIndex, 0f);
-                Debug.Log($"[재생 성공] 레이어 {layerIndex}에서 '{stateName}' 재생 시작");
-                played = true;
-                break; // 찾았으면 다른 레이어 검사를 중단하고 나감
+                return true;
             }
         }
 
-        if (!played)
-        {
-            Debug.LogError($"[재생 실패] '{stateName}' 상태를 모든 레이어({animator.layerCount}개)에서 찾을 수 없습니다.");
-        }
+        return false;
     }
-    
+
+    bool IsBool(string parameterName)
+    {
+        for (int i = 0; i < animator.parameterCount; i++)
+        {
+            AnimatorControllerParameter parameter = animator.parameters[i];
+
+            if (parameter.name == parameterName &&
+                parameter.type == AnimatorControllerParameterType.Bool)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void GetEffect(string effectName)
     {
-        characterSkill.UseSkill(effectName, transform);
+        characterSkill?.UseSkill(effectName, transform);
+    }
+
+    public void SetBool()
+    {
+        isTriggerPlaying = false;
     }
 }

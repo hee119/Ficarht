@@ -30381,7 +30381,6 @@ GameObject:
   - component: {fileID: 3214707271356415487}
   - component: {fileID: 8061790043514018927}
   - component: {fileID: 6805549504342042016}
-  - component: {fileID: -8631094261424785770}
   - component: {fileID: -8746308342505396966}
   - component: {fileID: 1258270317292152593}
   m_Layer: 0
@@ -30451,28 +30450,6 @@ MonoBehaviour:
   syncHairColor: 1
   armorLocks: 000000000000
   faceLocks: 000000000000
---- !u!64 &-8631094261424785770
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 755554410987823595}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5493106956572371520, guid: f1dafa1906ae7c841b87a79bb1de384d, type: 3}
 --- !u!54 &-8746308342505396966
 Rigidbody:
   m_ObjectHideFlags: 0
