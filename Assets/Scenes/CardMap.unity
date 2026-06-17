@@ -3631,6 +3631,7 @@ GameObject:
   - component: {fileID: 720628672}
   - component: {fileID: 720628671}
   - component: {fileID: 720628670}
+  - component: {fileID: 720628673}
   m_Layer: 0
   m_Name: Button (M3D)
   m_TagString: Untagged
@@ -3683,7 +3684,19 @@ MonoBehaviour:
       m_Calls: []
   pressCompleteEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 720628673}
+        m_TargetAssemblyTypeName: StartButtonSceneLoader, Assembly-CSharp
+        m_MethodName: LoadSelectedScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   interactable: 1
   interactableByMouse: 1
   _text: {fileID: 1947411256}
@@ -3716,6 +3729,19 @@ MonoBehaviour:
   _disabledBackgroundMaterial: {fileID: 2100000, guid: b1b4721719ff98b4abf45943c7e47451, type: 2}
   isSelected: 0
   hideOverwrittenVariablesFromInspector: 1
+--- !u!114 &720628673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720628669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b85d51a59c24f34baaf33feadf26f8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StartButtonSceneLoader
+  sceneName: Forest
 --- !u!4 &720628672
 Transform:
   m_ObjectHideFlags: 0

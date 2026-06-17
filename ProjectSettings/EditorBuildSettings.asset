@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/CardMap.unity
+    guid: 68a7894e9126d3b4181d411b75bc0990
+  - enabled: 1
+    path: Assets/Scenes/Forest.unity
+    guid: 34627ccfb860741e49209382afca21ac
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
