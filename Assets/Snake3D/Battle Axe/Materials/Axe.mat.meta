@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5e74aec7420d61d45934635dacc11bbd
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 333526
+  packageName: Realistic Battle Axe
+  packageVersion: 1.0
+  assetPath: Assets/Snake3D/Battle Axe/Materials/Axe.mat
+  uploadId: 798836

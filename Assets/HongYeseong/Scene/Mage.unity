@@ -1087,10 +1087,12 @@ MonoBehaviour:
   - MageBasicSkill
   - MageBigAttack
   - MageStrongAttack
+  - MagicCircle
   KeyList:
   - leftButton
   - q
   - e
+  - r
   charactorType: 0
 --- !u!114 &1440378214
 MonoBehaviour:

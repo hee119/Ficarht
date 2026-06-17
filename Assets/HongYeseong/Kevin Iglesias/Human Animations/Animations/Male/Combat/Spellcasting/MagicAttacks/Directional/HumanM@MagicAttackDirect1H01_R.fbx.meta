@@ -69,6 +69,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.54228854
+        functionName: SetBool
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 6dd991aa1db0342f29456249abb7b190, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
