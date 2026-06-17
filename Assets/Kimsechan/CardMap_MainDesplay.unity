@@ -2772,7 +2772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 56510
+  GUIID: 212020
 --- !u!4 &197798881 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8320302932082593524, guid: dcc3240582fd179409b393c6a9752fec, type: 3}
@@ -2889,7 +2889,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 15, y: 2, z: 1}
+  m_Size: {x: 3.92, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0.5}
 --- !u!114 &209039938
 MonoBehaviour:
@@ -2915,7 +2915,19 @@ MonoBehaviour:
       m_Calls: []
   pressCompleteEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 610237089}
+        m_TargetAssemblyTypeName: NextUI_Animation, Assembly-CSharp
+        m_MethodName: Next_UI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   interactable: 1
   interactableByMouse: 1
   _text: {fileID: 1068195354}
@@ -3453,7 +3465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 56548
+  GUIID: 212058
 --- !u!4 &233719759
 Transform:
   m_ObjectHideFlags: 0
@@ -3467,7 +3479,7 @@ Transform:
   m_LocalScale: {x: 0.08680995, y: 0.08680995, z: 0.04466597}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 524749523}
+  m_Father: {fileID: 1831471482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &234978765
 GameObject:
@@ -3976,7 +3988,7 @@ GameObject:
   - component: {fileID: 294664807}
   - component: {fileID: 294664806}
   m_Layer: 0
-  m_Name: Text (M3D) (2)
+  m_Name: Tilte
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4239,7 +4251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 56602
+  GUIID: 212112
 --- !u!4 &294664811
 Transform:
   m_ObjectHideFlags: 0
@@ -4253,7 +4265,7 @@ Transform:
   m_LocalScale: {x: 0.11980641, y: 0.11980641, z: 0.061643507}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 524749523}
+  m_Father: {fileID: 1831471482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &298641835
 Mesh:
@@ -4884,7 +4896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 151986
+  GUIID: 212144
 --- !u!1001 &320917272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7893,7 +7905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152150
+  GUIID: 212308
 --- !u!1001 &505840413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8164,6 +8176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 524749523}
+  - component: {fileID: 524749524}
   m_Layer: 0
   m_Name: "__________UI_\uCEE4\uB125\uD2F0\uB4DC__________ "
   m_TagString: Untagged
@@ -8185,14 +8198,33 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 852780026}
-  - {fileID: 294664811}
-  - {fileID: 233719759}
-  - {fileID: 1043844464}
-  - {fileID: 671179239}
   - {fileID: 592758387}
+  - {fileID: 671179239}
   - {fileID: 1144462474}
+  - {fileID: 1831471482}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &524749524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524749522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 249fd9fb4f8e8473e9ccbe19b615fbc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NextUI_Animation
+  targetObjects:
+  - {fileID: 852780020}
+  - {fileID: 592758386}
+  - {fileID: 671179238}
+  - {fileID: 1831471481}
+  fallStartY: 500
+  duration: 0.5
+  ease: 29
+  nextUI: {fileID: 0}
 --- !u!4 &532094851 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8320302932082593524, guid: dcc3240582fd179409b393c6a9752fec, type: 3}
@@ -8624,7 +8656,7 @@ GameObject:
   - component: {fileID: 592758389}
   - component: {fileID: 592758388}
   m_Layer: 0
-  m_Name: Button (M3D) (1)
+  m_Name: GameStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8901,7 +8933,7 @@ MonoBehaviour:
   fallStartY: 10
   duration: 0.5
   ease: 29
-  nextUI: {fileID: 0}
+  nextUI: {fileID: 524749522}
 --- !u!4 &621858742 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 876012771406191229, guid: bc96a176a96d2ad4f9a0c97e053d764b, type: 3}
@@ -9319,7 +9351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152228
+  GUIID: 212388
 --- !u!1001 &629699459
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9847,7 +9879,7 @@ GameObject:
   - component: {fileID: 671179241}
   - component: {fileID: 671179240}
   m_Layer: 0
-  m_Name: Button (M3D)
+  m_Name: Leave the room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10557,7 +10589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152314
+  GUIID: 212474
 --- !u!4 &758934123
 Transform:
   m_ObjectHideFlags: 0
@@ -11667,7 +11699,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 57020
+  GUIID: 212534
 --- !u!4 &852780026
 Transform:
   m_ObjectHideFlags: 0
@@ -13110,7 +13142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 57106
+  GUIID: 212620
 --- !u!1 &1043844458
 GameObject:
   m_ObjectHideFlags: 0
@@ -13430,7 +13462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 57120
+  GUIID: 212634
 --- !u!4 &1043844464
 Transform:
   m_ObjectHideFlags: 0
@@ -13444,7 +13476,7 @@ Transform:
   m_LocalScale: {x: 0.08680995, y: 0.08680995, z: 0.04466597}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 524749523}
+  m_Father: {fileID: 1831471482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1047019055 stripped
 Transform:
@@ -13858,7 +13890,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152498
+  GUIID: 212658
 --- !u!1 &1075757965
 GameObject:
   m_ObjectHideFlags: 0
@@ -16424,7 +16456,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 15, y: 2, z: 1}
+  m_Size: {x: 6.9, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0.5}
 --- !u!114 &1284978322
 MonoBehaviour:
@@ -16450,7 +16482,19 @@ MonoBehaviour:
       m_Calls: []
   pressCompleteEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 610237089}
+        m_TargetAssemblyTypeName: NextUI_Animation, Assembly-CSharp
+        m_MethodName: Next_UI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   interactable: 1
   interactableByMouse: 1
   _text: {fileID: 627407173}
@@ -18161,7 +18205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152680
+  GUIID: 212840
 --- !u!4 &1508753359
 Transform:
   m_ObjectHideFlags: 0
@@ -21247,7 +21291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152818
+  GUIID: 212978
 --- !u!4 &1814983582
 Transform:
   m_ObjectHideFlags: 0
@@ -21649,7 +21693,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152832
+  GUIID: 212992
 --- !u!1 &1825575759
 GameObject:
   m_ObjectHideFlags: 0
@@ -22056,6 +22100,40 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5ffa8ec27fcf036439322b0ef74ca02f, type: 3}
+--- !u!1 &1831471481
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1831471482}
+  m_Layer: 0
+  m_Name: Players
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1831471482
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831471481}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 294664811}
+  - {fileID: 233719759}
+  - {fileID: 1043844464}
+  m_Father: {fileID: 524749523}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1838326207
 GameObject:
   m_ObjectHideFlags: 0
@@ -24342,7 +24420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 152950
+  GUIID: 213110
 --- !u!4 &2087518430
 Transform:
   m_ObjectHideFlags: 0
