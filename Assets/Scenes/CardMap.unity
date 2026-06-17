@@ -633,7 +633,7 @@ GameObject:
   m_Component:
   - component: {fileID: 150342420}
   m_Layer: 0
-  m_Name: SkillDraw_02
+  m_Name: TrapDraw_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2604,16 +2604,16 @@ Transform:
   m_GameObject: {fileID: 565257846}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.297}
+  m_LocalPosition: {x: 0, y: 0, z: -0.537}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 897264843}
   - {fileID: 997196290}
+  - {fileID: 1737988803}
   - {fileID: 910720656}
   - {fileID: 776526461}
   - {fileID: 2001941449}
-  - {fileID: 1737988803}
   m_Father: {fileID: 1496772725}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &568506401
@@ -3718,7 +3718,7 @@ Transform:
   m_GameObject: {fileID: 720628669}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.822, y: 1.092, z: -1.774}
+  m_LocalPosition: {x: 0.822, y: 1.092, z: -1.67}
   m_LocalScale: {x: 0.038222756, y: 0.08605924, z: 0.057372827}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3816,7 +3816,7 @@ GameObject:
   - component: {fileID: 776526463}
   - component: {fileID: 776526462}
   m_Layer: 0
-  m_Name: BuffSlot_03
+  m_Name: TrapSlot_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3853,7 +3853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 653155240997547daa802bbf322b718c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  allowedType: 1
+  allowedType: 3
   currentCard: {fileID: 0}
   snapPoint: {fileID: 0}
 --- !u!65 &776526463
@@ -4287,7 +4287,7 @@ GameObject:
   - component: {fileID: 910720658}
   - component: {fileID: 910720657}
   m_Layer: 0
-  m_Name: BuffSlot_02
+  m_Name: TrapSlot_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4324,7 +4324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 653155240997547daa802bbf322b718c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  allowedType: 1
+  allowedType: 3
   currentCard: {fileID: 0}
   snapPoint: {fileID: 0}
 --- !u!65 &910720658
@@ -7269,27 +7269,26 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0e77c8129e2ac4e0b9a5b67319d896d3, type: 2}
   - {fileID: 11400000, guid: 1a2f34ac327d64a5aba40da63e9a698c, type: 2}
   - {fileID: 11400000, guid: dac933a30c05f41b4b01963c8080fe45, type: 2}
-  skillDeck:
+  trapDeck:
   - {fileID: 11400000, guid: 74456cc0ebf5a43edb5df9919a76bded, type: 2}
-  - {fileID: 11400000, guid: 673926d62202448388cebf20b7365dc1, type: 2}
   characterDrawPositions:
   - {fileID: 826627907}
   buffDrawPositions:
   - {fileID: 1413762406}
   - {fileID: 1817341296}
   - {fileID: 2117897008}
-  skillDrawPositions:
+  trapDrawPositions:
   - {fileID: 1879223516}
   - {fileID: 150342420}
   characterSlots:
   - {fileID: 897264844}
   buffSlots:
   - {fileID: 997196291}
+  - {fileID: 1737988804}
+  trapSlots:
   - {fileID: 910720657}
   - {fileID: 776526462}
-  skillSlots:
   - {fileID: 2001941450}
-  - {fileID: 1737988804}
   timerText: {fileID: 0}
   turnDuration: 60
   playerHand: []
@@ -8026,7 +8025,7 @@ GameObject:
   - component: {fileID: 1737988805}
   - component: {fileID: 1737988804}
   m_Layer: 0
-  m_Name: SkillSlot_02
+  m_Name: BuffSlot_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8063,7 +8062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 653155240997547daa802bbf322b718c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  allowedType: 2
+  allowedType: 1
   currentCard: {fileID: 0}
   snapPoint: {fileID: 0}
 --- !u!65 &1737988805
@@ -8436,7 +8435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1879223516}
   m_Layer: 0
-  m_Name: SkillDraw_01
+  m_Name: TrapDraw_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8962,7 +8961,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: -99600
+  GUIID: 81884
 --- !u!4 &1947411261
 Transform:
   m_ObjectHideFlags: 0
@@ -9146,7 +9145,7 @@ GameObject:
   - component: {fileID: 2001941451}
   - component: {fileID: 2001941450}
   m_Layer: 0
-  m_Name: SkillSlot_01
+  m_Name: TrapSlot_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9183,7 +9182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 653155240997547daa802bbf322b718c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSlot
-  allowedType: 2
+  allowedType: 3
   currentCard: {fileID: 0}
   snapPoint: {fileID: 0}
 --- !u!65 &2001941451
