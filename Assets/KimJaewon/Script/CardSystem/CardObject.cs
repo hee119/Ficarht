@@ -19,6 +19,8 @@ public class CardObject : MonoBehaviour
     [Range(1f, 1.5f)]
     public float hoverScaleMultiplier = 1.08f;
 
+    public float handHoverScreenLift = 80f;
+
     public int hoverSortingOrderBoost = 100;
 
     public float moveSpeed = 15f;
@@ -600,7 +602,7 @@ public class CardObject : MonoBehaviour
 
         currentHoveredCard = this;
 
-        targetPosition = GetRestPosition();
+        targetPosition = GetHoverPosition();
 
         targetScale =
             GetRestScale() * hoverScaleMultiplier;
@@ -842,6 +844,28 @@ public class CardObject : MonoBehaviour
         return isPlaced
             ? targetPosition
             : originPosition;
+    }
+
+    private Vector3 GetHoverPosition()
+    {
+        Vector3 restPosition = GetRestPosition();
+
+        if (isPlaced)
+            return restPosition;
+
+        Camera targetCamera = cam != null
+            ? cam
+            : Camera.main;
+
+        if (targetCamera == null)
+            return restPosition;
+
+        Vector3 screenPosition =
+            targetCamera.WorldToScreenPoint(restPosition);
+
+        screenPosition.y += handHoverScreenLift;
+
+        return targetCamera.ScreenToWorldPoint(screenPosition);
     }
 
     private Quaternion GetRestRotation()
