@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1426245440731515418}
   - component: {fileID: 4705501379079182426}
   - component: {fileID: 1891331501348739591}
+  - component: {fileID: -7302894549285967995}
   m_Layer: 0
   m_Name: Buff_01a
   m_TagString: Untagged
@@ -4858,6 +4859,21 @@ MonoBehaviour:
   coolTime: 0
   defense: 0
   duration: 0
+  isBuff: 1
+--- !u!114 &-7302894549285967995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3874635022589376825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb1546c22afe4522b204bd3e54e6484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDuration
+  skillDuration: 2
+  fadeDuration: 1
 --- !u!1 &7161970964689158494
 GameObject:
   m_ObjectHideFlags: 0

@@ -14554,6 +14554,7 @@ GameObject:
   m_Component:
   - component: {fileID: 921718495642431012}
   - component: {fileID: 8953572029319556281}
+  - component: {fileID: -2479241754651558825}
   m_Layer: 0
   m_Name: Aura_1
   m_TagString: Untagged
@@ -14601,6 +14602,20 @@ MonoBehaviour:
   coolTime: 0
   defense: 0
   duration: 0
+--- !u!114 &-2479241754651558825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4534418223192108082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb1546c22afe4522b204bd3e54e6484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDuration
+  skillDuration: 2
+  fadeDuration: 1
 --- !u!1 &5655975489359116220
 GameObject:
   m_ObjectHideFlags: 0

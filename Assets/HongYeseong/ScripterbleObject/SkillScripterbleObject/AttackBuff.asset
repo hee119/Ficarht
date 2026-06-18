@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef2e8944cbbe141e6ac47f76c0350b10, type: 3}
-  m_Name: MageStrongSkill
+  m_Name: AttackBuff
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: MageStrongSkill
+  skillId: AttackBuff
   attack: 0
   speed: 0
   cooldown: 0
   coolTime: 0
   defense: 0
   duration: 5
+  isBuff: 1

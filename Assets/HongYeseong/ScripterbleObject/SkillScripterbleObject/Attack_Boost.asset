@@ -18,4 +18,5 @@ MonoBehaviour:
   cooldown: 0
   coolTime: 0
   defense: 0
-  duration: 0
+  duration: 5
+  isBuff: 1

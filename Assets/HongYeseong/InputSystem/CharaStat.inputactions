@@ -16,6 +16,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "MouseLook",
+                    "type": "Value",
+                    "id": "a993ce6b-7ca2-4678-b4c2-3fbe986fecfc",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Key",
                     "type": "Button",
                     "id": "85a6305b-9e12-4ebb-85b9-f901cb72bdd8",
@@ -28,6 +37,15 @@
                     "name": "Run",
                     "type": "Button",
                     "id": "37320124-fb2f-4292-b6c1-e5ce449ae28d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "555bb80c-bec7-47d3-8232-57d327c32e9e",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -164,6 +182,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b1fe5c2-1b3d-4533-9028-baca0d0cd806",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseLook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0dc0fb80-331b-4db9-9c39-7308f6ec8bd5",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

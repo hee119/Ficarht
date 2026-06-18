@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2310392177743285014}
   - component: {fileID: 4509017003765337245}
   - component: {fileID: 5191559500704412361}
+  - component: {fileID: 4941083873956901095}
   m_Layer: 0
   m_Name: MageStrongSkillMom
   m_TagString: Untagged
@@ -47,10 +48,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
   skillData: {fileID: 11400000, guid: fae8028babe50450aad01b8b05b53af0, type: 2}
-  attack: 0
+  power: 0
   speed: 0
   cooldown: 0
   coolTime: 0
+  defense: 0
+  duration: 0
 --- !u!114 &5191559500704412361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,6 +67,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitEffect
   hitEffefct: {fileID: 0}
+--- !u!114 &4941083873956901095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220475180673309345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb1546c22afe4522b204bd3e54e6484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDuration
+  skillDuration: 2
+  fadeDuration: 1
 --- !u!1 &4163459329110958648
 GameObject:
   m_ObjectHideFlags: 0

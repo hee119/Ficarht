@@ -909,6 +909,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mage
       objectReference: {fileID: 0}
+    - target: {fileID: 2230640250319075831, guid: e68595dd7dde54b91bd73c723fe1ec38, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 2780606629891094882, guid: e68595dd7dde54b91bd73c723fe1ec38, type: 3}
       propertyPath: m_IsActive
       value: 1

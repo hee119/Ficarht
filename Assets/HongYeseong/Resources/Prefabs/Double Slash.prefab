@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 258295244375626962}
   - component: {fileID: 4460004510363100456}
   - component: {fileID: -8615717820754950777}
+  - component: {fileID: -7613433061604721540}
   m_Layer: 0
   m_Name: Double Slash
   m_TagString: Untagged
@@ -4916,6 +4917,20 @@ MonoBehaviour:
   coolTime: 0
   defense: 0
   duration: 0
+--- !u!114 &-7613433061604721540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3600389243222657682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb1546c22afe4522b204bd3e54e6484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDuration
+  skillDuration: 2
+  fadeDuration: 1
 --- !u!1 &4936908092126958425
 GameObject:
   m_ObjectHideFlags: 0

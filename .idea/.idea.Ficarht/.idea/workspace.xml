@@ -6,16 +6,40 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Standing 2H Cast Spell 01.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Standing 2H Cast Spell 01.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing melee attack horizontal.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing melee attack horizontal.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing taunt battlecry.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/standing taunt battlecry.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Roar.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Roar.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/InputSystem/CharaStat.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/InputSystem/CharaStat.inputactions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura_1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Aura_1.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Basic Slash Blue.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Basic Slash Blue.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Berserker_Buff_01a 1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Berserker_Buff_01a 1.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Buff_01a.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Buff_01a.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Double Slash.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Double Slash.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/MageBasicSkillMom.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/MageBasicSkillMom.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/MageBigSkillMom.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/MageBigSkillMom.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/MageStrongSkillMom.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/MageStrongSkillMom.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/SM_Wep_Sword_03.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/SM_Wep_Sword_03.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Shiny Slash .prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/Shiny Slash .prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/VFX_Debuff_Loop.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Resources/Prefabs/VFX_Debuff_Loop.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage 2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Scene/Mage.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/Attack_Boost.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/Attack_Boost.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/BerserkerSlash.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/BerserkerSlash.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/Default_Slash.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/Default_Slash.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/Defense_Boost.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/Defense_Boost.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/DoubleSlash.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/DoubleSlash.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Basic Slash Blue.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Slash Effects FREE/Prefab/Basic Slash Blue.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Flies.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Flies.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Smoke.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Smoke.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_NeonSwords_01.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Travis Game Assets/Status Effects/Materials/Buff_01a_NeonSwords_01.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MageBasicSkill.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MageBasicSkill.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MageBigAttack.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MageBigAttack.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MageStrongSkill.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MageStrongSkill.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MagicCircle.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/MagicCircle.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/PaladinAttack.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/PaladinAttack.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/SlowDown.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/SkillScripterbleObject/SlowDown.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/SkillInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/SkillInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Buff.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Buff/Buff.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Smoke 1.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Matthew Guz/Status and Auras FREE/Materials/Aura Smell/Smoke 1.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Arrows.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Vefects/Anime Stylized VFX/Shared/Materials/M_VFX_Arrows.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +64,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PaladinLogic.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/CharacterStats.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/Skill/SkillDuration.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Slotguidemanager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Kimsechan/Scripte/Light_Animation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@02433b2481ab/InputSystem/Utilities/DelegateHelpers.cs" root0="SKIP_HIGHLIGHTING" />
@@ -133,7 +158,7 @@
       <workItem from="1780021486565" duration="1184000" />
       <workItem from="1780909143383" duration="686000" />
       <workItem from="1780924357675" duration="3920000" />
-      <workItem from="1781571028444" duration="4378000" />
+      <workItem from="1781571028444" duration="13341000" />
     </task>
     <servers />
   </component>

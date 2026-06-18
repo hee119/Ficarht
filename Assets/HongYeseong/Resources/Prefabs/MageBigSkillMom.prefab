@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2645837550322694038}
   - component: {fileID: -7044065371509535128}
   - component: {fileID: -6859940820944432427}
+  - component: {fileID: -209873704642102044}
   m_Layer: 0
   m_Name: MageBigSkillMom
   m_TagString: Untagged
@@ -47,10 +48,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabInfo
   skillData: {fileID: 11400000, guid: 815e6c04a0e804ec2bc00ef4ce7f23bd, type: 2}
-  attack: 0
+  power: 0
   speed: 0
   cooldown: 0
   coolTime: 0
+  defense: 0
+  duration: 0
 --- !u!114 &-6859940820944432427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,6 +67,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitEffect
   hitEffefct: {fileID: 3776676618466271401}
+--- !u!114 &-209873704642102044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2891966460725975586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb1546c22afe4522b204bd3e54e6484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDuration
+  skillDuration: 2
+  fadeDuration: 1
 --- !u!1 &3776676618466271401
 GameObject:
   m_ObjectHideFlags: 0

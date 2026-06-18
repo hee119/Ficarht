@@ -17,7 +17,19 @@ public class PlayerController : MonoBehaviour
     private bool isRunning;
     private bool isAttacking;
 
+    public float mouseSensitivity = 100f;
     private CharaStat characterStats;
+
+    private float mouseInputX = 0;
+    private float mouseInputY = 0;
+
+    [Header("Jump")]
+    public float jumpForce = 5f;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundCheckDistance = 0.4f;
+    public LayerMask groundLayer;
 
     void Awake()
     {
@@ -37,15 +49,20 @@ public class PlayerController : MonoBehaviour
         if (isAttacking)
             return;
 
-        // º”µµ ∞·¡§
         currentSpeed = moveInput.magnitude > 0.01f
             ? (isRunning ? runSpeed : walkSpeed)
             : 0f;
 
-        // Animator ∆ƒ∂ÛπÃ≈Õ
         animator.SetFloat("MoveX", moveInput.x);
         animator.SetFloat("MoveY", moveInput.z);
         animator.SetFloat("Speed", currentSpeed);
+
+        // Ground Check Î†àÏù¥ Î≥¥Í∏∞
+        Debug.DrawRay(
+            groundCheck.position,
+            Vector3.down * groundCheckDistance,
+            IsGrounded() ? Color.green : Color.red
+        );
     }
 
     void FixedUpdate()
@@ -53,8 +70,10 @@ public class PlayerController : MonoBehaviour
         if (isAttacking)
             return;
 
-        Vector3 velocity = moveInput * currentSpeed;
+        Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
+
         velocity.y = rb.linearVelocity.y;
+
         rb.linearVelocity = velocity;
     }
 
@@ -64,11 +83,16 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         Vector2 input = context.ReadValue<Vector2>();
-        moveInput = new Vector3(input.x, 0f, input.y).normalized;
+
+        moveInput = new Vector3(
+            input.x,
+            0f,
+            input.y
+        ).normalized;
     }
 
     // =========================
-    // RUN INPUT (SHIFT ¿¸øÎ Action)
+    // RUN INPUT
     // =========================
     public void OnRun(InputAction.CallbackContext context)
     {
@@ -77,6 +101,46 @@ public class PlayerController : MonoBehaviour
 
         if (context.canceled)
             isRunning = false;
+    }
+
+    // =========================
+    // JUMP INPUT
+    // =========================
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (!context.started)
+            return;
+
+        bool grounded = IsGrounded();
+
+        Debug.Log($"Grounded : {grounded}");
+
+        if (grounded)
+        {
+            rb.AddForce(
+                Vector3.up * jumpForce,
+                ForceMode.Impulse
+            );
+
+            Debug.Log("Ï†êÌîÑ!");
+        }
+    }
+
+    // =========================
+    // MOUSE LOOK
+    // =========================
+    public void OnMouseLook(InputAction.CallbackContext context)
+    {
+        Vector2 mouseInput = context.ReadValue<Vector2>();
+
+        mouseInputY += mouseInput.x * mouseSensitivity * Time.deltaTime;
+
+        // TPSÎùºÏÑú ÌîåÎ†àÏù¥Ïñ¥Îäî Ï¢åÏö∞Îßå ÌöåÏ†Ñ
+        transform.rotation = Quaternion.Euler(
+            0f,
+            mouseInputY,
+            0f
+        );
     }
 
     // =========================
@@ -90,13 +154,27 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(Attack());
     }
 
+    // =========================
+    // GROUND CHECK
+    // =========================
+    public bool IsGrounded()
+    {
+        bool isGrounded = Physics.Raycast(
+            groundCheck.position,
+            Vector3.down,
+            groundCheckDistance,
+            groundLayer
+        );
+
+        return isGrounded;
+    }
+
     IEnumerator Attack()
     {
         isAttacking = true;
 
         animator.SetTrigger("Attack");
 
-        // æ÷¥œ∏ﬁ¿Ãº« Ω√∞£ø° ∏¬∞‘ ¡∂¿˝
         yield return new WaitForSeconds(1f);
 
         isAttacking = false;

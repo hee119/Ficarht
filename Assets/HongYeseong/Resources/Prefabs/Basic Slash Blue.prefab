@@ -9802,6 +9802,7 @@ GameObject:
   - component: {fileID: 7364936370289906279}
   - component: {fileID: 4752034024110402706}
   - component: {fileID: 4113610744957800758}
+  - component: {fileID: 8151551235115645807}
   m_Layer: 0
   m_Name: Basic Slash Blue
   m_TagString: Untagged
@@ -14705,6 +14706,20 @@ MonoBehaviour:
   coolTime: 0
   defense: 0
   duration: 0
+--- !u!114 &8151551235115645807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5503505460791601945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb1546c22afe4522b204bd3e54e6484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDuration
+  skillDuration: 2
+  fadeDuration: 1
 --- !u!1 &8373613166400002822
 GameObject:
   m_ObjectHideFlags: 0
