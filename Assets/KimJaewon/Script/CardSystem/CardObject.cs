@@ -16,6 +16,11 @@ public class CardObject : MonoBehaviour
     [Header("호버 설정")]
     public float hoverHeight = 0.1f;
 
+    [Range(1f, 1.5f)]
+    public float hoverScaleMultiplier = 1.08f;
+
+    public int hoverSortingOrderBoost = 100;
+
     public float moveSpeed = 15f;
 
     [Header("배치 축소 비율")]
@@ -47,6 +52,8 @@ public class CardObject : MonoBehaviour
     private bool isDragging;
     private bool isPlaced;
 
+    private CardSlot placedSlot;
+
     private bool isMouseDown;
 
     private Vector2 mouseDownPosition;
@@ -64,7 +71,15 @@ public class CardObject : MonoBehaviour
 
     private Vector3 originalScale;
 
+    private Vector3 targetScale;
+
     private Quaternion originalRotation;
+
+    private Renderer[] cardRenderers;
+
+    private int[] originalSortingOrders;
+
+    private bool isRenderOrderBoosted;
 
     private static CardObject currentHoveredCard;
 
@@ -93,14 +108,15 @@ public class CardObject : MonoBehaviour
 
         originalScale = transform.localScale;
 
+        targetScale = originalScale;
+
         originalRotation = transform.rotation;
+
+        CacheRenderers();
     }
 
     private void Update()
     {
-        if (isPlaced)
-            return;
-
         transform.position = Vector3.Lerp(
             transform.position,
             targetPosition,
@@ -113,7 +129,19 @@ public class CardObject : MonoBehaviour
             Time.deltaTime * moveSpeed
         );
 
+        transform.localScale = Vector3.Lerp(
+            transform.localScale,
+            targetScale,
+            Time.deltaTime * moveSpeed
+        );
+
         UpdateHoverState();
+
+        if (isPlaced)
+        {
+            HandlePlacedClick();
+            return;
+        }
 
         HandleHoverInput();
 
@@ -152,6 +180,8 @@ public class CardObject : MonoBehaviour
         originPosition = transform.position;
 
         targetPosition = transform.position;
+
+        targetScale = originalScale;
 
         fanRotation = transform.rotation;
 
@@ -207,10 +237,19 @@ public class CardObject : MonoBehaviour
     // -------------------------------------------------------
     public void PlaceToSlot(
         Vector3 slotPosition,
-        Quaternion slotRotation
+        Quaternion slotRotation,
+        CardSlot slot = null
     )
     {
         isPlaced = true;
+
+        placedSlot = slot;
+
+        targetPosition = slotPosition;
+
+        targetRotation = slotRotation;
+
+        targetScale = GetRestScale();
 
         isDragging = false;
 
@@ -223,6 +262,8 @@ public class CardObject : MonoBehaviour
             currentHoveredCard = null;
         }
 
+        RestoreRenderOrder();
+
         StopAllCoroutines();
 
         StartCoroutine(
@@ -231,6 +272,37 @@ public class CardObject : MonoBehaviour
                 slotRotation
             )
         );
+    }
+
+    public void ReturnToHand()
+    {
+        isPlaced = false;
+
+        isDragging = false;
+
+        isMouseDown = false;
+
+        mouseDownTimer = 0f;
+
+        placedSlot = null;
+
+        if (currentHoveredCard == this)
+        {
+            currentHoveredCard = null;
+        }
+
+        targetPosition = transform.position;
+
+        targetRotation = transform.rotation;
+
+        targetScale = originalScale;
+
+        RestoreRenderOrder();
+    }
+
+    public CardSlot GetPlacedSlot()
+    {
+        return placedSlot;
     }
 
     private System.Collections.IEnumerator MoveToSlot(
@@ -251,7 +323,7 @@ public class CardObject : MonoBehaviour
         Vector3 startScale =
             transform.localScale;
 
-        Vector3 targetScale =
+        Vector3 placedTargetScale =
             originalScale
             * GetPlacedScaleMultiplier();
 
@@ -279,7 +351,7 @@ public class CardObject : MonoBehaviour
 
             transform.localScale = Vector3.Lerp(
                 startScale,
-                targetScale,
+                placedTargetScale,
                 t
             );
 
@@ -290,7 +362,13 @@ public class CardObject : MonoBehaviour
 
         transform.rotation = targetRot;
 
-        transform.localScale = targetScale;
+        transform.localScale = placedTargetScale;
+
+        targetPosition = targetPos;
+
+        targetRotation = targetRot;
+
+        targetScale = placedTargetScale;
     }
 
     // -------------------------------------------------------
@@ -345,6 +423,64 @@ public class CardObject : MonoBehaviour
         }
     }
 
+    private void HandlePlacedClick()
+    {
+        if (
+            CardSystemManager.Instance == null ||
+            !CardSystemManager.Instance.IsTurnActive ||
+            Mouse.current == null ||
+            Camera.main == null ||
+            !Mouse.current.leftButton.wasPressedThisFrame
+        )
+        {
+            return;
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(
+            Mouse.current.position.ReadValue()
+        );
+
+        int hitCount =
+            Physics.RaycastNonAlloc(ray, hoverHits);
+
+        CardObject clickedCard =
+            FindClosestCardInHits(hitCount);
+
+        if (clickedCard != this)
+            return;
+
+        CardSystemManager.Instance
+            .ReturnPlacedCardToHand(this);
+    }
+
+    private static CardObject FindClosestCardInHits(
+        int hitCount
+    )
+    {
+        CardObject closestCard = null;
+
+        float closestDistance = float.MaxValue;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            CardObject card = hoverHits[i]
+                .collider
+                .GetComponentInParent<CardObject>();
+
+            if (card == null)
+                continue;
+
+            if (hoverHits[i].distance < closestDistance)
+            {
+                closestDistance = hoverHits[i].distance;
+
+                closestCard = card;
+            }
+        }
+
+        return closestCard;
+    }
+
     private static void UpdateHoverState()
     {
         if (lastHoverUpdateFrame == Time.frameCount)
@@ -386,9 +522,13 @@ public class CardObject : MonoBehaviour
         int hitCount
     )
     {
-        CardObject closestCard = null;
+        CardObject closestHandCard = null;
 
-        float closestDistance = float.MaxValue;
+        CardObject closestPlacedCard = null;
+
+        float closestHandDistance = float.MaxValue;
+
+        float closestPlacedDistance = float.MaxValue;
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -399,22 +539,35 @@ public class CardObject : MonoBehaviour
             if (card == null || !card.CanHover())
                 continue;
 
-            if (hoverHits[i].distance < closestDistance)
+            if (!card.isPlaced)
             {
-                closestDistance = hoverHits[i].distance;
+                if (hoverHits[i].distance < closestHandDistance)
+                {
+                    closestHandDistance = hoverHits[i].distance;
 
-                closestCard = card;
+                    closestHandCard = card;
+                }
+
+                continue;
+            }
+
+            if (hoverHits[i].distance < closestPlacedDistance)
+            {
+                closestPlacedDistance = hoverHits[i].distance;
+
+                closestPlacedCard = card;
             }
         }
 
-        return closestCard;
+        return closestHandCard != null
+            ? closestHandCard
+            : closestPlacedCard;
     }
 
     private bool CanHover()
     {
         return isActiveAndEnabled &&
-            !isDragging &&
-            !isPlaced;
+            !isDragging;
     }
 
     private static void SetHoveredCard(
@@ -447,11 +600,12 @@ public class CardObject : MonoBehaviour
 
         currentHoveredCard = this;
 
-        targetPosition = new Vector3(
-            originPosition.x,
-            originPosition.y + hoverHeight,
-            originPosition.z
-        );
+        targetPosition = GetRestPosition();
+
+        targetScale =
+            GetRestScale() * hoverScaleMultiplier;
+
+        BoostRenderOrder();
     }
 
     private void HoverExit()
@@ -463,14 +617,18 @@ public class CardObject : MonoBehaviour
 
         mouseDownTimer = 0f;
 
-        targetPosition = originPosition;
+        targetPosition = GetRestPosition();
 
-        targetRotation = fanRotation;
+        targetScale = GetRestScale();
+
+        targetRotation = GetRestRotation();
 
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
         }
+
+        RestoreRenderOrder();
     }
 
     // -------------------------------------------------------
@@ -492,10 +650,14 @@ public class CardObject : MonoBehaviour
 
         mouseDownTimer = 0f;
 
+        targetScale = originalScale;
+
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
         }
+
+        BoostRenderOrder();
 
         dragStartWorldPos =
             transform.position;
@@ -670,8 +832,91 @@ public class CardObject : MonoBehaviour
 
         targetRotation = fanRotation;
 
-        transform.localScale =
-            originalScale;
+        targetScale = originalScale;
+
+        RestoreRenderOrder();
+    }
+
+    private Vector3 GetRestPosition()
+    {
+        return isPlaced
+            ? targetPosition
+            : originPosition;
+    }
+
+    private Quaternion GetRestRotation()
+    {
+        return isPlaced
+            ? targetRotation
+            : fanRotation;
+    }
+
+    private Vector3 GetRestScale()
+    {
+        return isPlaced
+            ? originalScale * GetPlacedScaleMultiplier()
+            : originalScale;
+    }
+
+    private void CacheRenderers()
+    {
+        cardRenderers =
+            GetComponentsInChildren<Renderer>(true);
+
+        originalSortingOrders =
+            new int[cardRenderers.Length];
+
+        for (int i = 0; i < cardRenderers.Length; i++)
+        {
+            originalSortingOrders[i] =
+                cardRenderers[i].sortingOrder;
+        }
+    }
+
+    private void BoostRenderOrder()
+    {
+        if (isRenderOrderBoosted)
+            return;
+
+        if (cardRenderers == null)
+        {
+            CacheRenderers();
+        }
+
+        for (int i = 0; i < cardRenderers.Length; i++)
+        {
+            cardRenderers[i].sortingOrder =
+                originalSortingOrders[i]
+                + hoverSortingOrderBoost;
+        }
+
+        isRenderOrderBoosted = true;
+    }
+
+    private void RestoreRenderOrder()
+    {
+        if (!isRenderOrderBoosted)
+            return;
+
+        if (
+            cardRenderers == null ||
+            originalSortingOrders == null
+        )
+        {
+            isRenderOrderBoosted = false;
+            return;
+        }
+
+        for (int i = 0; i < cardRenderers.Length; i++)
+        {
+            if (cardRenderers[i] == null)
+                continue;
+
+            cardRenderers[i].sortingOrder =
+                originalSortingOrders[i];
+        }
+
+        isRenderOrderBoosted = false;
     }
 
     // -------------------------------------------------------

@@ -63,7 +63,8 @@ public class CardSlot : MonoBehaviour
         // 카드 이동
         card.PlaceToSlot(
             target.position,
-            target.rotation
+            target.rotation,
+            this
         );
 
         // 카드 시스템 알림
@@ -110,5 +111,17 @@ public class CardSlot : MonoBehaviour
         }
 
         return card;
+    }
+
+    public bool TryRemoveCard(
+        CardObject card
+    )
+    {
+        if (currentCard != card)
+            return false;
+
+        currentCard = null;
+
+        return true;
     }
 }
