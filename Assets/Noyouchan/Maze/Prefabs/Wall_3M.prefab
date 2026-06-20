@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5604097987724465920}
   - component: {fileID: 4678018747319369065}
   - component: {fileID: 4627824784798415074}
-  - component: {fileID: 8118700230803683927}
   m_Layer: 0
   m_Name: Wall_3M
   m_TagString: Untagged
@@ -63,8 +62,6 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -86,11 +83,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &4627824784798415074
 BoxCollider:
@@ -113,15 +108,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 4, z: 0.37000003}
   m_Center: {x: -1.5, y: 2, z: -0.014999986}
---- !u!114 &8118700230803683927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30294822894472970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e913a00495eb34604b7adb4278ba3df7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SnapToGridEditor
