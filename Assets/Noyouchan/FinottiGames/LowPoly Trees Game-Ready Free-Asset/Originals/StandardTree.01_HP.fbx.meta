@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 756eac202e96e354baa790e605a11eb3
+AssetOrigin:
+  serializedVersion: 1
+  productId: 350676
+  packageName: LowPoly Trees Game-Ready Free-Asset
+  packageVersion: 1.0
+  assetPath: Assets/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Originals/StandardTree.01_HP.fbx
+  uploadId: 840606
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -113,10 +120,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 350676
-  packageName: LowPoly Trees Game-Ready Free-Asset
-  packageVersion: 1.0
-  assetPath: Assets/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Originals/StandardTree.01_HP.fbx
-  uploadId: 840606
