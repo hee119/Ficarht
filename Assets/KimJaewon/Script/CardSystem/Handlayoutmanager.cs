@@ -22,6 +22,9 @@ public class HandLayoutManager : MonoBehaviour
     [Header("덱 애니메이션")]
     public Transform deckTransform;
 
+    public Vector3 deckDrawOffset =
+        new Vector3(0f, 0.08f, -0.35f);
+
     public float flyDuration = 0.4f;
     public float flyDelay = 0.1f;
 
@@ -130,7 +133,7 @@ public class HandLayoutManager : MonoBehaviour
 
         Vector3 startPos =
             deckTransform != null
-                ? deckTransform.position
+                ? GetDeckDrawStartPosition()
                 : targetPos;
 
         card.transform.position = startPos;
@@ -168,6 +171,14 @@ public class HandLayoutManager : MonoBehaviour
         card.transform.rotation = targetRot;
 
         card.InitPosition();
+    }
+
+    private Vector3 GetDeckDrawStartPosition()
+    {
+        return deckTransform.position
+            + deckTransform.right * deckDrawOffset.x
+            + deckTransform.up * deckDrawOffset.y
+            + deckTransform.forward * deckDrawOffset.z;
     }
 
     // -------------------------------------------------------

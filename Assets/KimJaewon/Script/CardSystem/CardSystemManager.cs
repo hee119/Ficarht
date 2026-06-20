@@ -281,6 +281,31 @@ public class CardSystemManager : MonoBehaviour
         );
     }
 
+    public void ReturnPlacedCardToHand(CardObject card)
+    {
+        if (card == null || !isTurnActive)
+            return;
+
+        CardSlot slot = card.GetPlacedSlot();
+
+        if (slot == null || !slot.TryRemoveCard(card))
+            return;
+
+        card.ReturnToHand();
+
+        if (!playerHand.Contains(card))
+        {
+            playerHand.Add(card);
+        }
+
+        HandLayoutManager.Instance
+            ?.ReArrange(playerHand);
+
+        Debug.Log(
+            $"[CardSystemManager] '{card.data.cardName}' 패로 회수됨. 남은 핸드: {playerHand.Count}장"
+        );
+    }
+
     // -------------------------------------------------------
     // 타이머
     // -------------------------------------------------------
