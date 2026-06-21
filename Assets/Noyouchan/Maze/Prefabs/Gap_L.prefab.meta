@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 6dd27d7ee4246ca4eb0a11013174c4bf
-DefaultImporter:
+guid: 8b901952717b9d44aa6efa781d4cc6d8
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
@@ -10,5 +10,5 @@ AssetOrigin:
   productId: 302221
   packageName: Maze Modular Puzzle Kit
   packageVersion: 1.0
-  assetPath: Assets/Maze/Maze Modular Kit Documentation.pdf
+  assetPath: Assets/Noyouchan/Maze/Prefabs/Gap_L.prefab
   uploadId: 713915
