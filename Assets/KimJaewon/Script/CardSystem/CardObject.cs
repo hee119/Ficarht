@@ -604,6 +604,8 @@ public class CardObject : MonoBehaviour
 
         targetPosition = GetHoverPosition();
 
+        targetRotation = GetHoverRotation();
+
         targetScale =
             GetRestScale() * hoverScaleMultiplier;
 
@@ -873,6 +875,13 @@ public class CardObject : MonoBehaviour
         return isPlaced
             ? targetRotation
             : fanRotation;
+    }
+
+    private Quaternion GetHoverRotation()
+    {
+        return isPlaced
+            ? GetRestRotation()
+            : originalRotation;
     }
 
     private Vector3 GetRestScale()

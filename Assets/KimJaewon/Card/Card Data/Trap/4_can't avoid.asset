@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9fcff9b256f7482c8f37132a05f706e, type: 3}
-  m_Name: Char_Bard 1
+  m_Name: 4_can't avoid
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardID: 0
-  cardName: Bard
+  cardID: 4
+  cardName: Can't Avoid
   cardType: 3
-  cardImage: {fileID: 21300000, guid: 664c294f9e7a34fefbbf63f56899e0a7, type: 3}
-  cardPrefab: {fileID: 4836435101460711670, guid: 92b9ff0043fdf4ae0aac93fb9d5ac10c, type: 3}
-  characterStats: {fileID: 11400000, guid: 72da7d133ec714962b01eca9453d524c, type: 2}
+  cardImage: {fileID: 21300000, guid: 991dcf146f68b4117b5cdf7eb7bef0ac, type: 3}
+  cardPrefab: {fileID: 2429316085626964367, guid: 0bf041d320e3c48099f81fa4618751b7, type: 3}
+  characterStats: {fileID: 0}
   buffEffect:
     healthMod: 0
     staminaMod: 0
     powerMod: 0
     defenseMod: 0
     intelligenceMod: 0
-  skillID: 1
+  skillID: 0

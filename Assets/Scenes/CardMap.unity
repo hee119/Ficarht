@@ -3729,19 +3729,6 @@ MonoBehaviour:
   _disabledBackgroundMaterial: {fileID: 2100000, guid: b1b4721719ff98b4abf45943c7e47451, type: 2}
   isSelected: 0
   hideOverwrittenVariablesFromInspector: 1
---- !u!114 &720628673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 720628669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b85d51a59c24f34baaf33feadf26f8c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StartButtonSceneLoader
-  sceneName: Forest
 --- !u!4 &720628672
 Transform:
   m_ObjectHideFlags: 0
@@ -3759,6 +3746,19 @@ Transform:
   - {fileID: 564293604}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &720628673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720628669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b85d51a59c24f34baaf33feadf26f8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StartButtonSceneLoader
+  sceneName: Forest
 --- !u!1001 &776376476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5117,7 +5117,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997196289}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -1.20}
+  m_LocalPosition: {x: 0, y: 0, z: -1.2}
   m_LocalScale: {x: 0.1257128, y: 0.1257128, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7305,6 +7305,14 @@ MonoBehaviour:
   trapDeck:
   - {fileID: 11400000, guid: 74456cc0ebf5a43edb5df9919a76bded, type: 2}
   - {fileID: 11400000, guid: 95d240a34f2df4f77b43f77276f0177c, type: 2}
+  - {fileID: 11400000, guid: 7b7d2677d29d4c77a2e0b5fedf170fca, type: 2}
+  - {fileID: 11400000, guid: deb4da1230914329b26d93a42e1cef95, type: 2}
+  - {fileID: 11400000, guid: b3800ecce0af48089dffbe616ef356e7, type: 2}
+  - {fileID: 11400000, guid: 81641b5afc914c6292e0068ca2a47fe9, type: 2}
+  - {fileID: 11400000, guid: 0bd2f3c1b01443f49340e46b46a87298, type: 2}
+  - {fileID: 11400000, guid: f59d625219d74a7faeb8c9274ff82d94, type: 2}
+  - {fileID: 11400000, guid: 66db60af152a4ea2b7195d7538b0ec1b, type: 2}
+  - {fileID: 11400000, guid: c55296bfaf174458b24830ef65bb5732, type: 2}
   characterDrawPositions:
   - {fileID: 826627907}
   buffDrawPositions:
@@ -7397,6 +7405,7 @@ MonoBehaviour:
   fanAngle: 40
   overlapAmount: 0.5
   deckTransform: {fileID: 870344454}
+  deckDrawOffset: {x: 0, y: 0.08, z: -0.35}
   flyDuration: 0.4
   flyDelay: 0.1
 --- !u!1001 &1564335151
@@ -8082,7 +8091,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737988802}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -1.20}
+  m_LocalPosition: {x: 0, y: 0, z: -1.2}
   m_LocalScale: {x: 0.1257128, y: 0.1257128, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9004,7 +9013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 181350
+  GUIID: 78476
 --- !u!4 &1947411261
 Transform:
   m_ObjectHideFlags: 0
@@ -9794,7 +9803,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2143100000}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 1.20}
+  m_LocalPosition: {x: 0, y: 0, z: 1.2}
   m_LocalScale: {x: 0.1257128, y: 0.1257128, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9867,7 +9876,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2143100010}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 1.20}
+  m_LocalPosition: {x: 0, y: 0, z: 1.2}
   m_LocalScale: {x: 0.1257128, y: 0.1257128, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
