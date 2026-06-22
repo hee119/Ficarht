@@ -3,6 +3,7 @@ using UnityEngine.Serialization;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.InputSystem;
+using MTextButton = TinyGiantStudio.Text.Button;
 
 public class CardSystemManager : MonoBehaviour
 {
@@ -44,6 +45,9 @@ public class CardSystemManager : MonoBehaviour
     [Header("--- UI ---")]
     public TextMeshProUGUI timerText;
 
+    [Header("--- Collect 버튼 ---")]
+    public string collectButtonName = "Collect_Button";
+
     [Header("--- 선택 완료 조건 ---")]
     public int requiredCharacterCards = 1;
 
@@ -61,6 +65,9 @@ public class CardSystemManager : MonoBehaviour
     public List<CardObject> playerHand =
         new List<CardObject>();
 
+    private readonly List<CardObject> drawOrder =
+        new List<CardObject>();
+
     private bool isTurnActive = false;
 
     private float turnTimer = 0f;
@@ -68,6 +75,10 @@ public class CardSystemManager : MonoBehaviour
     private float selectionMessageTimer = 0f;
 
     private RuntimeStats myStats = null;
+
+    private int lastCollectFrame = -1;
+
+    private MTextButton collectButton;
 
     private void Awake()
     {
@@ -82,6 +93,8 @@ public class CardSystemManager : MonoBehaviour
 
     private void Start()
     {
+        BindCollectButton();
+
         SetTimerText("3D 박스를 클릭하세요!");
     }
 
@@ -268,6 +281,8 @@ public class CardSystemManager : MonoBehaviour
 
             playerHand.Add(card);
 
+            drawOrder.Add(card);
+
             Debug.Log(
                 $"[CardSystemManager] '{data.cardName}' 드로우"
             );
@@ -309,12 +324,150 @@ public class CardSystemManager : MonoBehaviour
             playerHand.Add(card);
         }
 
+        SortHandByDrawOrder();
+
         HandLayoutManager.Instance
             ?.ReArrange(playerHand);
 
         Debug.Log(
             $"[CardSystemManager] '{card.data.cardName}' 패로 회수됨. 남은 핸드: {playerHand.Count}장"
         );
+    }
+
+    private void BindCollectButton()
+    {
+        if (string.IsNullOrWhiteSpace(collectButtonName))
+            return;
+
+        GameObject collectButtonObject =
+            GameObject.Find(collectButtonName);
+
+        if (collectButtonObject == null)
+        {
+            Debug.LogWarning(
+                $"[CardSystemManager] '{collectButtonName}' 버튼을 찾지 못했습니다."
+            );
+
+            return;
+        }
+
+        collectButton =
+            collectButtonObject.GetComponent<MTextButton>();
+
+        if (collectButton == null)
+        {
+            Debug.LogWarning(
+                $"[CardSystemManager] '{collectButtonName}'에 M3D Button 컴포넌트가 없습니다."
+            );
+
+            return;
+        }
+
+        collectButton.pressCompleteEvent
+            .RemoveListener(CollectPlacedCards);
+
+        collectButton.pressCompleteEvent
+            .AddListener(CollectPlacedCards);
+    }
+
+    public void CollectPlacedCards()
+    {
+        if (lastCollectFrame == Time.frameCount)
+            return;
+
+        lastCollectFrame = Time.frameCount;
+
+        if (!isTurnActive)
+        {
+            ShowSelectionMessage(
+                "카드를 먼저 뽑으세요."
+            );
+
+            return;
+        }
+
+        int collectedCount = 0;
+
+        collectedCount +=
+            CollectCardsFromSlots(characterSlots);
+
+        collectedCount +=
+            CollectCardsFromSlots(buffSlots);
+
+        collectedCount +=
+            CollectCardsFromSlots(trapSlots);
+
+        if (collectedCount == 0)
+        {
+            ShowSelectionMessage(
+                "회수할 카드가 없습니다."
+            );
+
+            return;
+        }
+
+        SortHandByDrawOrder();
+
+        HandLayoutManager.Instance
+            ?.ReArrange(playerHand);
+
+        Debug.Log(
+            $"[CardSystemManager] 배치된 카드 {collectedCount}장을 모두 회수했습니다."
+        );
+    }
+
+    private void SortHandByDrawOrder()
+    {
+        playerHand.RemoveAll(card => card == null);
+
+        playerHand.Sort(
+            (left, right) =>
+                GetDrawOrderIndex(left)
+                .CompareTo(GetDrawOrderIndex(right))
+        );
+    }
+
+    private int GetDrawOrderIndex(
+        CardObject card
+    )
+    {
+        int index = drawOrder.IndexOf(card);
+
+        return index >= 0
+            ? index
+            : int.MaxValue;
+    }
+
+    private int CollectCardsFromSlots(
+        List<CardSlot> slots
+    )
+    {
+        if (slots == null)
+            return 0;
+
+        int collectedCount = 0;
+
+        foreach (var slot in slots)
+        {
+            CardObject card = slot?.currentCard;
+
+            if (card == null)
+                continue;
+
+            if (!slot.TryRemoveCard(card))
+                continue;
+
+            card.ReturnToHand();
+
+            if (!playerHand.Contains(card))
+            {
+                playerHand.Add(card);
+            }
+
+            collectedCount++;
+        }
+
+        return collectedCount;
     }
 
     public bool IsSelectionComplete()
@@ -566,6 +719,8 @@ public class CardSystemManager : MonoBehaviour
         }
 
         playerHand.Clear();
+
+        drawOrder.Clear();
 
         List<CardSlot> allSlots =
             new List<CardSlot>();
