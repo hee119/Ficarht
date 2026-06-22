@@ -21,6 +21,9 @@ public class CardObject : MonoBehaviour
 
     public float handHoverScreenLift = 80f;
 
+    [Header("드래그 높이")]
+    public float dragHeight = 0.35f;
+
     public int hoverSortingOrderBoost = 100;
 
     public float moveSpeed = 15f;
@@ -663,6 +666,16 @@ public class CardObject : MonoBehaviour
 
         BoostRenderOrder();
 
+        Vector3 liftedDragPosition = transform.position;
+
+        liftedDragPosition.y =
+            originPosition.y
+            + dragHeight;
+
+        transform.position = liftedDragPosition;
+
+        targetPosition = liftedDragPosition;
+
         dragStartWorldPos =
             transform.position;
 
@@ -734,7 +747,7 @@ public class CardObject : MonoBehaviour
 
             target.y =
                 originPosition.y
-                + hoverHeight;
+                + dragHeight;
 
             targetPosition = target;
         }
