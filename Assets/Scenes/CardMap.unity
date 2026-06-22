@@ -3885,6 +3885,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StartButtonSceneLoader
   sceneName: Forest
   updateInteractableByCardSelection: 1
+  collectButtonName: Collect_Button
 --- !u!1001 &776376476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10988,6 +10989,10 @@ PrefabInstance:
     - target: {fileID: 6115300419488082369, guid: d628fe0c74d5a4ee98d472fa2437b164, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.5077728
+      objectReference: {fileID: 0}
+    - target: {fileID: 6115300419488082369, guid: d628fe0c74d5a4ee98d472fa2437b164, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.015
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
