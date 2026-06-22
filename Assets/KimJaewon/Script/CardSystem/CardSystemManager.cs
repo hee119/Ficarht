@@ -317,6 +317,20 @@ public class CardSystemManager : MonoBehaviour
         );
     }
 
+    public bool IsSelectionComplete()
+    {
+        if (!isTurnActive)
+            return false;
+
+        return
+            CountPlacedCards(characterSlots) >=
+            requiredCharacterCards &&
+            CountPlacedCards(buffSlots) >=
+            requiredBuffCards &&
+            CountPlacedCards(trapSlots) >=
+            requiredTrapCards;
+    }
+
     public bool CanMoveToBattleScene()
     {
         if (!isTurnActive)
