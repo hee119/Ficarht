@@ -14,6 +14,14 @@ public class StartButtonSceneLoader : MonoBehaviour
             return;
         }
 
+        if (
+            CardSystemManager.Instance != null &&
+            !CardSystemManager.Instance.CanMoveToBattleScene()
+        )
+        {
+            return;
+        }
+
         SceneManager.LoadScene(sceneName);
     }
 }

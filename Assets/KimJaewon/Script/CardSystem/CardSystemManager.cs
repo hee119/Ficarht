@@ -44,6 +44,15 @@ public class CardSystemManager : MonoBehaviour
     [Header("--- UI ---")]
     public TextMeshProUGUI timerText;
 
+    [Header("--- 선택 완료 조건 ---")]
+    public int requiredCharacterCards = 1;
+
+    public int requiredBuffCards = 2;
+
+    public int requiredTrapCards = 2;
+
+    public float selectionMessageDuration = 1.5f;
+
     [Header("--- 타이머 ---")]
     public float turnDuration = 60f;
 
@@ -55,6 +64,8 @@ public class CardSystemManager : MonoBehaviour
     private bool isTurnActive = false;
 
     private float turnTimer = 0f;
+
+    private float selectionMessageTimer = 0f;
 
     private RuntimeStats myStats = null;
 
@@ -306,6 +317,90 @@ public class CardSystemManager : MonoBehaviour
         );
     }
 
+    public bool CanMoveToBattleScene()
+    {
+        if (!isTurnActive)
+        {
+            ShowSelectionMessage(
+                "카드더미를 클릭해서 카드를 먼저 뽑으세요."
+            );
+
+            return false;
+        }
+
+        int characterCount =
+            CountPlacedCards(characterSlots);
+
+        int buffCount =
+            CountPlacedCards(buffSlots);
+
+        int trapCount =
+            CountPlacedCards(trapSlots);
+
+        if (characterCount < requiredCharacterCards)
+        {
+            ShowSelectionMessage(
+                $"캐릭터 카드를 {requiredCharacterCards}장 배치해야 합니다. ({characterCount}/{requiredCharacterCards})"
+            );
+
+            return false;
+        }
+
+        if (buffCount < requiredBuffCards)
+        {
+            ShowSelectionMessage(
+                $"버프 카드를 {requiredBuffCards}장 배치해야 합니다. ({buffCount}/{requiredBuffCards})"
+            );
+
+            return false;
+        }
+
+        if (trapCount < requiredTrapCards)
+        {
+            ShowSelectionMessage(
+                $"함정 카드를 {requiredTrapCards}장 배치해야 합니다. ({trapCount}/{requiredTrapCards})"
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private int CountPlacedCards(
+        List<CardSlot> slots
+    )
+    {
+        if (slots == null)
+            return 0;
+
+        int count = 0;
+
+        foreach (var slot in slots)
+        {
+            if (slot?.currentCard != null)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private void ShowSelectionMessage(
+        string message
+    )
+    {
+        selectionMessageTimer =
+            selectionMessageDuration;
+
+        SetTimerText(message);
+
+        Debug.LogWarning(
+            $"[CardSystemManager] {message}"
+        );
+    }
+
     // -------------------------------------------------------
     // 타이머
     // -------------------------------------------------------
@@ -316,9 +411,16 @@ public class CardSystemManager : MonoBehaviour
 
         turnTimer -= Time.deltaTime;
 
-        SetTimerText(
-            $"남은 시간: {Mathf.CeilToInt(turnTimer)}초"
-        );
+        if (selectionMessageTimer > 0f)
+        {
+            selectionMessageTimer -= Time.deltaTime;
+        }
+        else
+        {
+            SetTimerText(
+                $"남은 시간: {Mathf.CeilToInt(turnTimer)}초"
+            );
+        }
 
         if (turnTimer <= 0f)
         {
