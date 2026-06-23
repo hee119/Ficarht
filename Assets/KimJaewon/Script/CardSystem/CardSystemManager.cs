@@ -139,15 +139,6 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     public void StartGame()
     {
-        
-        CheckAllCardPrefabs();
-
-        Debug.Log("[CardSystemManager] 게임 시작!");
-
-        ClearAll();
-        
-        Debug.Log("[CardSystemManager] 게임 시작!");
-
         ClearAll();
 
         // 캐릭터 1장
@@ -283,9 +274,6 @@ public class CardSystemManager : MonoBehaviour
 
             drawOrder.Add(card);
 
-            Debug.Log(
-                $"[CardSystemManager] '{data.cardName}' 드로우"
-            );
         }
     }
 
@@ -302,9 +290,6 @@ public class CardSystemManager : MonoBehaviour
         HandLayoutManager.Instance
             ?.ReArrange(playerHand);
 
-        Debug.Log(
-            $"[CardSystemManager] '{card.data.cardName}' 배치됨. 남은 핸드: {playerHand.Count}장"
-        );
     }
 
     public void ReturnPlacedCardToHand(CardObject card)
@@ -329,9 +314,6 @@ public class CardSystemManager : MonoBehaviour
         HandLayoutManager.Instance
             ?.ReArrange(playerHand);
 
-        Debug.Log(
-            $"[CardSystemManager] '{card.data.cardName}' 패로 회수됨. 남은 핸드: {playerHand.Count}장"
-        );
     }
 
     private void BindCollectButton()
@@ -411,9 +393,6 @@ public class CardSystemManager : MonoBehaviour
         HandLayoutManager.Instance
             ?.ReArrange(playerHand);
 
-        Debug.Log(
-            $"[CardSystemManager] 배치된 카드 {collectedCount}장을 모두 회수했습니다."
-        );
     }
 
     private void SortHandByDrawOrder()
@@ -613,9 +592,6 @@ public class CardSystemManager : MonoBehaviour
                 myStats
             );
 
-            Debug.Log(
-                $"[CardSystemManager] 버프 적용 후 스탯: {myStats}"
-            );
         }
 
         CardRevealSystem.Instance
@@ -755,45 +731,6 @@ public class CardSystemManager : MonoBehaviour
         if (timerText != null)
         {
             timerText.text = msg;
-        }
-    }
-    
-    private void CheckAllCardPrefabs()
-    {
-        Debug.Log("===== 카드 프리팹 검사 시작 =====");
-
-        CheckDeck(characterDeck);
-        CheckDeck(buffDeck);
-        CheckDeck(trapDeck);
-
-        Debug.Log("===== 카드 프리팹 검사 종료 =====");
-    }
-
-    private void CheckDeck(List<CardData> deck)
-    {
-        foreach (var card in deck)
-        {
-            if (card == null)
-            {
-                Debug.LogError(
-                    "[카드 데이터 누락] CardData가 비어있음"
-                );
-
-                continue;
-            }
-
-            if (card.cardPrefab == null)
-            {
-                Debug.LogError(
-                    $"[프리팹 누락] 이름:{card.cardName} 타입:{card.cardType} 에셋:{card.name}"
-                );
-            }
-            else
-            {
-                Debug.Log(
-                    $"[정상] 이름:{card.cardName} → {card.cardPrefab.name}"
-                );
-            }
         }
     }
 }

@@ -44,7 +44,6 @@ public class CardRevealSystem : MonoBehaviour
             if (slot?.currentCard == null) continue;
             ApplyHiddenMaterial(slot.currentCard);
         }
-        Debug.Log("[CardRevealSystem] 상대 카드 은닉 완료.");
     }
 
     // -------------------------------------------------------
@@ -64,7 +63,6 @@ public class CardRevealSystem : MonoBehaviour
             if (slot?.currentCard != null) RestoreOriginalMaterial(slot.currentCard);
 
         originalMaterials.Clear();
-        Debug.Log("[CardRevealSystem] 모든 카드 공개 완료.");
     }
 
     // -------------------------------------------------------

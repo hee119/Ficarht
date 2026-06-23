@@ -77,9 +77,6 @@ public class CardSlot : MonoBehaviour
                 .OnCardPlaced(card);
         }
 
-        Debug.Log(
-            $"[CardSlot] {allowedType} 슬롯에 '{card.data.cardName}' 배치 성공!"
-        );
 
         return true;
     }
