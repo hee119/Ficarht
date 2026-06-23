@@ -53,7 +53,7 @@ public class PlayerNetwork : NetworkBehaviour
     void TargetReceiveCode(NetworkConnection target, string code)
     {
         Debug.Log($"내 방 코드: {code}");
-        LobbyManager3D.Instance?.ShowMyCode(code);
+        RoomNetworkManager.Instance?.ShowRoomCode(code);
     }
 
     [Command]

@@ -3,12 +3,18 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using Mirror;
 
-// MonoBehaviour → NetworkBehaviour로 변경
-// isLocalPlayer 체크를 통해 로컬 플레이어만 입력을 받는다
+/// <summary>
+/// Mirror 멀티플레이 PlayerController.
+///
+/// isLocalPlayer → isOwned 로 변경.
+/// 이유: 캐릭터 프리팹은 NetworkServer.Spawn(obj, conn)으로 스폰되므로
+///       isLocalPlayer = false, isOwned = true 임.
+/// </summary>
 public class PlayerController : NetworkBehaviour
 {
     private Rigidbody rb;
     private Animator animator;
+    private CharaStat characterStats;
 
     [Header("Speed")]
     public float walkSpeed = 3f;
@@ -16,11 +22,8 @@ public class PlayerController : NetworkBehaviour
 
     private Vector3 moveInput;
     private float currentSpeed;
-
     private bool isRunning;
     private bool isAttacking;
-
-    private CharaStat characterStats;
 
     void Awake()
     {
@@ -31,97 +34,97 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        walkSpeed = characterStats.walkSpeed;
-        runSpeed = characterStats.walkSpeed * 2f;
+        if (characterStats != null)
+        {
+            walkSpeed = characterStats.walkSpeed;
+            runSpeed = characterStats.walkSpeed * 2f;
+        }
     }
 
-    // Mirror: 클라이언트에서 이 오브젝트가 스폰될 때 호출
+    // ─────────────────────────────────────────────
+    // Mirror: 소유권 없는 클라이언트는 스크립트 비활성화
+    // ─────────────────────────────────────────────
     public override void OnStartClient()
     {
         base.OnStartClient();
-
-        // 내 플레이어가 아니면 이 스크립트를 비활성화
-        // → Update/FixedUpdate가 실행되지 않아 상대방 캐릭터가 움직이지 않는다
-        if (!isLocalPlayer)
+        if (!isOwned)
             this.enabled = false;
     }
 
+    // ─────────────────────────────────────────────
+    // Update / FixedUpdate
+    // ─────────────────────────────────────────────
     void Update()
     {
-        // 로컬 플레이어가 아니면 무시 (OnStartClient에서 비활성화되지만 이중 보호)
-        if (!isLocalPlayer) return;
+        if (!isOwned) return;
         if (isAttacking) return;
 
-        // 속도 계산
+        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        if (pn != null && !pn.CanMove()) return;
+
         currentSpeed = moveInput.magnitude > 0.01f
             ? (isRunning ? runSpeed : walkSpeed)
             : 0f;
 
-        // Animator 파라미터
-        animator.SetFloat("MoveX", moveInput.x);
-        animator.SetFloat("MoveY", moveInput.z);
-        animator.SetFloat("Speed", currentSpeed);
+        if (animator != null)
+        {
+            animator.SetFloat("MoveX", moveInput.x);
+            animator.SetFloat("MoveY", moveInput.z);
+            animator.SetFloat("Speed", currentSpeed);
+        }
     }
 
     void FixedUpdate()
     {
-        if (!isLocalPlayer) return;
+        if (!isOwned) return;
         if (isAttacking) return;
+
+        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        if (pn != null && !pn.CanMove()) return;
 
         Vector3 velocity = moveInput * currentSpeed;
         velocity.y = rb.linearVelocity.y;
         rb.linearVelocity = velocity;
     }
 
-    // =========================
-    // MOVE INPUT
-    // =========================
+    // ─────────────────────────────────────────────
+    // Input 콜백 (PlayerInput → Invoke Unity Events)
+    // ─────────────────────────────────────────────
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (!isLocalPlayer) return;
-
+        if (!isOwned) return;
         Vector2 input = context.ReadValue<Vector2>();
         moveInput = new Vector3(input.x, 0f, input.y).normalized;
     }
 
-    // =========================
-    // RUN INPUT (SHIFT 누르는 Action)
-    // =========================
     public void OnRun(InputAction.CallbackContext context)
     {
-        if (!isLocalPlayer) return;
-
+        if (!isOwned) return;
         if (context.started)  isRunning = true;
         if (context.canceled) isRunning = false;
     }
 
-    // =========================
-    // ATTACK INPUT
-    // =========================
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (!isLocalPlayer) return;
+        if (!isOwned) return;
         if (!context.started || isAttacking) return;
 
-        // 공격 요청을 서버에 전달
+        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        if (pn != null && !pn.CanAttack()) return;
+
         CmdRequestAttack();
     }
 
-    // 클라이언트 → 서버: 공격 요청
+    // ─────────────────────────────────────────────
+    // Network
+    // ─────────────────────────────────────────────
     [Command]
     void CmdRequestAttack()
     {
-        // 서버에서 NetworkAPI를 통해 데미지 처리
-        // 범위 안에 상대가 있으면 데미지 전달
-        PlayerNetwork myNetwork = GetComponent<PlayerNetwork>();
-        if (myNetwork != null)
-            myNetwork.ServerRequestAttack();
-
-        // 모든 클라이언트에 애니메이션 재생
+        GetComponent<PlayerNetwork>()?.ServerRequestAttack();
         RpcPlayAttackAnimation();
     }
 
-    // 서버 → 모든 클라이언트: 애니메이션 재생
     [ClientRpc]
     void RpcPlayAttackAnimation()
     {
@@ -131,11 +134,9 @@ public class PlayerController : NetworkBehaviour
     IEnumerator AttackAnimation()
     {
         isAttacking = true;
-        animator.SetTrigger("Attack");
-
-        // 애니메이션 시간에 맞게 조절
+        if (animator != null)
+            animator.SetTrigger("Attack");
         yield return new WaitForSeconds(1f);
-
         isAttacking = false;
     }
 }

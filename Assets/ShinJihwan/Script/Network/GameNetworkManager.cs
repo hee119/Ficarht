@@ -17,6 +17,11 @@ public class GameNetworkManager : NetworkManager
 
         GameObject player = Instantiate(playerPrefab);
         NetworkServer.AddPlayerForConnection(conn, player);
+
+        // 두 번째 플레이어 접속 시 Host 클라이언트 UI 업데이트
+        // (GameNetworkManager는 NetworkBehaviour가 아니므로 직접 호출)
+        if (NetworkServer.connections.Count >= 2)
+            RoomNetworkManager.Instance?.OnSecondPlayerConnected();
     }
 
 
