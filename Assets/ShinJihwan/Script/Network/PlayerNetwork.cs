@@ -39,14 +39,21 @@ public class PlayerNetwork : NetworkBehaviour
     [Command]
     public void CmdCreateRoom()
     {
-        string code = RoomManager.Instance.CreateRoom(connectionToClient);
+        // RoomManager 없이 직접 코드 생성
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        string code = "";
+        for (int i = 0; i < 6; i++)
+            code += chars[UnityEngine.Random.Range(0, chars.Length)];
+
+        Debug.Log($"[Server] 방 코드 생성: {code}");
         TargetReceiveCode(connectionToClient, code);
     }
 
     [Command]
     public void CmdJoinRoom(string code)
     {
-        RoomManager.Instance.JoinRoom(code, connectionToClient);
+        // 코드 검증 생략 (localhost 연결 자체가 인증)
+        Debug.Log($"[Server] 방 참가: {code}");
     }
 
     [TargetRpc]

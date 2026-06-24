@@ -72514,7 +72514,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2018139387972012386}
   - component: {fileID: 103571514877154552}
-  - component: {fileID: 4535564247733381106}
+  - component: {fileID: 2153134157242027061}
+  - component: {fileID: 8177692209527455281}
   m_Layer: 0
   m_Name: Mage
   m_TagString: Untagged
@@ -72563,7 +72564,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4535564247733381106
+--- !u!114 &2153134157242027061
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72572,16 +72573,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 2230640250319075831}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7332e7a20bce8a4ca19d193327fae39, type: 3}
+  m_Script: {fileID: 11500000, guid: 03b9b4de4e6cc439c96ec970e808dd99, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  armorPartsRoot: {fileID: 7363091717951652480}
-  bodyPartsRoot: {fileID: 1613456448459701589}
-  facePartsRoot: {fileID: 325803633591625515}
-  helmetVisible: 0
-  syncHairColor: 1
-  armorLocks: 010101010000
-  faceLocks: 000000000000
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerNetwork
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  health: 100
+  maxHealth: 100
+  stamina: 50
+  power: 50
+  defense: 50
+  intelligence: 50
+  currentState: 0
+  isDead: 0
+  selectedCharacterId: -1
+  currentCharacter: {fileID: 0}
+--- !u!114 &8177692209527455281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230640250319075831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 4176272935
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &2233223906761100503
 GameObject:
   m_ObjectHideFlags: 0

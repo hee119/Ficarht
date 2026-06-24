@@ -253233,7 +253233,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4932503774084363384}
   - component: {fileID: 6236174024282649458}
-  - component: {fileID: 5395577242378770446}
+  - component: {fileID: 5742546865689121081}
+  - component: {fileID: 8365809184041377164}
   m_Layer: 0
   m_Name: Bard
   m_TagString: Untagged
@@ -253282,7 +253283,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5395577242378770446
+--- !u!114 &5742546865689121081
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -253291,16 +253292,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 7582188109018444819}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7332e7a20bce8a4ca19d193327fae39, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  armorPartsRoot: {fileID: 2412446097606829346}
-  bodyPartsRoot: {fileID: 61354387217678007}
-  facePartsRoot: {fileID: 793481465946537806}
-  helmetVisible: 1
-  syncHairColor: 1
-  armorLocks: 010101010100
-  faceLocks: 000000000000
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 1550718724
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &8365809184041377164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7582188109018444819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03b9b4de4e6cc439c96ec970e808dd99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerNetwork
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  health: 100
+  maxHealth: 100
+  stamina: 50
+  power: 50
+  defense: 50
+  intelligence: 50
+  currentState: 0
+  isDead: 0
+  selectedCharacterId: -1
+  currentCharacter: {fileID: 0}
 --- !u!1 &7584944862387424090
 GameObject:
   m_ObjectHideFlags: 0
