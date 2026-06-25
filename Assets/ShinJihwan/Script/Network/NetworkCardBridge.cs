@@ -1,52 +1,107 @@
 using Mirror;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// CardSystemManager(김재원) ↔ Mirror 멀티플레이(신지환) 연결 브릿지.
+/// CardSystemManager ↔ Mirror 연결 브릿지.
 ///
-/// 사용법:
-/// 1. 플레이어 프리팹에 이 컴포넌트를 붙인다.
-/// 2. CardSystemManager.OnTimerEnd() 끝에 아래 한 줄 추가:
-///    NetworkCardBridge.LocalInstance?.SubmitCardSelection();
-///
-/// 흐름:
-/// 카드 선택 완료 → SubmitCardSelection() → CmdSubmitStats() → 서버가 PlayerNetwork에 적용
-/// → 양쪽 다 완료되면 GameNetworkManager가 전투 씬 전환
+/// 네트워크 카드 페이즈 흐름:
+///   CardBox 클릭 → CmdRequestStartCards() → 서버 → RpcStartCards() → 양쪽 카드 드로우 시작
+///   서버 60초 타이머 → RpcForceEndCards() → 양쪽 강제 제출
+///   둘 다 제출 → GameNetworkManager → 전투씬 이동
 /// </summary>
 public class NetworkCardBridge : NetworkBehaviour
 {
-    // 로컬 플레이어의 브릿지 인스턴스 (CardSystemManager에서 쉽게 접근)
     public static NetworkCardBridge LocalInstance { get; private set; }
+
+    // 서버 전용 카드 페이즈 상태
+    private static bool _phaseActive = false;
+
+    [Header("카드 페이즈 타이머 (초)")]
+    public float cardPhaseDuration = 60f;
 
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
         LocalInstance = this;
-        Debug.Log("[NetworkCardBridge] 로컬 플레이어 브릿지 준비됨");
+        Debug.Log("[NetworkCardBridge] 로컬 브릿지 준비");
     }
 
     // ─────────────────────────────────────────────
-    // 카드 선택 완료 → 서버로 전송
+    // 카드 페이즈 시작 (CardBox 클릭 시 호출)
     // ─────────────────────────────────────────────
 
-    /// <summary>
-    /// CardSystemManager.OnTimerEnd() 마지막에 호출.
-    /// RuntimeStats와 등록된 스킬을 서버로 전달한다.
-    /// </summary>
+    [Command]
+    public void CmdRequestStartCards()
+    {
+        if (_phaseActive) return;
+        _phaseActive = true;
+
+        Debug.Log("[Server] 카드 페이즈 시작");
+        RpcStartCards();
+        StartCoroutine(ServerCardTimer());
+    }
+
+    [ClientRpc]
+    void RpcStartCards()
+    {
+        Debug.Log("[Client] 카드 드로우 시작");
+        CardSystemManager.Instance?.StartGameExternal();
+    }
+
+    // ─────────────────────────────────────────────
+    // 서버 타이머 (5초마다 클라이언트 타이머 보정)
+    // ─────────────────────────────────────────────
+
+    [Server]
+    IEnumerator ServerCardTimer()
+    {
+        float remaining = cardPhaseDuration;
+
+        while (remaining > 0f)
+        {
+            yield return new WaitForSeconds(5f);
+            remaining -= 5f;
+            if (remaining > 0f)
+                RpcSyncTimer(remaining);
+        }
+
+        Debug.Log("[Server] 카드 페이즈 종료 → 강제 제출");
+        RpcForceEndCards();
+        _phaseActive = false;
+    }
+
+    [ClientRpc]
+    void RpcSyncTimer(float remaining)
+    {
+        CardSystemManager.Instance?.SyncTimerFromServer(remaining);
+    }
+
+    [ClientRpc]
+    void RpcForceEndCards()
+    {
+        Debug.Log("[Client] 서버 강제 제출");
+        CardSystemManager.Instance?.ForceEndTurn();
+    }
+
+    // ─────────────────────────────────────────────
+    // 카드 선택 완료 → 서버로 스탯 전송
+    // CardSystemManager.OnTimerEnd() 끝에서 자동 호출됨
+    // ─────────────────────────────────────────────
+
     public void SubmitCardSelection()
     {
         if (!isLocalPlayer) return;
 
-        // CardSystemManager에서 최종 스탯 가져오기
         RuntimeStats stats = CardSystemManager.Instance?.GetFinalStats();
         if (stats == null)
         {
-            Debug.LogWarning("[NetworkCardBridge] RuntimeStats가 null - 캐릭터 카드가 배치되지 않았을 수 있음");
+            Debug.LogWarning("[NetworkCardBridge] RuntimeStats null - 기본값으로 제출");
+            CmdSubmitStats(100f, 50f, 50f, 50f, 50f, new int[0], 0, "");
             return;
         }
 
-        // 배치된 캐릭터 카드에서 characterId 읽기 (0=Paladin, 1=Bard, 2=Berserker, 3=Mage)
         int characterId = 0;
         var charSlots = CardSystemManager.Instance?.characterSlots;
         if (charSlots != null)
@@ -62,66 +117,55 @@ public class NetworkCardBridge : NetworkBehaviour
             }
         }
 
-        // 등록된 스킬 ID 목록 가져오기
         List<SkillID> skills = SkillRegistry.Instance?.GetSkills() ?? new List<SkillID>();
-
-        // 스킬 ID를 int 배열로 변환 (Mirror는 enum 리스트 직접 전송 불가)
         int[] skillInts = new int[skills.Count];
         for (int i = 0; i < skills.Count; i++)
             skillInts[i] = (int)skills[i];
 
-        CmdSubmitStats(
-            stats.maxHealth,
-            stats.stamina,
-            stats.power,
-            stats.defense,
-            stats.intelligence,
-            skillInts,
-            characterId
-        );
+        // 맵 카드에서 씬 이름 추출
+        string mapScene = CardSystemManager.Instance?.GetSelectedMapScene() ?? "";
 
-        Debug.Log($"[NetworkCardBridge] 스탯 전송: HP={stats.maxHealth} PWR={stats.power} DEF={stats.defense} 캐릭터ID={characterId} 스킬={skillInts.Length}개");
+        CmdSubmitStats(stats.maxHealth, stats.stamina, stats.power,
+            stats.defense, stats.intelligence, skillInts, characterId, mapScene);
+
+        Debug.Log($"[NetworkCardBridge] 제출: HP={stats.maxHealth} 캐릭터ID={characterId} 맵={mapScene}");
     }
 
     // ─────────────────────────────────────────────
-    // 서버 수신 → PlayerNetwork에 적용
+    // 서버: 스탯 수신 → PlayerNetwork 적용
     // ─────────────────────────────────────────────
 
     [Command]
-    void CmdSubmitStats(float health, float stamina, float power, float defense, float intelligence, int[] skillInts, int characterId)
+    void CmdSubmitStats(float health, float stamina, float power,
+        float defense, float intelligence, int[] skillInts, int characterId, string mapScene)
     {
-        // 이 플레이어의 PlayerNetwork에 스탯 + 캐릭터 ID 적용
         PlayerNetwork playerNetwork = GetComponent<PlayerNetwork>();
         if (playerNetwork != null)
         {
             playerNetwork.ApplyStats(health, stamina, power, defense, intelligence);
-            playerNetwork.selectedCharacterId = characterId; // 전투씬 스폰에 사용됨
+            playerNetwork.selectedCharacterId = characterId;
+            playerNetwork.selectedMapScene = mapScene;
 
-            // 스킬 등록
             List<SkillID> skills = new List<SkillID>();
             foreach (int id in skillInts)
                 skills.Add((SkillID)id);
             playerNetwork.RegisterSkills(skills);
         }
 
-        Debug.Log($"[Server] 플레이어 {netId} 스탯/캐릭터(ID={characterId}) 적용 완료");
+        Debug.Log($"[Server] 플레이어 {netId} 스탯 적용 (캐릭터ID={characterId} 맵={mapScene})");
 
-        // GameNetworkManager에 카드 선택 완료 알림
         GameNetworkManager netManager = NetworkManager.singleton as GameNetworkManager;
         netManager?.OnPlayerCardReady(connectionToClient);
     }
 
     // ─────────────────────────────────────────────
-    // 상대 카드 공개 이벤트 (타이머 종료 후 서버→모든 클라이언트)
+    // 카드 공개 (GameNetworkManager.OnPlayerCardReady에서 호출)
     // ─────────────────────────────────────────────
 
-    /// <summary>
-    /// 서버에서 양쪽 카드 선택 완료 후 호출 → 모든 클라이언트에서 카드 공개
-    /// </summary>
     [ClientRpc]
     public void RpcRevealCards()
     {
         CardRevealSystem.Instance?.RevealAllCards();
-        Debug.Log("[Client] 상대 카드 공개됨");
+        Debug.Log("[Client] 카드 공개");
     }
 }

@@ -20,6 +20,9 @@ public class CardSystemManager : MonoBehaviour
     public List<CardData> trapDeck =
         new List<CardData>();
 
+    public List<CardData> mapDeck =
+        new List<CardData>();
+
     [Header("--- 드로우 포지션 (월드) ---")]
     public List<Transform> characterDrawPositions =
         new List<Transform>();
@@ -31,6 +34,9 @@ public class CardSystemManager : MonoBehaviour
     public List<Transform> trapDrawPositions =
         new List<Transform>();
 
+    public List<Transform> mapDrawPositions =
+        new List<Transform>();
+
     [Header("--- 슬롯 ---")]
     public List<CardSlot> characterSlots =
         new List<CardSlot>();
@@ -40,6 +46,9 @@ public class CardSystemManager : MonoBehaviour
 
     [FormerlySerializedAs("skillSlots")]
     public List<CardSlot> trapSlots =
+        new List<CardSlot>();
+
+    public List<CardSlot> mapSlots =
         new List<CardSlot>();
 
     [Header("--- UI ---")]
@@ -129,7 +138,12 @@ public class CardSystemManager : MonoBehaviour
                 hit.collider.name == "CardBox"
             )
             {
-                StartGame();
+                // 멀티: 서버에 시작 요청 → RpcStartCards → StartGameExternal()
+                // 싱글(로컬 테스트): 바로 StartGame()
+                if (NetworkCardBridge.LocalInstance != null)
+                    NetworkCardBridge.LocalInstance.CmdRequestStartCards();
+                else
+                    StartGame();
             }
         }
     }
@@ -162,6 +176,17 @@ public class CardSystemManager : MonoBehaviour
             trapDrawPositions
         );
 
+        // 맵 1장 (덱과 포지션이 모두 설정된 경우만)
+        if (mapDeck != null && mapDeck.Count > 0
+            && mapDrawPositions != null && mapDrawPositions.Count > 0)
+        {
+            DrawCards(
+                mapDeck,
+                1,
+                mapDrawPositions
+            );
+        }
+
         // 부채꼴 정렬
         HandLayoutManager.Instance
             ?.ArrangeHand(playerHand);
@@ -186,6 +211,12 @@ public class CardSystemManager : MonoBehaviour
         if (deck == null || deck.Count == 0)
         {
             Debug.LogWarning("덱이 비어있습니다.");
+            return;
+        }
+
+        if (positions == null || positions.Count == 0)
+        {
+            Debug.LogWarning("드로우 포지션이 비어있습니다. Inspector에서 연결 확인.");
             return;
         }
 
@@ -579,6 +610,7 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     private void OnTimerEnd()
     {
+        if (!isTurnActive) return; // 중복 호출 방지
         isTurnActive = false;
 
         SetTimerText("시간 종료!");
@@ -591,13 +623,40 @@ public class CardSystemManager : MonoBehaviour
                 buffSlots,
                 myStats
             );
-
         }
 
         CardRevealSystem.Instance
             ?.RevealAllCards();
 
         FinalizeCards();
+
+        // 멀티: 서버에 카드 선택 결과 전송
+        NetworkCardBridge.LocalInstance?.SubmitCardSelection();
+    }
+
+    // -------------------------------------------------------
+    // 네트워크 전용 메서드
+    // -------------------------------------------------------
+
+    /// <summary>서버 RpcStartCards()에서 호출 - 네트워크 시작 신호</summary>
+    public void StartGameExternal()
+    {
+        if (isTurnActive) return;
+        StartGame();
+    }
+
+    /// <summary>서버 타이머 종료 시 강제 제출 - RpcForceEndCards()에서 호출</summary>
+    public void ForceEndTurn()
+    {
+        if (!isTurnActive) return;
+        turnTimer = 0f; // 타이머 강제 종료 → HandleTimer가 OnTimerEnd 호출
+    }
+
+    /// <summary>서버에서 5초마다 타이머 보정값 수신</summary>
+    public void SyncTimerFromServer(float remaining)
+    {
+        if (!isTurnActive) return;
+        turnTimer = remaining;
     }
 
     // -------------------------------------------------------
@@ -721,6 +780,29 @@ public class CardSystemManager : MonoBehaviour
     public RuntimeStats GetFinalStats()
     {
         return myStats;
+    }
+
+    // -------------------------------------------------------
+    // 선택된 맵 씬 이름 반환
+    // -------------------------------------------------------
+    public string GetSelectedMapScene()
+    {
+        List<CardSlot> allSlots = new List<CardSlot>();
+        allSlots.AddRange(mapSlots);
+        // mapSlots가 비었으면 playerHand에서도 탐색
+        foreach (var card in playerHand)
+        {
+            if (card?.data?.cardType == CardType.Map &&
+                !string.IsNullOrEmpty(card.data.mapSceneName))
+                return card.data.mapSceneName;
+        }
+        foreach (var slot in allSlots)
+        {
+            if (slot?.currentCard?.data?.cardType == CardType.Map &&
+                !string.IsNullOrEmpty(slot.currentCard.data.mapSceneName))
+                return slot.currentCard.data.mapSceneName;
+        }
+        return ""; // 맵 카드 미선택 시 빈 문자열
     }
 
     // -------------------------------------------------------

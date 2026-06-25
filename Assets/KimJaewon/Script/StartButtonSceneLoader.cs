@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Mirror;
 using MTextButton = TinyGiantStudio.Text.Button;
 
 public class StartButtonSceneLoader : MonoBehaviour
@@ -55,7 +56,19 @@ public class StartButtonSceneLoader : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene(sceneName);
+        // 멀티플레이: 카드 선택 결과를 서버로 제출 → GameNetworkManager가 씬 이동
+        if (NetworkClient.isConnected && NetworkCardBridge.LocalInstance != null)
+        {
+            NetworkCardBridge.LocalInstance.SubmitCardSelection();
+            return;
+        }
+
+        // 싱글(로컬 테스트): 맵 카드 씬 이름 사용, 없으면 Inspector 설정값
+        string targetScene = CardSystemManager.Instance?.GetSelectedMapScene();
+        if (string.IsNullOrEmpty(targetScene))
+            targetScene = sceneName;
+
+        SceneManager.LoadScene(targetScene);
     }
 
     private void UpdateButtonState()

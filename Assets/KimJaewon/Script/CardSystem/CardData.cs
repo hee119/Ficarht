@@ -5,7 +5,8 @@ public enum CardType
     Character,
     Buff,
     Skill,
-    Trap
+    Trap,
+    Map
 }
 
 public enum SkillID
@@ -67,4 +68,8 @@ public class CardData : ScriptableObject
 
     [Header("스킬 카드 전용")]
     public SkillID skillID;
+
+    [Header("맵 카드 전용")]
+    [Tooltip("이동할 전투 씬 이름 (예: Forest, Desert, Snow)")]
+    public string mapSceneName;
 }

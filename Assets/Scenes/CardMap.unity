@@ -6842,7 +6842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: -72306
+  GUIID: 375372
 --- !u!4 &1217812101
 Transform:
   m_ObjectHideFlags: 0
@@ -7837,6 +7837,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f59d625219d74a7faeb8c9274ff82d94, type: 2}
   - {fileID: 11400000, guid: 66db60af152a4ea2b7195d7538b0ec1b, type: 2}
   - {fileID: 11400000, guid: c55296bfaf174458b24830ef65bb5732, type: 2}
+  mapDeck:
+  - {fileID: 11400000, guid: ed2cd8f8117174ef88f5ce63f8983d61, type: 2}
+  - {fileID: 11400000, guid: 124561db791df409fbe3ff75bb297ce0, type: 2}
+  - {fileID: 11400000, guid: 072ae088cbbf84c008ee706b7bed72f4, type: 2}
+  - {fileID: 11400000, guid: 62114cb6053b04704a89c382c1394d58, type: 2}
+  - {fileID: 11400000, guid: f3b29f744e11543bf944ad7d3df21af5, type: 2}
+  - {fileID: 11400000, guid: 16b5011099f2a40b9849883078871209, type: 2}
+  - {fileID: 11400000, guid: 39bfd41d2985a4145b496f59156ffb99, type: 2}
   characterDrawPositions:
   - {fileID: 826627907}
   buffDrawPositions:
@@ -7846,6 +7854,8 @@ MonoBehaviour:
   trapDrawPositions:
   - {fileID: 1879223516}
   - {fileID: 150342420}
+  mapDrawPositions:
+  - {fileID: 0}
   characterSlots:
   - {fileID: 897264844}
   buffSlots:
@@ -7854,6 +7864,7 @@ MonoBehaviour:
   trapSlots:
   - {fileID: 910720657}
   - {fileID: 2001941450}
+  mapSlots: []
   timerText: {fileID: 0}
   collectButtonName: Collect_Button
   requiredCharacterCards: 1
@@ -9720,7 +9731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 78476
+  GUIID: 375546
 --- !u!4 &1947411261
 Transform:
   m_ObjectHideFlags: 0

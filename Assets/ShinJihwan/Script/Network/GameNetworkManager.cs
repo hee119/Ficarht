@@ -107,8 +107,25 @@ public class GameNetworkManager : NetworkManager
     [Server]
     private void LoadBattleScene()
     {
-        string[] maps = { "BattleScene_01", "BattleScene_02", "BattleScene_03" };
-        string selectedMap = maps[Random.Range(0, maps.Length)];
+        // 플레이어 맵 카드 씬 이름 수집 (Host 우선)
+        string selectedMap = "";
+        foreach (var conn in NetworkServer.connections.Values)
+        {
+            PlayerNetwork pn = conn.identity?.GetComponent<PlayerNetwork>();
+            if (pn != null && !string.IsNullOrEmpty(pn.selectedMapScene))
+            {
+                selectedMap = pn.selectedMapScene;
+                break;
+            }
+        }
+
+        if (string.IsNullOrEmpty(selectedMap))
+        {
+            Debug.LogWarning("[Server] 맵 카드 미선택 → BattleScene_01 사용");
+            selectedMap = "BattleScene_01";
+        }
+
+        Debug.Log($"[Server] 전투 씬 이동: {selectedMap}");
         ServerChangeScene(selectedMap);
     }
 

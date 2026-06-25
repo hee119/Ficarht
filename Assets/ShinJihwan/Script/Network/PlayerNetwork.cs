@@ -34,6 +34,7 @@ public class PlayerNetwork : NetworkBehaviour
     // ─────────────────────────────────────────────
 
     [SyncVar] public int selectedCharacterId = -1;
+    [SyncVar] public string selectedMapScene = "";
     public GameObject currentCharacter;
 
     [Command]
