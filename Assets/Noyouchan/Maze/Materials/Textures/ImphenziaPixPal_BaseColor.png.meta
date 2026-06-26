@@ -1,12 +1,12 @@
 fileFormatVersion: 2
-guid: cf48c3778277f4e9988d5439045e23ab
+guid: 4f8d4db1e5ff46c4eb76c450e9684941
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -143,8 +143,8 @@ TextureImporter:
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 302221
-  packageName: Maze Modular Puzzle Kit
+  productId: 350676
+  packageName: LowPoly Trees Game-Ready Free-Asset
   packageVersion: 1.0
   assetPath: Assets/Noyouchan/Maze/Materials/Textures/ImphenziaPixPal_BaseColor.png
-  uploadId: 713915
+  uploadId: 840606

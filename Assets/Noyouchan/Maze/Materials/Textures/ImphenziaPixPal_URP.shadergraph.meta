@@ -10,8 +10,8 @@ ScriptedImporter:
   script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
 AssetOrigin:
   serializedVersion: 1
-  productId: 302221
-  packageName: Maze Modular Puzzle Kit
+  productId: 350676
+  packageName: LowPoly Trees Game-Ready Free-Asset
   packageVersion: 1.0
   assetPath: Assets/Noyouchan/Maze/Materials/Textures/ImphenziaPixPal_URP.shadergraph
-  uploadId: 713915
+  uploadId: 840606

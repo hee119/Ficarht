@@ -1,8 +1,7 @@
 fileFormatVersion: 2
-guid: 6a2cd72cc45d64073a48ef2fd516911a
-NativeFormatImporter:
+guid: 1e001f9985f991443a055d4f4fc58c4e
+PrefabImporter:
   externalObjects: {}
-  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -11,5 +10,5 @@ AssetOrigin:
   productId: 350676
   packageName: LowPoly Trees Game-Ready Free-Asset
   packageVersion: 1.0
-  assetPath: Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Materials/Mat_ImphenziaPixPal_URP.mat
+  assetPath: Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.03_LP.prefab
   uploadId: 840606

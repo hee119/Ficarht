@@ -6,7 +6,7 @@ TextureImporter:
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -143,8 +143,8 @@ TextureImporter:
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 302221
-  packageName: Maze Modular Puzzle Kit
+  productId: 350676
+  packageName: LowPoly Trees Game-Ready Free-Asset
   packageVersion: 1.0
   assetPath: Assets/Noyouchan/Maze/Materials/Textures/ImphenziaPixPal_Emission.png
-  uploadId: 713915
+  uploadId: 840606
