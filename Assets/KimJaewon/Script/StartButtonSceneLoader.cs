@@ -70,20 +70,17 @@ public class StartButtonSceneLoader : MonoBehaviour
 
     private IEnumerator SinglePlayerSceneLoad(string targetScene)
     {
-        // 맵 카드 UI 표시 (싱글에서는 CardSystemManager가 이미 mapCard 선택해뒀음)
+        // 맵 카드 UI 표시 (뒤집기 연출 포함)
         MapCardDisplayUI.Instance?.ShowMapCard(targetScene);
 
-        // 로딩 화면 표시
-        LoadingScreenUI.Instance?.Show();
-
-        // 로딩 화면이 최소 3초 보이도록 대기 (minDisplayDuration과 동기화)
-        float wait = LoadingScreenUI.Instance != null
-            ? LoadingScreenUI.Instance.minDisplayDuration
+        // 카드 연출이 끝날 때까지 대기
+        float wait = MapCardDisplayUI.Instance != null
+            ? MapCardDisplayUI.Instance.displayDuration
             : 3f;
-        yield return new WaitForSeconds(wait);
+        yield return new WaitForSecondsRealtime(wait);
 
+        // 씬 이동 → LoadingScreenUI가 SceneManager.sceneLoaded에서 자동으로 Show
         SceneManager.LoadScene(targetScene);
-        // LoadingScreenUI는 SceneManager.sceneLoaded 이벤트에서 자동으로 Hide 처리됨
     }
 
     // -------------------------------------------------------

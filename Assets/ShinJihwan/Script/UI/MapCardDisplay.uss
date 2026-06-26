@@ -1,61 +1,25 @@
-/* 전체 화면 어두운 오버레이 */
+/* 반투명 어두운 오버레이 */
 .overlay {
     position: absolute;
     left: 0;
     top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
     align-items: center;
     justify-content: center;
     display: flex;
 }
 
-/* 카드 패널 */
-.card-panel {
-    width: 320px;
-    background-color: rgba(15, 10, 30, 0.95);
-    border-radius: 16px;
-    border-width: 2px;
-    border-color: rgba(180, 140, 60, 0.9);
-    padding: 24px;
-    align-items: center;
-    flex-direction: column;
-}
-
-/* "전투 맵 결정!" 상단 타이틀 */
-.announce-label {
-    font-size: 20px;
-    color: rgb(220, 180, 80);
-    -unity-font-style: bold;
-    margin-bottom: 16px;
-    -unity-text-align: middle-center;
-}
-
-/* 카드 이미지 영역 */
-.card-image {
-    width: 200px;
-    height: 260px;
-    background-color: rgba(40, 35, 60, 1);
-    border-radius: 10px;
-    border-width: 1px;
-    border-color: rgba(120, 100, 50, 0.7);
-    margin-bottom: 16px;
-    /* 이미지는 C#에서 background-image로 설정 */
-}
-
-/* 맵 카드 이름 */
-.map-name-label {
-    font-size: 22px;
-    color: rgb(255, 240, 200);
-    -unity-font-style: bold;
-    -unity-text-align: middle-center;
-    margin-bottom: 6px;
-}
-
-/* 씬 이름 (서브텍스트) */
-.scene-name-label {
-    font-size: 14px;
-    color: rgba(180, 180, 180, 0.8);
-    -unity-text-align: middle-center;
+/* 카드 (초기: 뒷면 = 어두운 배경) */
+.card {
+    width: 240px;
+    height: 340px;
+    border-radius: 14px;
+    border-width: 3px;
+    border-color: rgb(180, 140, 55);
+    background-color: rgb(18, 12, 38);
+    /* 이미지는 C#에서 플립 중간에 backgroundImage로 주입 */
+    background-size: cover;
+    background-position: center;
 }

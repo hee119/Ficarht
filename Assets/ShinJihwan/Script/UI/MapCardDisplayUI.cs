@@ -2,29 +2,19 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
 
-/// <summary>
-/// UI Toolkit 기반 맵 카드 표시 UI.
-/// Host가 뽑은 맵 카드를 양쪽 플레이어 화면에 오버레이로 표시한다.
-///
-/// 세팅 방법:
-///   1. 씬에 빈 GameObject 생성 → UIDocument 컴포넌트 추가
-///   2. UIDocument.Panel Settings 연결 (Project > Create > UI Toolkit > Panel Settings)
-///   3. UIDocument.Source Asset = MapCardDisplay.uxml
-///   4. 같은 오브젝트에 MapCardDisplayUI.cs 추가
-/// </summary>
 [RequireComponent(typeof(UIDocument))]
 public class MapCardDisplayUI : MonoBehaviour
 {
     public static MapCardDisplayUI Instance { get; private set; }
 
-    [Header("표시 지속 시간 (초) — LoadBattleScene 3초보다 짧게")]
-    public float displayDuration = 2.5f;
+    [Header("전체 표시 시간 (초) — 플립 포함")]
+    public float displayDuration = 2.8f;
 
-    // UI Toolkit 요소
+    [Header("플립 한 방향 소요 시간 (초)")]
+    public float flipDuration = 0.35f;
+
     private VisualElement _overlay;
-    private VisualElement _cardImage;
-    private Label _mapNameLabel;
-    private Label _sceneNameLabel;
+    private VisualElement _card;
 
     // -------------------------------------------------------
 
@@ -33,67 +23,97 @@ public class MapCardDisplayUI : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
 
-        var doc = GetComponent<UIDocument>();
-        var root = doc.rootVisualElement;
+        var root = GetComponent<UIDocument>().rootVisualElement;
+        _overlay = root.Q<VisualElement>("overlay");
+        _card    = root.Q<VisualElement>("card");
 
-        // UXML 요소 쿼리
-        _overlay       = root.Q<VisualElement>("overlay");
-        _cardImage     = root.Q<VisualElement>("card-image");
-        _mapNameLabel  = root.Q<Label>("map-name-label");
-        _sceneNameLabel = root.Q<Label>("scene-name-label");
-
-        // 시작 시 숨김
-        Hide();
+        HideImmediate();
     }
 
     // -------------------------------------------------------
+    // NetworkCardBridge.RpcShowMapCard() 및 StartButtonSceneLoader에서 호출
+    // -------------------------------------------------------
 
-    /// <summary>
-    /// NetworkCardBridge.RpcShowMapCard()에서 호출.
-    /// mapSceneName으로 CardSystemManager.mapDeck에서 CardData를 찾아 표시.
-    /// </summary>
     public void ShowMapCard(string mapSceneName)
     {
-        // CardSystemManager에서 선택된 맵 카드 데이터 직접 가져오기
-        var cardName  = CardSystemManager.Instance?.GetSelectedMapCardName();
-        var cardImage = CardSystemManager.Instance?.GetSelectedMapCardImage();
-
-        // 카드 이미지
-        if (_cardImage != null)
+        // mapDeck에서 씬 이름으로 카드 검색 (Host·Client 모두 mapDeck 데이터 있음)
+        CardData found = null;
+        if (CardSystemManager.Instance != null)
         {
-            if (cardImage != null)
-                _cardImage.style.backgroundImage = new StyleBackground(cardImage);
-            else
-                _cardImage.style.backgroundImage = StyleKeyword.None;
+            foreach (var c in CardSystemManager.Instance.mapDeck)
+            {
+                if (c != null && c.mapSceneName == mapSceneName)
+                {
+                    found = c;
+                    break;
+                }
+            }
         }
 
-        // 맵 이름
-        if (_mapNameLabel != null)
-            _mapNameLabel.text = !string.IsNullOrEmpty(cardName) ? cardName : mapSceneName;
-
-        // 씬 이름
-        if (_sceneNameLabel != null)
-            _sceneNameLabel.text = $"이동 씬 : {mapSceneName}";
-
-        // 오버레이 표시
         if (_overlay != null)
             _overlay.style.display = DisplayStyle.Flex;
 
-        Debug.Log($"[MapCardDisplayUI] 맵 표시: {mapSceneName}");
+        StopAllCoroutines();
+        StartCoroutine(FlipAnimation(found?.cardImage));
         StartCoroutine(HideAfterDelay(displayDuration));
     }
 
     // -------------------------------------------------------
 
-    private void Hide()
+    private void HideImmediate()
     {
         if (_overlay != null)
             _overlay.style.display = DisplayStyle.None;
+
+        // 카드 스케일 초기화
+        if (_card != null)
+            _card.transform.scale = Vector3.one;
     }
 
     private IEnumerator HideAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
-        Hide();
+        yield return new WaitForSecondsRealtime(delay);
+        HideImmediate();
+    }
+
+    // -------------------------------------------------------
+    // 카드 플립: 뒷면(어두운 배경) → X스케일 1→0 → 이미지 주입 → X스케일 0→1
+    // -------------------------------------------------------
+
+    private IEnumerator FlipAnimation(Sprite cardSprite)
+    {
+        if (_card == null) yield break;
+
+        // 초기: 뒷면 배경, 이미지 없음
+        _card.style.backgroundImage = StyleKeyword.None;
+        _card.style.backgroundColor = new StyleColor(new Color(0.07f, 0.05f, 0.15f));
+        _card.transform.scale = Vector3.one;
+
+        // Phase 1 — X 1→0 (카드 뒤집히며 사라짐)
+        yield return AnimateScaleX(1f, 0f, flipDuration);
+
+        // 플립 중간 — 카드 이미지 적용
+        if (cardSprite != null)
+        {
+            _card.style.backgroundImage  = new StyleBackground(cardSprite);
+            _card.style.backgroundColor  = StyleKeyword.Null; // 이미지가 있으면 배경색 제거
+        }
+
+        // Phase 2 — X 0→1 (카드 앞면 드러남)
+        yield return AnimateScaleX(0f, 1f, flipDuration);
+        _card.transform.scale = Vector3.one;
+    }
+
+    private IEnumerator AnimateScaleX(float from, float to, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float sx = Mathf.Lerp(from, to, t);
+            _card.transform.scale = new Vector3(sx, 1f, 1f);
+            yield return null;
+        }
     }
 }

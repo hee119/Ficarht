@@ -28,20 +28,6 @@ public class GameNetworkManager : NetworkManager
     }
 
 
-    // 클라이언트: 씬 로드 시작 → 로딩 화면 표시
-    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
-    {
-        LoadingScreenUI.Instance?.Show();
-        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
-    }
-
-    // 클라이언트: 씬 로드 완료 → 로딩 화면 숨김
-    public override void OnClientSceneChanged()
-    {
-        LoadingScreenUI.Instance?.Hide();
-        base.OnClientSceneChanged();
-    }
-
     public override void OnServerSceneChanged(string sceneName)
     {
         if (sceneName.Contains("BattleScene"))
