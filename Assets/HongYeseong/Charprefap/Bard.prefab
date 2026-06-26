@@ -253234,6 +253234,7 @@ GameObject:
   - component: {fileID: 4932503774084363384}
   - component: {fileID: 6236174024282649458}
   - component: {fileID: 5395577242378770446}
+  - component: {fileID: 5905468467849211147}
   m_Layer: 0
   m_Name: Bard
   m_TagString: Untagged
@@ -253301,6 +253302,19 @@ MonoBehaviour:
   syncHairColor: 1
   armorLocks: 010101010100
   faceLocks: 000000000000
+--- !u!114 &5905468467849211147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7582188109018444819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17338fc22873c462f99a5864a1c9703f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoolTime
+  skillCoolTimes: []
 --- !u!1 &7584944862387424090
 GameObject:
   m_ObjectHideFlags: 0

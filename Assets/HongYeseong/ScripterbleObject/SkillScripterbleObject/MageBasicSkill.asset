@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: MageBasicSkill
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   skillId: MageBasicSkill
-  attack: 0
+  attack: 10
   speed: 0
   cooldown: 0
   coolTime: 0
   defense: 0
-  duration: 5
+  duration: 0
+  isBuff: 0
+  isDebuff: 0

@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     public float groundCheckDistance = 0.4f;
     public LayerMask groundLayer;
 
+    public bool isRoll = false;
+    
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -40,13 +42,16 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        walkSpeed = characterStats.walkSpeed;
-        runSpeed = characterStats.walkSpeed * 2f;
+        walkSpeed = characterStats.speed;
+        runSpeed = characterStats.speed * 2f;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
-        if (isAttacking)
+        if (isAttacking || isRoll)
             return;
 
         currentSpeed = moveInput.magnitude > 0.01f
@@ -67,7 +72,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isAttacking)
+        if (isAttacking || isRoll)
             return;
 
         Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
@@ -178,5 +183,35 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         isAttacking = false;
+    }
+
+    public void Roll()
+    {
+        Debug.Log("aaaa");
+        StartCoroutine(IERoll());
+    }
+
+    public IEnumerator IERoll()
+    {
+        Debug.Log("kkk");
+        isRoll = true;
+        rb.linearVelocity = Vector3.zero;
+        float duration = 0.7f;
+        float elapsed = 0f;
+
+        Vector3 start = transform.position;
+        Vector3 target = moveInput != Vector3.zero ? start + transform.TransformDirection(moveInput) * 4f : start + transform.forward * 4f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            rb.MovePosition(
+                Vector3.Lerp(start, target, elapsed / duration)
+            );
+
+            yield return null;
+        }
+        isRoll = false;
     }
 }

@@ -64,7 +64,7 @@ ModelImporter:
         messageOptions: 0
       - time: 0.43296432
         functionName: GetEffect
-        data: DoubleSlash
+        data: BerserkerBloodyAxeChopping
         objectReferenceParameter: {fileID: 11500000, guid: 6dd991aa1db0342f29456249abb7b190, type: 3}
         floatParameter: 0
         intParameter: 0

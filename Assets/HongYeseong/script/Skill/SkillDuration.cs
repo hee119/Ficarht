@@ -15,7 +15,7 @@ public class SkillDuration : MonoBehaviour
     private void Awake()
     {
         ps = GetComponent<ParticleSystem>();
-
+        defaultPosRot = GetComponent<DefaultPosRot>(); // 👈 기존 초기값 컴포넌트 가져오기
         prefabInfo = GetComponent<PrefabInfo>();
         
         skillDuration = prefabInfo.duration;
@@ -25,7 +25,8 @@ public class SkillDuration : MonoBehaviour
             Debug.LogError($"{gameObject.name}에 PrefabInfo 없음!");
         }
 
-        main = ps.main;
+        if(ps != null)
+            main = ps.main;
     }
 
     private void OnEnable()
@@ -42,19 +43,24 @@ public class SkillDuration : MonoBehaviour
             player = null;
         }
 
-        ps.Play();
+        if(ps != null)
+            ps.Play();
 
         SetAlpha(1f);
 
         StartCoroutine(DurationCoroutine());
     }
 
+    // DefaultPosRot 컴포넌트를 가져오기 위한 변수 추가
+    private DefaultPosRot defaultPosRot;
+
     private void Update()
     {
-        // 버프면 플레이어 따라가기
+        // 버프면 플레이어 위치 + 기존 오프셋, 플레이어 회전 * 기존 오프셋 회전 적용
         if (player != null)
         {
-            transform.position = player.position;
+            transform.position = player.TransformPoint(defaultPosRot.defaultLocalPosition);
+            transform.rotation = player.rotation * defaultPosRot.defaultLocalRotation;
         }
     }
 
@@ -76,7 +82,8 @@ public class SkillDuration : MonoBehaviour
 
         SetAlpha(0f);
 
-        ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        if(ps != null)
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
 
         PoolManager.Instance.Release(
             prefabInfo.skillData.skillId,
@@ -86,8 +93,11 @@ public class SkillDuration : MonoBehaviour
 
     private void SetAlpha(float alpha)
     {
-        var col = main.startColor.color;
-        col.a = alpha;
-        main.startColor = col;
+        if (ps != null)
+        {
+            var col = main.startColor.color;
+            col.a = alpha;
+            main.startColor = col;
+        }
     }
 }

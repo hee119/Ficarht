@@ -176,6 +176,17 @@
                 },
                 {
                     "name": "",
+                    "id": "ce73363a-ba9f-4fba-9221-c6fa090df779",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Key",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "020d2b29-9afb-4a35-a1f1-4aec9d393ac4",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",

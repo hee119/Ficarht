@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: BardStats
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Bard
-  health: 0
-  stamina: 0
-  power: 0
-  defense: 0
-  intelligence: 0
+  health: 75
+  stamina: 90
+  power: 25
+  defense: 25
+  intelligence: 10
+  speed: 0
+  projectileSpeed: 0
+  cooldown: 0
+  duration: 0
+  player: {fileID: 0}
