@@ -9,11 +9,32 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/Kimsechan/CardMap_MainDesplay.unity
+    guid: 0f9791d715e2a4850928f71de92ac312
+  - enabled: 1
     path: Assets/Scenes/CardMap.unity
     guid: 68a7894e9126d3b4181d411b75bc0990
   - enabled: 1
     path: Assets/Scenes/Forest.unity
     guid: 34627ccfb860741e49209382afca21ac
+  - enabled: 1
+    path: Assets/Scenes/SnowMountain.unity
+    guid: 92014318356144a369224182c5ef54dd
+  - enabled: 1
+    path: Assets/Scenes/SkyIsland.unity
+    guid: 0fcc58a860f3126448fe07c2fbfcaa75
+  - enabled: 1
+    path: Assets/Scenes/Maze(SecretMap).unity
+    guid: 6ecfd39228f4c4903a7f1878b290f0b3
+  - enabled: 1
+    path: Assets/Scenes/Lava.unity
+    guid: 4bc9c39831207aa4081f39b7af5f0288
+  - enabled: 1
+    path: Assets/Scenes/Dungeon.unity
+    guid: 5039c5e96a91a07498cb1a3fff40f497
+  - enabled: 1
+    path: Assets/Scenes/Desert.unity
+    guid: 3de6751cb7888414fb4e2f639937982a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

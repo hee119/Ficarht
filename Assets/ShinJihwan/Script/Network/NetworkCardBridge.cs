@@ -47,6 +47,8 @@ public class NetworkCardBridge : NetworkBehaviour
     void RpcStartCards()
     {
         Debug.Log("[Client] 카드 드로우 시작");
+        // Host(NetworkServer.active=true)만 맵 카드 드로우
+        CardSystemManager.Instance?.SetDrawMapCard(NetworkServer.active);
         CardSystemManager.Instance?.StartGameExternal();
     }
 
@@ -167,5 +169,16 @@ public class NetworkCardBridge : NetworkBehaviour
     {
         CardRevealSystem.Instance?.RevealAllCards();
         Debug.Log("[Client] 카드 공개");
+    }
+
+    // ─────────────────────────────────────────────
+    // 맵 카드 UI 표시 (양쪽 클라이언트에 선택된 맵 표시)
+    // ─────────────────────────────────────────────
+
+    [ClientRpc]
+    public void RpcShowMapCard(string mapSceneName)
+    {
+        Debug.Log($"[Client] 선택된 전투 맵: {mapSceneName}");
+        MapCardDisplayUI.Instance?.ShowMapCard(mapSceneName);
     }
 }

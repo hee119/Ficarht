@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="overlay" class="overlay">
+        <ui:VisualElement name="card-panel" class="card-panel">
+            <ui:Label name="announce-label" class="announce-label" text="전투 맵 결정!" />
+            <ui:VisualElement name="card-image" class="card-image" />
+            <ui:Label name="map-name-label" class="map-name-label" text="맵 이름" />
+            <ui:Label name="scene-name-label" class="scene-name-label" text="씬 이름" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

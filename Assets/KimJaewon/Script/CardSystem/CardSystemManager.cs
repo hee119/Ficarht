@@ -79,6 +79,12 @@ public class CardSystemManager : MonoBehaviour
 
     private bool isTurnActive = false;
 
+    // 맵 카드 드로우 허용 여부 (멀티: Host만 true, Client는 false)
+    private bool _drawMapCard = true;
+
+    // 랜덤으로 선택된 맵 카드 데이터 (물리 오브젝트 없이 저장)
+    private CardData _selectedMapCardData = null;
+
     private float turnTimer = 0f;
 
     private float selectionMessageTimer = 0f;
@@ -176,15 +182,17 @@ public class CardSystemManager : MonoBehaviour
             trapDrawPositions
         );
 
-        // 맵 1장 (덱과 포지션이 모두 설정된 경우만)
-        if (mapDeck != null && mapDeck.Count > 0
-            && mapDrawPositions != null && mapDrawPositions.Count > 0)
+        // 맵 카드 - Host만 (멀티 시), 싱글은 항상
+        // 물리 오브젝트 없이 랜덤으로 하나 선택 → UI로만 표시
+        _selectedMapCardData = null;
+        if (_drawMapCard && mapDeck != null && mapDeck.Count > 0)
         {
-            DrawCards(
-                mapDeck,
-                1,
-                mapDrawPositions
-            );
+            var validMaps = mapDeck.FindAll(c => c != null);
+            if (validMaps.Count > 0)
+            {
+                _selectedMapCardData = validMaps[Random.Range(0, validMaps.Count)];
+                Debug.Log($"[CardSystem] 맵 카드 선택: {_selectedMapCardData.cardName} ({_selectedMapCardData.mapSceneName})");
+            }
         }
 
         // 부채꼴 정렬
@@ -645,6 +653,9 @@ public class CardSystemManager : MonoBehaviour
         StartGame();
     }
 
+    /// <summary>멀티: NetworkCardBridge.RpcStartCards()에서 Host 여부 전달</summary>
+    public void SetDrawMapCard(bool draw) => _drawMapCard = draw;
+
     /// <summary>서버 타이머 종료 시 강제 제출 - RpcForceEndCards()에서 호출</summary>
     public void ForceEndTurn()
     {
@@ -787,22 +798,40 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     public string GetSelectedMapScene()
     {
-        List<CardSlot> allSlots = new List<CardSlot>();
-        allSlots.AddRange(mapSlots);
-        // mapSlots가 비었으면 playerHand에서도 탐색
+        // 1순위: StartGame에서 랜덤 선택된 맵 카드 데이터
+        if (_selectedMapCardData != null &&
+            !string.IsNullOrEmpty(_selectedMapCardData.mapSceneName))
+            return _selectedMapCardData.mapSceneName;
+
+        // 2순위: playerHand에 있는 맵 카드 (물리 오브젝트가 있을 경우 대비)
         foreach (var card in playerHand)
         {
             if (card?.data?.cardType == CardType.Map &&
                 !string.IsNullOrEmpty(card.data.mapSceneName))
                 return card.data.mapSceneName;
         }
-        foreach (var slot in allSlots)
+
+        // 3순위: mapSlots에 배치된 맵 카드
+        foreach (var slot in mapSlots)
         {
             if (slot?.currentCard?.data?.cardType == CardType.Map &&
                 !string.IsNullOrEmpty(slot.currentCard.data.mapSceneName))
                 return slot.currentCard.data.mapSceneName;
         }
-        return ""; // 맵 카드 미선택 시 빈 문자열
+
+        return "";
+    }
+
+    /// <summary>맵 카드 이름 반환 (MapCardDisplayUI에서 표시용)</summary>
+    public string GetSelectedMapCardName()
+    {
+        return _selectedMapCardData?.cardName ?? "";
+    }
+
+    /// <summary>맵 카드 이미지 반환 (MapCardDisplayUI에서 표시용)</summary>
+    public UnityEngine.Sprite GetSelectedMapCardImage()
+    {
+        return _selectedMapCardData?.cardImage;
     }
 
     // -------------------------------------------------------

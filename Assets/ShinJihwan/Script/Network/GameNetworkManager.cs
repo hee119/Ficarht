@@ -11,6 +11,9 @@ public class GameNetworkManager : NetworkManager
     // 카드 선택 완료 플레이어 추적
     private HashSet<NetworkConnectionToClient> cardReadyPlayers = new HashSet<NetworkConnectionToClient>();
 
+    // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
+    private string _pendingMapScene = "";
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         Debug.Log("🔥 OnServerAddPlayer 호출됨");
@@ -24,6 +27,20 @@ public class GameNetworkManager : NetworkManager
             RoomNetworkManager.Instance?.OnSecondPlayerConnected();
     }
 
+
+    // 클라이언트: 씬 로드 시작 → 로딩 화면 표시
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    {
+        LoadingScreenUI.Instance?.Show();
+        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+    }
+
+    // 클라이언트: 씬 로드 완료 → 로딩 화면 숨김
+    public override void OnClientSceneChanged()
+    {
+        LoadingScreenUI.Instance?.Hide();
+        base.OnClientSceneChanged();
+    }
 
     public override void OnServerSceneChanged(string sceneName)
     {
@@ -86,47 +103,48 @@ public class GameNetworkManager : NetworkManager
     public void OnPlayerCardReady(NetworkConnectionToClient conn)
     {
         cardReadyPlayers.Add(conn);
-        Debug.Log($"[Server] 카드 선택 완료: {cardReadyPlayers.Count}/2");
+        int total = NetworkServer.connections.Count;
+        Debug.Log($"[Server] 카드 선택 완료: {cardReadyPlayers.Count}/{total}");
 
-        if (cardReadyPlayers.Count >= 2)
+        // 접속한 모든 플레이어가 제출하면 진행 (1인 테스트도 동작)
+        if (cardReadyPlayers.Count >= total)
         {
             cardReadyPlayers.Clear();
 
-            // 카드 공개 (모든 클라이언트에서 RevealAllCards 호출)
+            // Host(첫 번째 연결)의 selectedMapScene 수집
+            _pendingMapScene = "";
+            foreach (var c in NetworkServer.connections.Values)
+            {
+                PlayerNetwork pn = c.identity?.GetComponent<PlayerNetwork>();
+                if (pn != null && !string.IsNullOrEmpty(pn.selectedMapScene))
+                {
+                    _pendingMapScene = pn.selectedMapScene;
+                    break;
+                }
+            }
+            if (string.IsNullOrEmpty(_pendingMapScene))
+                _pendingMapScene = "BattleScene_01";
+
+            Debug.Log($"[Server] 선택된 맵: {_pendingMapScene}");
+
+            // 카드 공개 + 맵 카드 UI 브로드캐스트
             foreach (var c in NetworkServer.connections.Values)
             {
                 NetworkCardBridge bridge = c.identity?.GetComponent<NetworkCardBridge>();
                 bridge?.RpcRevealCards();
+                bridge?.RpcShowMapCard(_pendingMapScene);
             }
 
-            // 잠시 후 전투 씬 전환
-            Invoke(nameof(LoadBattleScene), 2f);
+            // 3초 후 전투 씬 이동 (맵 UI 표시 시간 확보)
+            Invoke(nameof(LoadBattleScene), 3f);
         }
     }
 
     [Server]
     private void LoadBattleScene()
     {
-        // 플레이어 맵 카드 씬 이름 수집 (Host 우선)
-        string selectedMap = "";
-        foreach (var conn in NetworkServer.connections.Values)
-        {
-            PlayerNetwork pn = conn.identity?.GetComponent<PlayerNetwork>();
-            if (pn != null && !string.IsNullOrEmpty(pn.selectedMapScene))
-            {
-                selectedMap = pn.selectedMapScene;
-                break;
-            }
-        }
-
-        if (string.IsNullOrEmpty(selectedMap))
-        {
-            Debug.LogWarning("[Server] 맵 카드 미선택 → BattleScene_01 사용");
-            selectedMap = "BattleScene_01";
-        }
-
-        Debug.Log($"[Server] 전투 씬 이동: {selectedMap}");
-        ServerChangeScene(selectedMap);
+        Debug.Log($"[Server] 전투 씬 이동: {_pendingMapScene}");
+        ServerChangeScene(_pendingMapScene);
     }
 
     // ─────────────────────────────────────────────
