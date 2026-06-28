@@ -125936,8 +125936,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4734473765890806719}
   - {fileID: 8381721769127242095}
@@ -125958,7 +125958,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: fd64f3d9d126649fcac6fc8900fd8146, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -126004,6 +126004,9 @@ MonoBehaviour:
   iceObject: {fileID: 4401069076840083221}
   faintingObject: {fileID: 2211710441256427062}
   faintingAnimationName: Stun
+  isBlocking: 0
+  blockDamageReduction: 50
+  blockStaminaPerSecond: 10
   health: 0
   stamina: 0
   power: 0
@@ -126029,7 +126032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CoolTime
   skillCoolTimes:
   - animationName: 1Hand_Up_Attack_A_3_InPlace
-    coolTime: 0
+    coolTime: 1
   - animationName: HumanM@MagicAttackCall1H01_L
     coolTime: 10
   - animationName: 1Hand_Up_Shield_Block_Idle_1 0

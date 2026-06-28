@@ -30406,8 +30406,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 521379687072754930}
   - {fileID: 3799204991368105996}
@@ -30428,7 +30428,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 35fce578283b94f6b87611907f40be23, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -30690,6 +30690,9 @@ MonoBehaviour:
   iceObject: {fileID: 2600381665041950395}
   faintingObject: {fileID: 239674119952048339}
   faintingAnimationName: Stun
+  isBlocking: 0
+  blockDamageReduction: 50
+  blockStaminaPerSecond: 10
   health: 0
   stamina: 0
   power: 0
@@ -30720,8 +30723,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.731233, z: 1}
-  m_Center: {x: 0, y: 0.89163, z: 0}
+  m_Size: {x: 1, y: 1.8, z: 1}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1 &758676446763522889
 GameObject:
   m_ObjectHideFlags: 0
