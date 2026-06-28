@@ -47,6 +47,9 @@ public class PlayerController : NetworkBehaviour
 
     private Coroutine speedMultiplierRoutine;
     private float speedMultiplier = 1f;
+    
+    public float rollSpeed = 8f;
+    public float rollDuration = 0.7f;
 
     void Awake()
     {
@@ -293,25 +296,30 @@ public class PlayerController : NetworkBehaviour
 
     public IEnumerator IERoll()
     {
-        Debug.Log("kkk");
         isRoll = true;
-        rb.linearVelocity = Vector3.zero;
-        float duration = 0.7f;
+
+        Vector3 dir = moveInput != Vector3.zero
+            ? transform.TransformDirection(moveInput).normalized
+            : transform.forward;
+
         float elapsed = 0f;
 
-        Vector3 start = transform.position;
-        Vector3 target = moveInput != Vector3.zero ? start + transform.TransformDirection(moveInput) * 4f : start + transform.forward * 4f;
-
-        while (elapsed < duration)
+        while (elapsed < rollDuration)
         {
             elapsed += Time.deltaTime;
 
-            rb.MovePosition(
-                Vector3.Lerp(start, target, elapsed / duration)
+            // Y축 속도는 유지해서 점프/낙하가 자연스럽게 되도록
+            rb.linearVelocity = new Vector3(
+                dir.x * rollSpeed,
+                rb.linearVelocity.y,
+                dir.z * rollSpeed
             );
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
+
+        // 구르기 종료
+        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
         isRoll = false;
     }
 
