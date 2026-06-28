@@ -328,6 +328,12 @@ public class PlayerController : NetworkBehaviour
 
     public void RefreshSpeed()
     {
+        if (characterStats == null)
+            characterStats = GetComponent<CharaStat>();
+
+        if (characterStats == null)
+            return;
+
         walkSpeed = characterStats.speed;
         runSpeed = characterStats.runSpeed;
     }

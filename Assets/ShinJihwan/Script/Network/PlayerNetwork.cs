@@ -89,7 +89,51 @@ public class PlayerNetwork : NetworkBehaviour
         defense      = def;
         intelligence = intel;
 
+        ApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
+
+        if (netId != 0)
+            RpcApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
+
         Debug.Log($"[Server] {netId} 스탯 적용: HP={hp} STM={stm} PWR={pwr} DEF={def} INT={intel}");
+    }
+
+    [ClientRpc]
+    private void RpcApplyStatsToCharacterComponents(float hp, float stm, float pwr, float def, float intel)
+    {
+        ApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
+    }
+
+    private void ApplyStatsToCharacterComponents(float hp, float stm, float pwr, float def, float intel)
+    {
+        CharaStat charaStat = GetComponent<CharaStat>();
+
+        if (charaStat == null && currentCharacter != null)
+            charaStat = currentCharacter.GetComponent<CharaStat>();
+
+        if (charaStat == null)
+            return;
+
+        charaStat.maxHealth = Mathf.Max(hp, 1f);
+        charaStat.health = charaStat.maxHealth;
+        charaStat.maxStamina = Mathf.Max(stm, 0f);
+        charaStat.stamina = charaStat.maxStamina;
+        charaStat.power = Mathf.Max(pwr, 0f);
+        charaStat.defense = Mathf.Max(def, 0f);
+        charaStat.intelligence = Mathf.Max(intel, 0f);
+
+        if (charaStat.healthBar != null)
+        {
+            charaStat.healthBar.maxValue = charaStat.maxHealth;
+            charaStat.healthBar.value = charaStat.health;
+        }
+
+        if (charaStat.staminaBar != null)
+        {
+            charaStat.staminaBar.maxValue = charaStat.maxStamina;
+            charaStat.staminaBar.value = charaStat.stamina;
+        }
+
+        GetComponent<PlayerController>()?.RefreshSpeed();
     }
 
     [Server]
