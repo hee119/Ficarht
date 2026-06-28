@@ -108,14 +108,16 @@ public class GameNetworkManager : NetworkManager
             GameObject character = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
 
             PlayerNetwork characterNet = character.GetComponent<PlayerNetwork>();
+
+            PlayerController controller = character.GetComponent<PlayerController>();
+
+            NetworkServer.Spawn(character, conn);
+
             if (characterNet != null && playerNet != null && characterNet != playerNet)
                 characterNet.CopyBattleSetupFrom(playerNet);
 
-            PlayerController controller = character.GetComponent<PlayerController>();
             if (controller != null)
                 controller.ServerSetOwnerPlayerNetwork(playerNet);
-
-            NetworkServer.Spawn(character, conn);
 
             if (playerNet != null)
             {

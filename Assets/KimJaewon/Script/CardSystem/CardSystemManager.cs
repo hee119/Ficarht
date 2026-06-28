@@ -623,15 +623,7 @@ public class CardSystemManager : MonoBehaviour
 
         SetTimerText("시간 종료!");
 
-        myStats = GetCharacterStats();
-
-        if (myStats != null)
-        {
-            BuffApplier.ApplyAll(
-                buffSlots,
-                myStats
-            );
-        }
+        myStats = BuildFinalStats();
 
         CardRevealSystem.Instance
             ?.RevealAllCards();
@@ -737,6 +729,25 @@ public class CardSystemManager : MonoBehaviour
         return null;
     }
 
+    private RuntimeStats BuildFinalStats()
+    {
+        RuntimeStats finalStats = GetCharacterStats();
+
+        if (finalStats != null)
+        {
+            BuffApplier.ApplyAll(
+                buffSlots,
+                finalStats
+            );
+
+            Debug.Log(
+                $"[CardSystemManager] 최종 스탯 계산 완료: {finalStats}"
+            );
+        }
+
+        return finalStats;
+    }
+
     // -------------------------------------------------------
     // 카드 확정
     // -------------------------------------------------------
@@ -813,6 +824,11 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     public RuntimeStats GetFinalStats()
     {
+        if (myStats == null)
+        {
+            myStats = BuildFinalStats();
+        }
+
         return myStats;
     }
 

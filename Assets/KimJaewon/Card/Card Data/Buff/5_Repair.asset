@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9fcff9b256f7482c8f37132a05f706e, type: 3}
   m_Name: 5_Repair
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardID: 0
+  cardID: 5
   cardName: Repair
+  cardDescription: "\uC218\uB9AC\uB85C \uCD5C\uB300 \uCCB4\uB825\uC744 \uC62C\uB9BD\uB2C8\uB2E4."
   cardType: 1
   cardImage: {fileID: 21300000, guid: d74aad89fd73749aebc217579d0b6917, type: 3}
   cardPrefab: {fileID: 5872494356101378216, guid: ed82a38d6a7324ac6a10bc3e59f97d83, type: 3}
   characterStats: {fileID: 0}
   buffEffect:
-    healthMod: 0
+    healthMod: 25
     staminaMod: 0
     powerMod: 0
     defenseMod: 0
