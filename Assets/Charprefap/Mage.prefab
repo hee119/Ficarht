@@ -72544,7 +72544,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5155112031995183008}
@@ -72828,15 +72828,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharaStat
   characterStats: {fileID: 11400000, guid: 13e37a201980c4462893b96b7b323424, type: 2}
   healthBar: {fileID: 0}
+  staminaBar: {fileID: 0}
   playerInput: {fileID: 0}
   iceObject: {fileID: 3942561957805387173}
   faintingObject: {fileID: 178680546726606679}
   faintingAnimationName: Stun
+  isShield: 0
+  shieldObject: {fileID: 0}
+  flashDuration: 0.1
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
   isBlocking: 0
   blockDamageReduction: 50
   blockStaminaPerSecond: 10
+  maxHealth: 0
   health: 0
+  maxStamina: 0
   stamina: 0
+  staminaRegenRate: 0
+  staminaDrainRate: 0
   power: 0
   defense: 0
   intelligence: 0

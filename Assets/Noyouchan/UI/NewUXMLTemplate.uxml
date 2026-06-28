@@ -1,0 +1,63 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="sandstorm-root" style="
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+    ">
+        <!-- 화면 오버레이 -->
+        <ui:VisualElement name="sandstorm-overlay" style="
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0);
+        "/>
+
+        <!-- 경고 패널 -->
+        <ui:VisualElement name="warning-panel" style="
+            position: absolute;
+            top: 5%;
+            left: 0; right: 0;
+            align-items: center;
+            display: none;
+        ">
+            <ui:VisualElement name="warning-box" style="
+                background-color: rgba(180, 90, 0, 0.75);
+                border-radius: 6px;
+                padding: 5px 16px;
+                flex-direction: row;
+                align-items: center;
+            ">
+                <ui:Label name="warning-icon" text="⚠" style="
+                    font-size: 16px;
+                    color: rgb(255, 220, 80);
+                    margin-right: 6px;
+                    -unity-text-align: middle-center;
+                "/>
+                <ui:Label name="warning-text" text="모래폭풍이 몰려옵니다!" style="
+                    font-size: 14px;
+                    color: rgb(255, 240, 200);
+                    -unity-font-style: bold;
+                    -unity-text-align: middle-center;
+                "/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- 폭풍 중 상단 상태 표시 -->
+        <ui:VisualElement name="storm-status" style="
+            position: absolute;
+            top: 1%;
+            right: 2%;
+            flex-direction: row;
+            align-items: center;
+            display: none;
+        ">
+            <ui:Label name="storm-status-text" text="모래폭풍" style="
+                font-size: 13px;
+                color: rgb(255, 200, 100);
+                -unity-font-style: bold;
+            "/>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
