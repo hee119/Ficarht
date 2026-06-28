@@ -14,4 +14,5 @@ public class SkillData : ScriptableObject
     public bool isBuff;
     public bool isDebuff;
     public float burnDamage;
+    public float staminaCost;
 }
