@@ -3886,9 +3886,6 @@ MonoBehaviour:
   sceneName: Forest
   updateInteractableByCardSelection: 1
   collectButtonName: Collect_Button
-  singlePlayerCharPrefabs:
-  - {fileID: 755554410987823595, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-  singlePlayerSpawnPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &776376476
 PrefabInstance:
   m_ObjectHideFlags: 0
