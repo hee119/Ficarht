@@ -70,6 +70,9 @@ public class CardData : ScriptableObject
 
     public string cardName;
 
+    [TextArea(3, 6)]
+    public string cardDescription;
+
     public CardType cardType;
 
     public Sprite cardImage;

@@ -62,7 +62,7 @@ public class CardSystemManager : MonoBehaviour
 
     public int drawBuffCards = 3;
 
-    public int drawTrapCards = 5;
+    public int drawTrapCards = 4;
 
     [Header("--- 선택 완료 조건 ---")]
     public int requiredCharacterCards = 1;
