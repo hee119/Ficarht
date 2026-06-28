@@ -15,7 +15,7 @@ MonoBehaviour:
   cardID: 0
   cardName: 
   cardType: 4
-  cardImage: {fileID: 21300000, guid: 55e3debdfb65e4adc929d9f59add767f, type: 3}
+  cardImage: {fileID: 21300000, guid: a13cdcf33d38b4e5c8fea118010e8169, type: 3}
   cardPrefab: {fileID: 0}
   characterStats: {fileID: 0}
   buffEffect:

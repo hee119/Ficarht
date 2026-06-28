@@ -474,6 +474,6 @@ public class CharaStat : MonoBehaviour
             if (staminaBar != null)
                 staminaBar.value = stamina;
         }
-    }[
-    =]
+    }
+    
 }
