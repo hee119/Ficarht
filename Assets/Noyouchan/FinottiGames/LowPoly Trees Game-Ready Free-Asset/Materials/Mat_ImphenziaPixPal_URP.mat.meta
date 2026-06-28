@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d2571188e74f64d46af59e381475d97e
+guid: 6a2cd72cc45d64073a48ef2fd516911a
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000
@@ -11,5 +11,5 @@ AssetOrigin:
   productId: 350676
   packageName: LowPoly Trees Game-Ready Free-Asset
   packageVersion: 1.0
-  assetPath: Assets/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Materials/Mat_ImphenziaPixPal_URP.mat
+  assetPath: Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Materials/Mat_ImphenziaPixPal_URP.mat
   uploadId: 840606
