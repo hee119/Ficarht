@@ -52,6 +52,7 @@ public class CharaStat : MonoBehaviour
     public float stamina;
     public float staminaRegenRate;
     public float staminaDrainRate; // 초당 소비량
+    [HideInInspector] public Coroutine staminaDrainCoroutine;
     public float power;
     public float defense;
     public float intelligence;
@@ -447,7 +448,7 @@ public class CharaStat : MonoBehaviour
         }
     }
     
-    private IEnumerator StaminaDrain()
+    public IEnumerator StaminaDrain()
     {
         while (true)
         {
@@ -474,6 +475,5 @@ public class CharaStat : MonoBehaviour
             if (staminaBar != null)
                 staminaBar.value = stamina;
         }
-    }[
-    =]
+    }
 }

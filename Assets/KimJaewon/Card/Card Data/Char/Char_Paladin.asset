@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardID: 0
   cardName: Paladin
+  cardDescription: 
   cardType: 0
-  cardImage: {fileID: -1438270333, guid: 576800f95560340eebcc8ff9008be1f2, type: 3}
+  cardImage: {fileID: 21300000, guid: dff9f505e53de4963a80c5affa0413ab, type: 3}
   cardPrefab: {fileID: 2429316085626964367, guid: 8fe2c442b214c4cffbf732ee33acfc31, type: 3}
   characterStats: {fileID: 11400000, guid: 8e02827ed90f14b56a977ed1a22b12ee, type: 2}
   buffEffect:
@@ -25,3 +26,5 @@ MonoBehaviour:
     defenseMod: 0
     intelligenceMod: 0
   skillID: 0
+  trapID: 0
+  mapSceneName: 
