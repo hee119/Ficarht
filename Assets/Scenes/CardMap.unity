@@ -3886,6 +3886,9 @@ MonoBehaviour:
   sceneName: Forest
   updateInteractableByCardSelection: 1
   collectButtonName: Collect_Button
+  singlePlayerCharPrefabs:
+  - {fileID: 755554410987823595, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
+  singlePlayerSpawnPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &776376476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7945,6 +7948,7 @@ MonoBehaviour:
   overlapAmount: 0.5
   deckTransform: {fileID: 870344454}
   deckDrawOffset: {x: 0, y: 0.08, z: -0.35}
+  deckClearDistance: 1.25
   flyDuration: 0.4
   flyDelay: 0.1
 --- !u!1001 &1564335151
@@ -9164,6 +9168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapCardDisplayUI
   displayDuration: 2.5
   flipDuration: 0.35
+  cardBackSprite: {fileID: -1750003668, guid: 50a546e79145e4f32a219c686a7302dc, type: 3}
 --- !u!114 &1842327474
 MonoBehaviour:
   m_ObjectHideFlags: 0

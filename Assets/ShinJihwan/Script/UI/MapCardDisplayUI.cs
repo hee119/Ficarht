@@ -13,6 +13,9 @@ public class MapCardDisplayUI : MonoBehaviour
     [Header("플립 한 방향 소요 시간 (초)")]
     public float flipDuration = 0.35f;
 
+    [Header("카드 뒷면 스프라이트")]
+    public Sprite cardBackSprite;
+
     private VisualElement _overlay;
     private VisualElement _card;
 
@@ -23,10 +26,12 @@ public class MapCardDisplayUI : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
 
-        var root = GetComponent<UIDocument>().rootVisualElement;
+        var doc  = GetComponent<UIDocument>();
+        var root = doc.rootVisualElement;
         _overlay = root.Q<VisualElement>("overlay");
         _card    = root.Q<VisualElement>("card");
 
+        Debug.Log($"[MapCardDisplayUI] Awake — overlay={_overlay != null}, card={_card != null}");
         HideImmediate();
     }
 
@@ -36,25 +41,32 @@ public class MapCardDisplayUI : MonoBehaviour
 
     public void ShowMapCard(string mapSceneName)
     {
-        // mapDeck에서 씬 이름으로 카드 검색 (Host·Client 모두 mapDeck 데이터 있음)
-        CardData found = null;
-        if (CardSystemManager.Instance != null)
+        Debug.Log($"[MapCardDisplayUI] ShowMapCard({mapSceneName}) — overlay={_overlay != null}");
+
+        // 이미지 취득 순서
+        // 1순위: 이미 선택된 카드 데이터 (Host / 단독 플레이어)
+        Sprite image = CardSystemManager.Instance?.GetSelectedMapCardImage();
+
+        // 2순위: 씬 이름으로 mapDeck 검색 (Client — _selectedMapCardData 없음)
+        if (image == null && CardSystemManager.Instance != null)
         {
             foreach (var c in CardSystemManager.Instance.mapDeck)
             {
                 if (c != null && c.mapSceneName == mapSceneName)
                 {
-                    found = c;
+                    image = c.cardImage;
                     break;
                 }
             }
         }
 
+        Debug.Log($"[MapCardDisplayUI] 이미지={image != null}");
+
         if (_overlay != null)
             _overlay.style.display = DisplayStyle.Flex;
 
         StopAllCoroutines();
-        StartCoroutine(FlipAnimation(found?.cardImage));
+        StartCoroutine(FlipAnimation(image));
         StartCoroutine(HideAfterDelay(displayDuration));
     }
 
@@ -65,7 +77,6 @@ public class MapCardDisplayUI : MonoBehaviour
         if (_overlay != null)
             _overlay.style.display = DisplayStyle.None;
 
-        // 카드 스케일 초기화
         if (_card != null)
             _card.transform.scale = Vector3.one;
     }
@@ -84,22 +95,30 @@ public class MapCardDisplayUI : MonoBehaviour
     {
         if (_card == null) yield break;
 
-        // 초기: 뒷면 배경, 이미지 없음
-        _card.style.backgroundImage = StyleKeyword.None;
-        _card.style.backgroundColor = new StyleColor(new Color(0.07f, 0.05f, 0.15f));
+        // 뒷면: 카드 뒷면 스프라이트 (없으면 어두운 배경)
+        if (cardBackSprite != null)
+        {
+            _card.style.backgroundImage = new StyleBackground(cardBackSprite);
+            _card.style.backgroundColor = new StyleColor(new Color(0f, 0f, 0f, 0f));
+        }
+        else
+        {
+            _card.style.backgroundImage = StyleKeyword.None;
+            _card.style.backgroundColor = new StyleColor(new Color(0.07f, 0.05f, 0.15f));
+        }
         _card.transform.scale = Vector3.one;
 
-        // Phase 1 — X 1→0 (카드 뒤집히며 사라짐)
+        // Phase 1 — X 1→0
         yield return AnimateScaleX(1f, 0f, flipDuration);
 
-        // 플립 중간 — 카드 이미지 적용
+        // 플립 중간: 앞면 이미지 주입
         if (cardSprite != null)
         {
-            _card.style.backgroundImage  = new StyleBackground(cardSprite);
-            _card.style.backgroundColor  = StyleKeyword.Null; // 이미지가 있으면 배경색 제거
+            _card.style.backgroundImage = new StyleBackground(cardSprite);
+            _card.style.backgroundColor = new StyleColor(new Color(0f, 0f, 0f, 0f)); // 투명
         }
 
-        // Phase 2 — X 0→1 (카드 앞면 드러남)
+        // Phase 2 — X 0→1
         yield return AnimateScaleX(0f, 1f, flipDuration);
         _card.transform.scale = Vector3.one;
     }
@@ -110,9 +129,8 @@ public class MapCardDisplayUI : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float sx = Mathf.Lerp(from, to, t);
-            _card.transform.scale = new Vector3(sx, 1f, 1f);
+            float t  = Mathf.Clamp01(elapsed / duration);
+            _card.transform.scale = new Vector3(Mathf.Lerp(from, to, t), 1f, 1f);
             yield return null;
         }
     }

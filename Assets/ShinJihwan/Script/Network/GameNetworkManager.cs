@@ -28,10 +28,17 @@ public class GameNetworkManager : NetworkManager
     }
 
 
+    // 전투 씬이 아닌 씬 목록 (이 목록에 없으면 스폰)
+    private static readonly HashSet<string> nonBattleScenes = new HashSet<string>
+    {
+        "CardMap", "CardMap_MainDesplay", "MainMenu", "Lobby", "SampleScene"
+    };
+
     public override void OnServerSceneChanged(string sceneName)
     {
-        if (sceneName.Contains("BattleScene"))
+        if (!nonBattleScenes.Contains(sceneName))
         {
+            Debug.Log($"[Server] 전투 씬 감지 ({sceneName}) → 캐릭터 스폰");
             SpawnCharacters();
         }
     }

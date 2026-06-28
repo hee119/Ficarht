@@ -7,8 +7,7 @@ using Mirror;
 /// Mirror 멀티플레이 PlayerController.
 ///
 /// isLocalPlayer → isOwned 로 변경.
-/// 이유: 캐릭터 프리팹은 NetworkServer.Spawn(obj, conn)으로 스폰되므로
-///       isLocalPlayer = false, isOwned = true 임.
+/// isOwned || !NetworkClient.active → Mirror 없는 싱글 테스트에서도 조작 가능.
 /// </summary>
 public class PlayerController : NetworkBehaviour
 {
@@ -24,6 +23,9 @@ public class PlayerController : NetworkBehaviour
     private float currentSpeed;
     private bool isRunning;
     private bool isAttacking;
+
+    // Mirror 없는 싱글 테스트에서도 입력 처리
+    private bool IsLocallyControlled => isOwned || !NetworkClient.active;
 
     void Awake()
     {
@@ -56,7 +58,7 @@ public class PlayerController : NetworkBehaviour
     // ─────────────────────────────────────────────
     void Update()
     {
-        if (!isOwned) return;
+        if (!IsLocallyControlled) return;
         if (isAttacking) return;
 
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
@@ -76,7 +78,7 @@ public class PlayerController : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (!isOwned) return;
+        if (!IsLocallyControlled) return;
         if (isAttacking) return;
 
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
@@ -92,27 +94,37 @@ public class PlayerController : NetworkBehaviour
     // ─────────────────────────────────────────────
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (!isOwned) return;
+        if (!IsLocallyControlled) return;
         Vector2 input = context.ReadValue<Vector2>();
         moveInput = new Vector3(input.x, 0f, input.y).normalized;
     }
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        if (!isOwned) return;
+        if (!IsLocallyControlled) return;
         if (context.started)  isRunning = true;
         if (context.canceled) isRunning = false;
     }
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (!isOwned) return;
+        if (!IsLocallyControlled) return;
         if (!context.started || isAttacking) return;
 
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
         if (pn != null && !pn.CanAttack()) return;
 
-        CmdRequestAttack();
+        if (NetworkClient.active)
+        {
+            // 멀티: Command로 서버에 전달
+            CmdRequestAttack();
+        }
+        else
+        {
+            // 싱글: 직접 호출
+            GetComponent<PlayerNetwork>()?.ServerRequestAttack();
+            StartCoroutine(AttackAnimation());
+        }
     }
 
     // ─────────────────────────────────────────────

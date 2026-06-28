@@ -13,13 +13,9 @@
 
 /* 카드 (초기: 뒷면 = 어두운 배경) */
 .card {
-    width: 240px;
-    height: 340px;
-    border-radius: 14px;
-    border-width: 3px;
-    border-color: rgb(180, 140, 55);
+    width: 190px;
+    height: 270px;
+    border-radius: 12px;
     background-color: rgb(18, 12, 38);
-    /* 이미지는 C#에서 플립 중간에 backgroundImage로 주입 */
-    background-size: cover;
-    background-position: center;
+    background-size: 100% 100%;
 }

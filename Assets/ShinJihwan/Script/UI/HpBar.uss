@@ -1,0 +1,76 @@
+/* HUD 전체 레이어 */
+.hud-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 공통 HP 패널 */
+.hp-panel {
+    position: absolute;
+    width: 280px;
+    background-color: rgba(0, 0, 0, 0.55);
+    border-radius: 8px;
+    padding: 10px 14px 10px 14px;
+}
+
+/* 내 HP - 왼쪽 아래 */
+.my-panel {
+    left: 20px;
+    bottom: 20px;
+}
+
+/* 상대방 HP - 오른쪽 위 */
+.enemy-panel {
+    right: 20px;
+    top: 20px;
+}
+
+/* 이름 텍스트 */
+.name-label {
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    margin-bottom: 5px;
+}
+
+.enemy-name-label {
+    -unity-text-align: upper-right;
+}
+
+/* HP 바 배경 */
+.hp-track {
+    height: 18px;
+    background-color: rgba(20, 20, 20, 0.8);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+/* HP 바 채움 공통 */
+.hp-fill {
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+}
+
+/* 내 HP - 녹색 */
+.my-fill {
+    background-color: rgb(58, 210, 90);
+}
+
+/* 상대방 HP - 빨간색 */
+.enemy-fill {
+    background-color: rgb(220, 55, 55);
+}
+
+/* HP 숫자 텍스트 */
+.hp-text {
+    font-size: 12px;
+    color: rgba(220, 220, 220, 0.85);
+    margin-top: 3px;
+    -unity-text-align: upper-right;
+}

@@ -242,8 +242,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     void OnHealthChanged(float oldVal, float newVal)
     {
-        // TODO: 체력 UI 업데이트
         Debug.Log($"[Client] 체력 변경: {oldVal:F1} → {newVal:F1}");
+        // HpBarUI는 Update에서 자동 갱신 (SyncVar 변경 후 다음 프레임 반영)
     }
 
     void OnStateChanged(PlayerStateType oldState, PlayerStateType newState)
