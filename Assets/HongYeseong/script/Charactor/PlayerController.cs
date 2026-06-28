@@ -1,11 +1,19 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using Mirror;
 
-public class PlayerController : MonoBehaviour
+/// <summary>
+/// Mirror 멀티플레이 PlayerController.
+///
+/// isLocalPlayer → isOwned 로 변경.
+/// isOwned || !NetworkClient.active → Mirror 없는 싱글 테스트에서도 조작 가능.
+/// </summary>
+public class PlayerController : NetworkBehaviour
 {
     private Rigidbody rb;
     private Animator animator;
+    private CharaStat characterStats;
 
     [Header("Speed")]
     public float walkSpeed = 3f;
@@ -13,12 +21,13 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 moveInput;
     private float currentSpeed;
-
     private bool isRunning;
     private bool isAttacking;
 
+    // Mirror 없는 싱글 테스트에서도 입력 처리
+    private bool IsLocallyControlled => isOwned || !NetworkClient.active;
+
     public float mouseSensitivity = 100f;
-    private CharaStat characterStats;
 
     private float mouseInputX = 0;
     private float mouseInputY = 0;
@@ -42,17 +51,35 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        walkSpeed = characterStats.speed;
-        runSpeed = characterStats.runSpeed;
-
+        if (characterStats != null)
+        {
+            walkSpeed = characterStats.speed;
+            runSpeed = characterStats.runSpeed;
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
+    // ─────────────────────────────────────────────
+    // Mirror: 소유권 없는 클라이언트는 스크립트 비활성화
+    // ─────────────────────────────────────────────
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if (!isOwned)
+            this.enabled = false;
+    }
+
+    // ─────────────────────────────────────────────
+    // Update / FixedUpdate
+    // ─────────────────────────────────────────────
     void Update()
     {
-        if (isAttacking || isRoll)
-            return;
+        if (!IsLocallyControlled) return;
+        if (isAttacking || isRoll) return;
+
+        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        if (pn != null && !pn.CanMove()) return;
 
         currentSpeed = moveInput.magnitude > 0.01f
             ? (isRunning ? runSpeed : walkSpeed)
@@ -72,8 +99,11 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isAttacking || isRoll)
-            return;
+        if (!IsLocallyControlled) return;
+        if (isAttacking || isRoll) return;
+
+        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        if (pn != null && !pn.CanMove()) return;
 
         Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
 
@@ -82,11 +112,12 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = velocity;
     }
 
-    // =========================
-    // MOVE INPUT
-    // =========================
+    // ─────────────────────────────────────────────
+    // Input 콜백 (PlayerInput → Invoke Unity Events)
+    // ─────────────────────────────────────────────
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (!IsLocallyControlled) return;
         Vector2 input = context.ReadValue<Vector2>();
 
         moveInput = new Vector3(
@@ -96,16 +127,11 @@ public class PlayerController : MonoBehaviour
         ).normalized;
     }
 
-    // =========================
-    // RUN INPUT
-    // =========================
     public void OnRun(InputAction.CallbackContext context)
     {
-        if (context.started)
-            isRunning = true;
-
-        if (context.canceled)
-            isRunning = false;
+        if (!IsLocallyControlled) return;
+        if (context.started)  isRunning = true;
+        if (context.canceled) isRunning = false;
     }
 
     // =========================
@@ -153,15 +179,50 @@ public class PlayerController : MonoBehaviour
     // =========================
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (!context.started || isAttacking)
-            return;
+        if (!IsLocallyControlled) return;
+        if (!context.started || isAttacking) return;
 
-        StartCoroutine(Attack());
+        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        if (pn != null && !pn.CanAttack()) return;
+
+        if (NetworkClient.active)
+        {
+            // 멀티: Command로 서버에 전달
+            CmdRequestAttack();
+        }
+        else
+        {
+            // 싱글: 직접 호출
+            GetComponent<PlayerNetwork>()?.ServerRequestAttack();
+            StartCoroutine(AttackAnimation());
+        }
     }
 
-    // =========================
-    // GROUND CHECK
-    // =========================
+    // ─────────────────────────────────────────────
+    // Network
+    // ─────────────────────────────────────────────
+    [Command]
+    void CmdRequestAttack()
+    {
+        GetComponent<PlayerNetwork>()?.ServerRequestAttack();
+        RpcPlayAttackAnimation();
+    }
+
+    [ClientRpc]
+    void RpcPlayAttackAnimation()
+    {
+        StartCoroutine(AttackAnimation());
+    }
+
+    IEnumerator AttackAnimation()
+    {
+        isAttacking = true;
+        if (animator != null)
+            animator.SetTrigger("Attack");
+        yield return new WaitForSeconds(1f);
+        isAttacking = false;
+    }
+    
     public bool IsGrounded()
     {
         bool isGrounded = Physics.Raycast(
@@ -172,17 +233,6 @@ public class PlayerController : MonoBehaviour
         );
 
         return isGrounded;
-    }
-
-    IEnumerator Attack()
-    {
-        isAttacking = true;
-
-        animator.SetTrigger("Attack");
-
-        yield return new WaitForSeconds(1f);
-
-        isAttacking = false;
     }
 
     public void Roll()
