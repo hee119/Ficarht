@@ -57,6 +57,13 @@ public class CardSystemManager : MonoBehaviour
     [Header("--- Collect 버튼 ---")]
     public string collectButtonName = "Collect_Button";
 
+    [Header("--- 시작 드로우 수 ---")]
+    public int drawCharacterCards = 1;
+
+    public int drawBuffCards = 3;
+
+    public int drawTrapCards = 5;
+
     [Header("--- 선택 완료 조건 ---")]
     public int requiredCharacterCards = 1;
 
@@ -161,24 +168,22 @@ public class CardSystemManager : MonoBehaviour
     {
         ClearAll();
 
-        // 캐릭터 1장
+        // 캐릭터 1장 / 버프 3장 / 함정 5장을 기본으로 드로우
         DrawCards(
             characterDeck,
-            1,
+            drawCharacterCards,
             characterDrawPositions
         );
 
-        // 버프 2장
         DrawCards(
             buffDeck,
-            2,
+            drawBuffCards,
             buffDrawPositions
         );
 
-        // 함정 2장
         DrawCards(
             trapDeck,
-            2,
+            drawTrapCards,
             trapDrawPositions
         );
 
@@ -262,12 +267,7 @@ public class CardSystemManager : MonoBehaviour
             }
 
             Transform spawnTf =
-                positions[
-                    Mathf.Min(
-                        i,
-                        positions.Count - 1
-                    )
-                ];
+                positions[i % positions.Count];
 
             int randomIndex =
                 Random.Range(
