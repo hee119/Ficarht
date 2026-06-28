@@ -845,6 +845,18 @@ public class CardSystemManager : MonoBehaviour
         return "";
     }
 
+    /// <summary>배치된 캐릭터 카드의 characterId 반환. 없으면 -1.</summary>
+    public int GetSelectedCharacterId()
+    {
+        foreach (var slot in characterSlots)
+        {
+            if (slot?.currentCard?.data?.cardType == CardType.Character &&
+                slot.currentCard.data.characterStats != null)
+                return slot.currentCard.data.characterStats.characterId;
+        }
+        return -1;
+    }
+
     /// <summary>맵 카드 이름 반환 (MapCardDisplayUI에서 표시용)</summary>
     public string GetSelectedMapCardName()
     {

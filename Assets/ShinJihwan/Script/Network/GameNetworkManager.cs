@@ -36,10 +36,15 @@ public class GameNetworkManager : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
+        Debug.Log($"[Server] OnServerSceneChanged: '{sceneName}'");
         if (!nonBattleScenes.Contains(sceneName))
         {
             Debug.Log($"[Server] 전투 씬 감지 ({sceneName}) → 캐릭터 스폰");
             SpawnCharacters();
+        }
+        else
+        {
+            Debug.Log($"[Server] '{sceneName}' 은 비전투 씬 — 스폰 스킵");
         }
     }
     
