@@ -65,7 +65,7 @@ public class PaladinSkillLogic : MonoBehaviour
                 break;
 
             case SkillType.PaladinShield:
-                playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
+                playerStat.ApplyShield(prefabInfo.defense, prefabInfo.duration, gameObject);
                 break;
 
             case SkillType.PaladinHandOfGod:
