@@ -17,12 +17,14 @@ public class SlotGuideManager : MonoBehaviour
     public float maxAlpha = 0.8f;
 
     [Header("가이드 크기")]
-    public Vector3 guideSize = new Vector3(0.8f, 0.01f, 1.2f);
+    public Vector2 guideSize = new Vector2(0.8f, 1.2f);
 
     [Header("가이드 크기 배율")]
-    public float guideWidthMultiplier = 1.2f;
-    public float guideHeight = 0.01f;
-    public float guideLengthMultiplier = 1.2f;
+    public float guideWidthMultiplier = 1f;
+    public float guideLengthMultiplier = 1f;
+
+    [Header("가이드 위치")]
+    public float guideYOffset = 0.06f;
 
     private Dictionary<CardSlot, GameObject> guideObjects =
         new Dictionary<CardSlot, GameObject>();
@@ -44,11 +46,44 @@ public class SlotGuideManager : MonoBehaviour
         Instance = this;
     }
 
+    public static SlotGuideManager GetOrCreate()
+    {
+        if (Instance != null)
+            return Instance;
+
+        GameObject managerObject = new GameObject("SlotGuideManager");
+
+        return managerObject.AddComponent<SlotGuideManager>();
+    }
+
+    private void SyncSlotsFromCardSystem()
+    {
+        if (CardSystemManager.Instance == null)
+            return;
+
+        if (characterSlots.Count == 0)
+        {
+            characterSlots = CardSystemManager.Instance.characterSlots;
+        }
+
+        if (buffSlots.Count == 0)
+        {
+            buffSlots = CardSystemManager.Instance.buffSlots;
+        }
+
+        if (trapSlots.Count == 0)
+        {
+            trapSlots = CardSystemManager.Instance.trapSlots;
+        }
+    }
+
     // -------------------------------------------------------
     // 표시
     // -------------------------------------------------------
     public void ShowGuides()
     {
+        SyncSlotsFromCardSystem();
+
         ShowSlotsGuide(characterSlots, CardType.Character);
         ShowSlotsGuide(buffSlots, CardType.Buff);
         ShowSlotsGuide(trapSlots, CardType.Trap);
@@ -56,12 +91,21 @@ public class SlotGuideManager : MonoBehaviour
 
     private void ShowSlotsGuide(List<CardSlot> slots, CardType type)
     {
+        ShowSlotsGuide(slots, type, null);
+    }
+
+    private void ShowSlotsGuide(
+        List<CardSlot> slots,
+        CardType type,
+        CardObject card
+    )
+    {
         foreach (var slot in slots)
         {
             if (slot == null || slot.currentCard != null)
                 continue;
 
-            CreateGuide(slot, type);
+            CreateGuide(slot, type, card);
         }
     }
 
@@ -91,21 +135,67 @@ public class SlotGuideManager : MonoBehaviour
 
     public void ShowGuidesForType(CardType type)
     {
+        ShowGuidesForCardType(type, null);
+    }
+
+    public void ShowGuidesForCard(CardObject card)
+    {
+        if (card == null || card.data == null)
+            return;
+
+        ShowGuidesForCardType(card.data.cardType, card);
+    }
+
+    private void ShowGuidesForCardType(CardType type, CardObject card)
+    {
+        SyncSlotsFromCardSystem();
         HideAllGuides();
 
+        List<CardSlot> targetSlots = GetSlotsByType(type);
+
+        if (card != null)
+        {
+            ShowFirstAvailableSlotGuide(targetSlots, type, card);
+            return;
+        }
+
+        ShowSlotsGuide(targetSlots, type, null);
+    }
+
+    private List<CardSlot> GetSlotsByType(CardType type)
+    {
         switch (type)
         {
             case CardType.Character:
-                ShowSlotsGuide(characterSlots, type);
-                break;
+                return characterSlots;
 
             case CardType.Buff:
-                ShowSlotsGuide(buffSlots, type);
-                break;
+                return buffSlots;
 
             case CardType.Trap:
-                ShowSlotsGuide(trapSlots, type);
-                break;
+                return trapSlots;
+
+            default:
+                return null;
+        }
+    }
+
+    private void ShowFirstAvailableSlotGuide(
+        List<CardSlot> slots,
+        CardType type,
+        CardObject card
+    )
+    {
+        if (slots == null)
+            return;
+
+        foreach (var slot in slots)
+        {
+            if (slot == null || slot.currentCard != null)
+                continue;
+
+            CreateGuide(slot, type, card);
+            return;
         }
     }
 
@@ -122,6 +212,15 @@ public class SlotGuideManager : MonoBehaviour
     // -------------------------------------------------------
     private void CreateGuide(CardSlot slot, CardType type)
     {
+        CreateGuide(slot, type, null);
+    }
+
+    private void CreateGuide(
+        CardSlot slot,
+        CardType type,
+        CardObject card
+    )
+    {
         if (guideObjects.ContainsKey(slot))
             return;
 
@@ -136,62 +235,28 @@ public class SlotGuideManager : MonoBehaviour
 
         // 위치
         guide.transform.position =
-            slot.transform.position + Vector3.up * 0.05f;
+            slot.transform.position + Vector3.up * guideYOffset;
 
         // 회전
         guide.transform.rotation =
             Quaternion.Euler(90f, 0f, 0f);
 
-        // 슬롯 크기 기준 자동 크기 조절
-        Renderer slotRenderer = slot.GetComponent<Renderer>();
+        Vector2 size =
+            card != null
+                ? card.GetPlacedGuideSize()
+                : GetSlotGuideSize(slot);
 
-        if (slotRenderer != null)
-        {
-            Bounds bounds = slotRenderer.bounds;
-
-            guide.transform.localScale = new Vector3(
-                bounds.size.x * guideWidthMultiplier,
-                guideHeight,
-                bounds.size.z * guideLengthMultiplier
-            );
-        }
-        else
-        {
-            guide.transform.localScale = guideSize;
-        }
+        guide.transform.localScale = new Vector3(
+            size.x * guideWidthMultiplier,
+            size.y * guideLengthMultiplier,
+            1f
+        );
 
         // 머티리얼
         Renderer rend = guide.GetComponent<Renderer>();
 
         Material mat =
-            new Material(Shader.Find("Transparent/Diffuse"));
-
-        if (mat.shader.name == "Hidden/InternalErrorShader")
-        {
-            mat = new Material(Shader.Find("Standard"));
-
-            mat.SetFloat("_Mode", 3);
-
-            mat.SetInt(
-                "_SrcBlend",
-                (int)UnityEngine.Rendering.BlendMode.SrcAlpha
-            );
-
-            mat.SetInt(
-                "_DstBlend",
-                (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha
-            );
-
-            mat.SetInt("_ZWrite", 0);
-
-            mat.DisableKeyword("_ALPHATEST_ON");
-            mat.EnableKeyword("_ALPHABLEND_ON");
-            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-
-            mat.renderQueue = 3000;
-        }
-
-        mat.color = GetGuideColor(type);
+            CreateGuideMaterial(type);
 
         rend.material = mat;
 
@@ -200,6 +265,74 @@ public class SlotGuideManager : MonoBehaviour
 
         pulseRoutines[slot] =
             StartCoroutine(PulseGuide(rend, type));
+    }
+
+    private Vector2 GetSlotGuideSize(CardSlot slot)
+    {
+        Renderer slotRenderer = slot.GetComponent<Renderer>();
+
+        if (slotRenderer == null)
+            return guideSize;
+
+        Bounds bounds = slotRenderer.bounds;
+
+        return new Vector2(
+            bounds.size.x,
+            bounds.size.z
+        );
+    }
+
+    private Material CreateGuideMaterial(CardType type)
+    {
+        Shader shader =
+            Shader.Find("Unlit/Transparent");
+
+        if (shader == null)
+        {
+            shader = Shader.Find("Sprites/Default");
+        }
+
+        if (shader == null)
+        {
+            shader = Shader.Find("Standard");
+        }
+
+        Material mat = new Material(shader);
+
+        mat.color = GetGuideColor(type);
+        mat.renderQueue = 3000;
+
+        if (mat.HasProperty("_Mode"))
+        {
+            mat.SetFloat("_Mode", 3);
+        }
+
+        if (mat.HasProperty("_SrcBlend"))
+        {
+            mat.SetInt(
+                "_SrcBlend",
+                (int)UnityEngine.Rendering.BlendMode.SrcAlpha
+            );
+        }
+
+        if (mat.HasProperty("_DstBlend"))
+        {
+            mat.SetInt(
+                "_DstBlend",
+                (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha
+            );
+        }
+
+        if (mat.HasProperty("_ZWrite"))
+        {
+            mat.SetInt("_ZWrite", 0);
+        }
+
+        mat.DisableKeyword("_ALPHATEST_ON");
+        mat.EnableKeyword("_ALPHABLEND_ON");
+        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+
+        return mat;
     }
 
     // -------------------------------------------------------

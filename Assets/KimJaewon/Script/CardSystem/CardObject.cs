@@ -666,6 +666,12 @@ public class CardObject : MonoBehaviour
 
         BoostRenderOrder();
 
+        if (data != null)
+        {
+            SlotGuideManager.GetOrCreate()
+                .ShowGuidesForCard(this);
+        }
+
         Vector3 liftedDragPosition = transform.position;
 
         liftedDragPosition.y =
@@ -760,6 +766,11 @@ public class CardObject : MonoBehaviour
     {
         isDragging = false;
 
+        if (SlotGuideManager.Instance != null)
+        {
+            SlotGuideManager.Instance.HideAllGuides();
+        }
+
         float movedDistance =
             Vector3.Distance(
                 dragStartWorldPos,
@@ -845,6 +856,11 @@ public class CardObject : MonoBehaviour
     // -------------------------------------------------------
     private void ReturnToOrigin()
     {
+        if (SlotGuideManager.Instance != null)
+        {
+            SlotGuideManager.Instance.HideAllGuides();
+        }
+
         targetPosition = originPosition;
 
         targetRotation = fanRotation;
@@ -976,7 +992,7 @@ public class CardObject : MonoBehaviour
     // -------------------------------------------------------
     // 유틸
     // -------------------------------------------------------
-    private float GetPlacedScaleMultiplier()
+    public float GetPlacedScaleMultiplier()
     {
         if (data == null)
             return placedScaleMultiplier;
@@ -995,6 +1011,48 @@ public class CardObject : MonoBehaviour
             default:
                 return placedScaleMultiplier;
         }
+    }
+
+    public Vector2 GetPlacedGuideSize()
+    {
+        Collider cardCollider = GetComponent<Collider>();
+
+        float placedScale = GetPlacedScaleMultiplier();
+
+        if (cardCollider is BoxCollider boxCollider)
+        {
+            Vector3 colliderSize = boxCollider.size;
+
+            return new Vector2(
+                colliderSize.x
+                    * Mathf.Abs(originalScale.x)
+                    * placedScale,
+                colliderSize.y
+                    * Mathf.Abs(originalScale.y)
+                    * placedScale
+            );
+        }
+
+        SpriteRenderer spriteRenderer =
+            cardFrontRenderer != null
+                ? cardFrontRenderer
+                : GetComponentInChildren<SpriteRenderer>();
+
+        if (spriteRenderer != null && spriteRenderer.sprite != null)
+        {
+            Bounds spriteBounds = spriteRenderer.sprite.bounds;
+
+            return new Vector2(
+                spriteBounds.size.x
+                    * Mathf.Abs(originalScale.x)
+                    * placedScale,
+                spriteBounds.size.y
+                    * Mathf.Abs(originalScale.y)
+                    * placedScale
+            );
+        }
+
+        return Vector2.one * placedScale;
     }
 
     private Color GetColorByType(

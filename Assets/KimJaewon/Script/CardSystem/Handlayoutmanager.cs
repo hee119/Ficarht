@@ -25,6 +25,8 @@ public class HandLayoutManager : MonoBehaviour
     public Vector3 deckDrawOffset =
         new Vector3(0f, 0.08f, -0.35f);
 
+    public float deckClearDistance = 1.25f;
+
     public float flyDuration = 0.4f;
     public float flyDelay = 0.1f;
 
@@ -133,7 +135,7 @@ public class HandLayoutManager : MonoBehaviour
 
         Vector3 startPos =
             deckTransform != null
-                ? GetDeckDrawStartPosition()
+                ? GetDeckDrawStartPosition(targetPos)
                 : targetPos;
 
         card.transform.position = startPos;
@@ -173,9 +175,24 @@ public class HandLayoutManager : MonoBehaviour
         card.InitPosition();
     }
 
-    private Vector3 GetDeckDrawStartPosition()
+    private Vector3 GetDeckDrawStartPosition(
+        Vector3 targetPos
+    )
     {
+        Vector3 drawDirection =
+            targetPos - deckTransform.position;
+
+        drawDirection.y = 0f;
+
+        if (drawDirection.sqrMagnitude < 0.001f)
+        {
+            drawDirection = -deckTransform.forward;
+        }
+
+        drawDirection.Normalize();
+
         return deckTransform.position
+            + drawDirection * deckClearDistance
             + deckTransform.right * deckDrawOffset.x
             + deckTransform.up * deckDrawOffset.y
             + deckTransform.forward * deckDrawOffset.z;
