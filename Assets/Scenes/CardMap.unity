@@ -7866,6 +7866,9 @@ MonoBehaviour:
   mapSlots: []
   timerText: {fileID: 0}
   collectButtonName: Collect_Button
+  drawCharacterCards: 1
+  drawBuffCards: 3
+  drawTrapCards: 5
   requiredCharacterCards: 1
   requiredBuffCards: 2
   requiredTrapCards: 2
