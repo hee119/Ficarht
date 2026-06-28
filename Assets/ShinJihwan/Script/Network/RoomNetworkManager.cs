@@ -162,6 +162,28 @@ public class RoomNetworkManager : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────
+    // 방 나가기 UI 리셋 (MenuController.LeaveRoom에서 호출)
+    // ─────────────────────────────────────────────
+    public void ResetUI()
+    {
+        currentRoomCode = "";
+
+        if (connectedPanel != null)
+            connectedPanel.SetActive(false);
+
+        if (hostIdText != null)
+            hostIdText.UpdateText("Host id :");
+
+        if (player1Text != null)
+            player1Text.UpdateText("□ Player1");
+
+        if (player2Text != null)
+            player2Text.UpdateText("□ Player2");
+
+        Debug.Log("[RoomNetworkManager] UI 리셋");
+    }
+
+    // ─────────────────────────────────────────────
     // 유틸
     // ─────────────────────────────────────────────
     private PlayerNetwork GetLocalPlayerNetwork()
