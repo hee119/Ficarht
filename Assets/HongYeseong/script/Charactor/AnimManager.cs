@@ -15,9 +15,13 @@ public class AnimManager : MonoBehaviour
     [SerializeField]
     private CharactorType charactorType;
 
-    private ICharacterSkill characterSkill;
+    private CoolTime coolTime;
 
     private bool isTriggerPlaying = false;
+    
+    public PlayerController playerController;
+    
+    CharaStat charaStat;
 
     public enum CharactorType
     {
@@ -29,9 +33,10 @@ public class AnimManager : MonoBehaviour
 
     private void Awake()
     {
-        characterSkill = GetComponent<ICharacterSkill>();
+        coolTime = GetComponent<CoolTime>();
         animator = GetComponent<Animator>();
-
+        playerController = GetComponent<PlayerController>();
+        charaStat = GetComponent<CharaStat>();
         for (int i = 0; i < animator.layerCount; i++)
         {
             Debug.Log("Layer " + i + ": " + animator.GetLayerName(i));
@@ -57,7 +62,7 @@ public class AnimManager : MonoBehaviour
                 if (IsTrigger(animName))
                 {
                     // 다른 트리거 애니메이션 재생 중이면 무시
-                    if (isTriggerPlaying)
+                    if (isTriggerPlaying || !coolTime.CoolTimeCheck(animName))
                     {
                         Debug.Log("[Trigger 차단] 현재 다른 트리거 애니메이션 재생 중");
                         break;
@@ -65,7 +70,11 @@ public class AnimManager : MonoBehaviour
 
                     isTriggerPlaying = true;
                     animator.SetTrigger(animName);
-
+                    if(animName == "Roll")
+                    {
+                        Debug.Log("Roll");
+                        playerController.Roll();
+                    }
                     Debug.Log($"[Trigger 재생] '{animName}'");
                     break;
                 }
@@ -81,6 +90,13 @@ public class AnimManager : MonoBehaviour
                     Debug.Log($"[Bool 변경] '{animName}' = true");
                     break;
                 }
+                
+                if (animName == "1Hand_Up_Shield_Block_Idle_1")
+                {
+                    animator.SetBool(animName, true);
+
+                    charaStat.isBlocking = true;
+                }
             }
 
             if (context.canceled)
@@ -91,6 +107,7 @@ public class AnimManager : MonoBehaviour
                     Debug.Log($"[Bool 변경] '{animName}' = false");
                     break;
                 }
+                charaStat.isBlocking = false;
             }
 
             break;
@@ -131,7 +148,7 @@ public class AnimManager : MonoBehaviour
 
     public void GetEffect(string effectName)
     {
-        characterSkill?.UseSkill(effectName, transform);
+        coolTime?.UseSkill(effectName, transform);
     }
 
     public void SetBool()

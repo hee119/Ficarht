@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: MagicCircle
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   skillId: MagicCircle
-  attack: 0
+  attack: 25
   speed: 0
   cooldown: 0
-  coolTime: 0
+  coolTime: 30
   defense: 0
-  duration: 0
+  duration: 6
+  isBuff: 1
+  isDebuff: 0

@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: PaladinStats
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Paladin
-  health: 0
-  stamina: 0
-  power: 0
-  defense: 0
-  intelligence: 0
+  health: 100
+  stamina: 75
+  power: 25
+  defense: 50
+  intelligence: 75
   speed: 10
+  projectileSpeed: 0
+  cooldown: 0
+  duration: 0
+  player: {fileID: 0}

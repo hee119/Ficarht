@@ -11,6 +11,7 @@ public class CharacterStats : ScriptableObject
     public float defense; // 방어력
     public float intelligence; // 지식
     public float speed; // 속도
+    public float runSpeed; // 속도
     public float projectileSpeed;
     public float cooldown;
     public float duration;

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_VFX_Arrows
-  m_Shader: {fileID: 4800000, guid: b8316386d8e5ff84093866f81e518acc, type: 3}
+  m_Shader: {fileID: 4800000, guid: 74e4d110813b441d48e54d613f4ed924, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _ColorTexture:
-        m_Texture: {fileID: 2800000, guid: f94704b94f24b3c43b1d06cbd156623b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 112c36aa6fb6b31459a6f24f67ca6df1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ColorTexture2:
@@ -32,7 +32,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DissolveMask:
-        m_Texture: {fileID: 2800000, guid: f94704b94f24b3c43b1d06cbd156623b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 112c36aa6fb6b31459a6f24f67ca6df1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistoMask:
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
-        m_Texture: {fileID: 2800000, guid: f94704b94f24b3c43b1d06cbd156623b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 112c36aa6fb6b31459a6f24f67ca6df1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:

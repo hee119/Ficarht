@@ -11,4 +11,7 @@ public class SkillData : ScriptableObject
     public float coolTime;
     public float defense;
     public float duration;
+    public bool isBuff;
+    public bool isDebuff;
+    public float burnDamage;
 }

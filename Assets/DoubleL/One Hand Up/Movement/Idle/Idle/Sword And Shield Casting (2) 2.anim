@@ -28985,7 +28985,7 @@ AnimationClip:
   m_Events:
   - time: 0.43333334
     functionName: GetEffect
-    data: Defense_Boost
+    data: PaladinHolySword
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

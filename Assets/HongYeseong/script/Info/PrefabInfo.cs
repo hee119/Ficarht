@@ -12,6 +12,9 @@ public class PrefabInfo : MonoBehaviour
     public float coolTime;
     public float defense;
     public float duration;
+    public bool isBuff;
+    public bool isDebuff;
+    public float burnDamage;
 
 
     public void Awake()

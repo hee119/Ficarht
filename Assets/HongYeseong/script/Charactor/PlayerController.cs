@@ -27,6 +27,21 @@ public class PlayerController : NetworkBehaviour
     // Mirror 없는 싱글 테스트에서도 입력 처리
     private bool IsLocallyControlled => isOwned || !NetworkClient.active;
 
+    public float mouseSensitivity = 100f;
+
+    private float mouseInputX = 0;
+    private float mouseInputY = 0;
+
+    [Header("Jump")]
+    public float jumpForce = 5f;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundCheckDistance = 0.4f;
+    public LayerMask groundLayer;
+
+    public bool isRoll = false;
+    
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -38,9 +53,11 @@ public class PlayerController : NetworkBehaviour
     {
         if (characterStats != null)
         {
-            walkSpeed = characterStats.walkSpeed;
-            runSpeed = characterStats.walkSpeed * 2f;
+            walkSpeed = characterStats.speed;
+            runSpeed = characterStats.runSpeed;
         }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // ─────────────────────────────────────────────
@@ -59,7 +76,7 @@ public class PlayerController : NetworkBehaviour
     void Update()
     {
         if (!IsLocallyControlled) return;
-        if (isAttacking) return;
+        if (isAttacking || isRoll) return;
 
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
         if (pn != null && !pn.CanMove()) return;
@@ -68,24 +85,30 @@ public class PlayerController : NetworkBehaviour
             ? (isRunning ? runSpeed : walkSpeed)
             : 0f;
 
-        if (animator != null)
-        {
-            animator.SetFloat("MoveX", moveInput.x);
-            animator.SetFloat("MoveY", moveInput.z);
-            animator.SetFloat("Speed", currentSpeed);
-        }
+        animator.SetFloat("MoveX", moveInput.x);
+        animator.SetFloat("MoveY", moveInput.z);
+        animator.SetFloat("Speed", currentSpeed);
+
+        // Ground Check 레이 보기
+        Debug.DrawRay(
+            groundCheck.position,
+            Vector3.down * groundCheckDistance,
+            IsGrounded() ? Color.green : Color.red
+        );
     }
 
     void FixedUpdate()
     {
         if (!IsLocallyControlled) return;
-        if (isAttacking) return;
+        if (isAttacking || isRoll) return;
 
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
         if (pn != null && !pn.CanMove()) return;
 
-        Vector3 velocity = moveInput * currentSpeed;
+        Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
+
         velocity.y = rb.linearVelocity.y;
+
         rb.linearVelocity = velocity;
     }
 
@@ -96,7 +119,12 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsLocallyControlled) return;
         Vector2 input = context.ReadValue<Vector2>();
-        moveInput = new Vector3(input.x, 0f, input.y).normalized;
+
+        moveInput = new Vector3(
+            input.x,
+            0f,
+            input.y
+        ).normalized;
     }
 
     public void OnRun(InputAction.CallbackContext context)
@@ -106,6 +134,49 @@ public class PlayerController : NetworkBehaviour
         if (context.canceled) isRunning = false;
     }
 
+    // =========================
+    // JUMP INPUT
+    // =========================
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (!context.started)
+            return;
+
+        bool grounded = IsGrounded();
+
+        Debug.Log($"Grounded : {grounded}");
+
+        if (grounded)
+        {
+            rb.AddForce(
+                Vector3.up * jumpForce,
+                ForceMode.Impulse
+            );
+
+            Debug.Log("점프!");
+        }
+    }
+
+    // =========================
+    // MOUSE LOOK
+    // =========================
+    public void OnMouseLook(InputAction.CallbackContext context)
+    {
+        Vector2 mouseInput = context.ReadValue<Vector2>();
+
+        mouseInputY += mouseInput.x * mouseSensitivity * Time.deltaTime;
+
+        // TPS라서 플레이어는 좌우만 회전
+        transform.rotation = Quaternion.Euler(
+            0f,
+            mouseInputY,
+            0f
+        );
+    }
+
+    // =========================
+    // ATTACK INPUT
+    // =========================
     public void OnAttack(InputAction.CallbackContext context)
     {
         if (!IsLocallyControlled) return;
@@ -150,5 +221,53 @@ public class PlayerController : NetworkBehaviour
             animator.SetTrigger("Attack");
         yield return new WaitForSeconds(1f);
         isAttacking = false;
+    }
+    
+    public bool IsGrounded()
+    {
+        bool isGrounded = Physics.Raycast(
+            groundCheck.position,
+            Vector3.down,
+            groundCheckDistance,
+            groundLayer
+        );
+
+        return isGrounded;
+    }
+
+    public void Roll()
+    {
+        Debug.Log("aaaa");
+        StartCoroutine(IERoll());
+    }
+
+    public IEnumerator IERoll()
+    {
+        Debug.Log("kkk");
+        isRoll = true;
+        rb.linearVelocity = Vector3.zero;
+        float duration = 0.7f;
+        float elapsed = 0f;
+
+        Vector3 start = transform.position;
+        Vector3 target = moveInput != Vector3.zero ? start + transform.TransformDirection(moveInput) * 4f : start + transform.forward * 4f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            rb.MovePosition(
+                Vector3.Lerp(start, target, elapsed / duration)
+            );
+
+            yield return null;
+        }
+        isRoll = false;
+    }
+    
+    public void RefreshSpeed()
+    {
+        walkSpeed = characterStats.speed;
+        runSpeed = characterStats.runSpeed;
     }
 }
