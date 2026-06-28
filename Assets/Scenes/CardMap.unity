@@ -7868,7 +7868,7 @@ MonoBehaviour:
   collectButtonName: Collect_Button
   drawCharacterCards: 1
   drawBuffCards: 3
-  drawTrapCards: 5
+  drawTrapCards: 4
   requiredCharacterCards: 1
   requiredBuffCards: 2
   requiredTrapCards: 2

@@ -17,6 +17,7 @@ public class CharaStat : MonoBehaviour
     private Animator animator;
     public GameObject iceObject;
     public GameObject faintingObject;
+    public GameObject fireObject;
     public string faintingAnimationName = "Stun";
     private float burnDamage;
     private float slowAmount;
@@ -90,6 +91,9 @@ public class CharaStat : MonoBehaviour
         if (faintingObject != null)
             faintingObject.SetActive(false);
         
+        if (fireObject != null)
+            fireObject.SetActive(false);
+
         animator = GetComponent<Animator>();
 
         if (animator == null)
@@ -128,7 +132,6 @@ public class CharaStat : MonoBehaviour
         {
             staminaBar.maxValue = characterStats.stamina;
         }
-        
         CacheRenderers();
 
     }
@@ -242,6 +245,7 @@ public class CharaStat : MonoBehaviour
 
     public void Burn(float duration, float damagePerSecond)
     {
+        fireObject.SetActive(true);
         burnDamage = damagePerSecond;
         ApplyStatus(Status.Burn, duration);
     }
@@ -321,6 +325,7 @@ public class CharaStat : MonoBehaviour
             Hit(health / burnDamage);
             yield return new WaitForSeconds(1f);
         }
+        fireObject.SetActive(false);
     }
 
     private IEnumerator StatusTimer(float duration)

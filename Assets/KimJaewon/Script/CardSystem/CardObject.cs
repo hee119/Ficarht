@@ -265,6 +265,7 @@ public class CardObject : MonoBehaviour
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
+            CardTooltipUI.Instance?.Hide();
         }
 
         RestoreRenderOrder();
@@ -294,6 +295,7 @@ public class CardObject : MonoBehaviour
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
+            CardTooltipUI.Instance?.Hide();
         }
 
         targetPosition = transform.position;
@@ -613,6 +615,9 @@ public class CardObject : MonoBehaviour
             GetRestScale() * hoverScaleMultiplier;
 
         BoostRenderOrder();
+
+        CardTooltipUI.GetOrCreate()
+            .Show(data);
     }
 
     private void HoverExit()
@@ -633,9 +638,12 @@ public class CardObject : MonoBehaviour
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
+            CardTooltipUI.Instance?.Hide();
         }
 
         RestoreRenderOrder();
+
+        CardTooltipUI.Instance?.Hide();
     }
 
     // -------------------------------------------------------
@@ -665,6 +673,8 @@ public class CardObject : MonoBehaviour
         }
 
         BoostRenderOrder();
+
+        CardTooltipUI.Instance?.Hide();
 
         if (data != null)
         {
