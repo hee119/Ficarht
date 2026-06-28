@@ -5,14 +5,158 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Charprefap/Fire Effects Red.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Charprefap/Fire Effects Red.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Head Hit.fbx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BaseCharacter@Head Hit.fbx.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/1.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/2.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/3.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/4.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/Ficarght_Card (2).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/Ficarght_Card (2).png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/Materials.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/Materials/2.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5)/Materials/2.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardTooltipUI.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardTooltipUI.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Trap_Card.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Trap_Card.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mirror/Editor/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mirror/Editor/.idea/indexLayout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mirror/Editor/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/Plane.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/Plane.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/fire_6x6.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/fire_6x6.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/glow_v1.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/glow_v1.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/magic_line.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Materials/magic_line.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects Blue.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects Blue.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects Green.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects Green.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects Purple.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects Purple.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects White.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Prefabs/Fire Effects White.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Scene.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Scene/Demo Fire Effects.unity" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Scene/Demo Fire Effects.unity.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/Plane.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/Plane.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/fire_6x6.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/fire_6x6.psd.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/glow_v1.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/glow_v1.psd.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/magic_line.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PolyOne/Fire Effects/Texture/magic_line.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunInfo.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunInfo.json.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunSettings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunSettings.json.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/1.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/2.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/3.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/4.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Ficarght_Card.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Ficarght_Card.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/BattleSceneInitializer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/BattleSceneInitializer.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProjectSettings/VirtualProjectsConfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/CharAnimAsset/Mage/AnimatorControllers/MageAnim.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/CharAnimAsset/Mage/AnimatorControllers/MageAnim.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CameraFollow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CameraFollow.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CharaStat.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CharaStat.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Rain Particles/Materials/Rain Ground Hit.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Rain Particles/Materials/Rain Ground Hit.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Rain Particles/Materials/Rain Sprite.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Rain Particles/Materials/Rain Sprite.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CoolTime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CoolTime.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Info/PrefabInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Manager/PoolManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Manager/PoolManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/SkillInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/SkillInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/MageSkillLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/MageSkillLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/1_Exercise.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/1_Exercise.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/2_Prayer.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/2_Prayer.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/3_Coffee.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/3_Coffee.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/4_Determination.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/4_Determination.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/5_Repair.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/5_Repair.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/6_Iron armor.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/6_Iron armor.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/7_Morning.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/7_Morning.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/8_Running.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Buff/8_Running.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Char/Char_Bard.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Char/Char_Bard.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Char/Char_Berserker.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Char/Char_Berserker.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Char/Char_Mage.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Data/Char/Char_Mage.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/1_Paladin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/1_Paladin.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/2_Berserker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/2_Berserker.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/3_Magician.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/3_Magician.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/4_Bard.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Prefab/Char/4_Bard.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Bard.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Bard.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Berserker.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Berserker.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Mage.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Mage.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Paladin.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Card/Card Stats/CharacterStats_Paladin.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/15.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/15.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/16.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/16.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/17.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/17.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/18.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/18.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/19.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/19.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/20.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/This is Card/20.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/Buffapplier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/Buffapplier.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSystemManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/CardSystemManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/StartButtonSceneLoader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/StartButtonSceneLoader.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Kimsechan/CardMap_MainDesplay.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Kimsechan/CardMap_MainDesplay.unity.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/IMG/Ficarght_Card (5).meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Editor/NetworkInformationPreview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Editor/NetworkInformationPreview.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/Input/RaycastInputProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/Input/RaycastInputProcessor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/Input/RaycastSelector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/Input/RaycastSelector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/CardMap.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/CardMap.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Desert.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Desert.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Dungeon.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Dungeon.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Forest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Forest.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Maze(SecretMap).unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Maze(SecretMap).unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Settings/PC_RPAsset.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/PC_RPAsset.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Settings/UniversalRenderPipelineGlobalSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/UniversalRenderPipelineGlobalSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Desert.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Desert.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Dungeon.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Dungeon.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Forest.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Forest.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Lava.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Lava.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Maze.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Maze.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/GameNetworkManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/GameNetworkManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/MenuController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/MenuController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/NetworkCardBridge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/NetworkCardBridge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/PlayerNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/PlayerNetwork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/RoomNetworkManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/RoomNetworkManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/UI/MapCardDisplay.uss" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/UI/MapCardDisplay.uss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/SkyIsland.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/SkyIsland.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/SnowMountain.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/SnowMountain.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Snake3D/Battle Axe/Shaders/RenderPipelineMaterialConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Snake3D/Battle Axe/Shaders/RenderPipelineMaterialConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/UnityConnectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/UnityConnectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +203,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "main 병합 중",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -150,7 +294,7 @@
       <workItem from="1782478759673" duration="7548000" />
       <workItem from="1782625064685" duration="1325000" />
       <workItem from="1782627936246" duration="5000" />
-      <workItem from="1782650760432" duration="2298000" />
+      <workItem from="1782650760432" duration="3043000" />
     </task>
     <servers />
   </component>
