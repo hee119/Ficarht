@@ -1402,7 +1402,7 @@ Transform:
   m_GameObject: {fileID: 452761071}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33.8, y: 32.91, z: -32.26}
+  m_LocalPosition: {x: 33.8, y: 34.44, z: -32.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2354,6 +2354,7 @@ MonoBehaviour:
   offset: {x: 0, y: 8, z: -6}
   pitchAngle: 50
   smoothSpeed: 8
+  mouseSensitivity: 0.2
   searchInterval: 0.5
 --- !u!1001 &747322157
 PrefabInstance:
@@ -6032,7 +6033,7 @@ Transform:
   m_GameObject: {fileID: 2017921970}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 41.38, y: 33.83, z: 27.7}
+  m_LocalPosition: {x: 41.38, y: 36.92, z: 27.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
