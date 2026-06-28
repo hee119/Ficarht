@@ -197,6 +197,7 @@ public class CharaStat : MonoBehaviour
         if (healthBar != null)
             healthBar.value = health;
 
+        animator.SetTrigger("Hit");
         StopAllCoroutines();
         StartCoroutine(HitFlash());
     }
@@ -440,8 +441,7 @@ public class CharaStat : MonoBehaviour
                 stamina += staminaRegenRate * Time.deltaTime;
                 stamina = Mathf.Min(stamina, maxStamina);
 
-                if (staminaBar != null) 
-                    staminaBar.value = stamina;
+                UpdateStaminaUI();
             }
 
             yield return null;
@@ -472,9 +472,14 @@ public class CharaStat : MonoBehaviour
             stamina -= drainRate * Time.deltaTime;
             stamina = Mathf.Max(stamina, 0f);
 
-            if (staminaBar != null)
-                staminaBar.value = stamina;
+            UpdateStaminaUI();
         }
     }
     
+    
+    private void UpdateStaminaUI()
+    {
+        if (staminaBar != null)
+            staminaBar.value = stamina;
+    }
 }

@@ -58,21 +58,24 @@ public class MageSkillLogic : MonoBehaviour
         if (targetStat == null)
             Debug.LogError($"{name} : targetStat이 NULL입니다.");
 
-        switch (skillType)
+        if (other.gameObject == target)
         {
-            case SkillType.ice:
-                targetStat.Hit(prefabInfo.power);
-                targetStat.Freezing(prefabInfo.duration);
-                break;
+            switch (skillType)
+            {
+                case SkillType.ice:
+                    targetStat.Hit(prefabInfo.power);
+                    targetStat.Freezing(prefabInfo.duration);
+                    break;
 
-            case SkillType.fire:
-                targetStat.Hit(prefabInfo.power);
-                targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
-                break;
+                case SkillType.fire:
+                    targetStat.Hit(prefabInfo.power);
+                    targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
+                    break;
 
-            case SkillType.defaultAttack:
-                targetStat.Hit(prefabInfo.power);
-                break;
+                case SkillType.defaultAttack:
+                    targetStat.Hit(prefabInfo.power);
+                    break;
+            }
         }
     }
 }
