@@ -70,17 +70,30 @@ public class StartButtonSceneLoader : MonoBehaviour
 
     private IEnumerator SinglePlayerSceneLoad(string targetScene)
     {
-        // 맵 카드 UI 표시 (뒤집기 연출 포함)
         MapCardDisplayUI.Instance?.ShowMapCard(targetScene);
 
-        // 카드 연출이 끝날 때까지 대기
         float wait = MapCardDisplayUI.Instance != null
             ? MapCardDisplayUI.Instance.displayDuration
             : 3f;
         yield return new WaitForSecondsRealtime(wait);
 
-        // 씬 이동 → LoadingScreenUI가 SceneManager.sceneLoaded에서 자동으로 Show
+        // ✅ 씬 이름에 따라 스폰포인트 ID 저장
+        string spawnID = GetSpawnPointID(targetScene);
+        PlayerPrefs.SetString("SpawnPointID", spawnID);
+
         SceneManager.LoadScene(targetScene);
+    }
+    
+    // ✅ 씬 이름 → 스폰포인트 ID 매핑
+    private string GetSpawnPointID(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "Forest":  return "spawn_Forest";
+            case "Desert":  return "spawn_Desert";
+            case "Castle":  return "spawn_Castle";
+            default:        return "spawn_Default";
+        }
     }
 
     // -------------------------------------------------------
