@@ -100,7 +100,7 @@ public class NetworkCardBridge : NetworkBehaviour
         if (stats == null)
         {
             Debug.LogWarning("[NetworkCardBridge] RuntimeStats null - 기본값으로 제출");
-            CmdSubmitStats(100f, 50f, 50f, 50f, 50f, new int[0], 0, "");
+            CmdSubmitStats(100f, 50f, 50f, 50f, 50f, new int[0], new int[0], 0, "");
             return;
         }
 
@@ -124,13 +124,17 @@ public class NetworkCardBridge : NetworkBehaviour
         for (int i = 0; i < skills.Count; i++)
             skillInts[i] = (int)skills[i];
 
+        int[] trapInts =
+            CardSystemManager.Instance?.GetSelectedTrapIds()
+            ?? new int[0];
+
         // 맵 카드에서 씬 이름 추출
         string mapScene = CardSystemManager.Instance?.GetSelectedMapScene() ?? "";
 
         CmdSubmitStats(stats.maxHealth, stats.stamina, stats.power,
-            stats.defense, stats.intelligence, skillInts, characterId, mapScene);
+            stats.defense, stats.intelligence, skillInts, trapInts, characterId, mapScene);
 
-        Debug.Log($"[NetworkCardBridge] 제출: HP={stats.maxHealth} 캐릭터ID={characterId} 맵={mapScene}");
+        Debug.Log($"[NetworkCardBridge] 제출: HP={stats.maxHealth} 캐릭터ID={characterId} 맵={mapScene} 함정={trapInts.Length}");
     }
 
     // ─────────────────────────────────────────────
@@ -139,7 +143,7 @@ public class NetworkCardBridge : NetworkBehaviour
 
     [Command]
     void CmdSubmitStats(float health, float stamina, float power,
-        float defense, float intelligence, int[] skillInts, int characterId, string mapScene)
+        float defense, float intelligence, int[] skillInts, int[] trapInts, int characterId, string mapScene)
     {
         PlayerNetwork playerNetwork = GetComponent<PlayerNetwork>();
         if (playerNetwork != null)
@@ -152,6 +156,7 @@ public class NetworkCardBridge : NetworkBehaviour
             foreach (int id in skillInts)
                 skills.Add((SkillID)id);
             playerNetwork.RegisterSkills(skills);
+            playerNetwork.RegisterTraps(trapInts);
         }
 
         Debug.Log($"[Server] 플레이어 {netId} 스탯 적용 (캐릭터ID={characterId} 맵={mapScene})");

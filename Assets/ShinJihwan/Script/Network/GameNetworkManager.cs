@@ -53,6 +53,7 @@ public class GameNetworkManager : NetworkManager
     void SpawnCharacters()
     {
         int spawnIndex = 0;
+        List<PlayerNetwork> battlePlayers = new List<PlayerNetwork>();
 
         foreach (var conn in NetworkServer.connections.Values)
         {
@@ -72,15 +73,35 @@ public class GameNetworkManager : NetworkManager
             GameObject character = Instantiate(prefabToSpawn);
             character.transform.position = spawnPoints[spawnIndex % spawnPoints.Length];
 
+            PlayerNetwork characterNet = character.GetComponent<PlayerNetwork>();
+
+            if (characterNet != null && playerNet != null && characterNet != playerNet)
+            {
+                characterNet.CopyBattleSetupFrom(playerNet);
+            }
+
+            PlayerController controller = character.GetComponent<PlayerController>();
+
+            if (controller != null)
+            {
+                controller.ServerSetOwnerPlayerNetwork(playerNet);
+            }
+
             NetworkServer.Spawn(character, conn);
 
             // 플레이어 오브젝트에 현재 캐릭터 참조 저장
             if (playerNet != null)
+            {
                 playerNet.currentCharacter = character;
+                battlePlayers.Add(characterNet != null ? characterNet : playerNet);
+            }
 
             Debug.Log($"[Server] 플레이어 {conn.connectionId} → 캐릭터ID={charId} 스폰 위치={character.transform.position}");
             spawnIndex++;
         }
+
+        Trap_Card.GetOrCreate()
+            .InitializeFromPlayers(battlePlayers);
     }
 
 

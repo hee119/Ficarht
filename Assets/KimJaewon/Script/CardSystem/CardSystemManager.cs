@@ -642,6 +642,29 @@ public class CardSystemManager : MonoBehaviour
         NetworkCardBridge.LocalInstance?.SubmitCardSelection();
     }
 
+
+    public int[] GetSelectedTrapIds()
+    {
+        List<int> trapIds = new List<int>();
+
+        foreach (var slot in trapSlots)
+        {
+            CardData data = slot?.currentCard?.data;
+
+            if (data == null || data.cardType != CardType.Trap)
+                continue;
+
+            TrapID trapId = data.GetTrapID();
+
+            if (trapId == TrapID.None)
+                continue;
+
+            trapIds.Add((int)trapId);
+        }
+
+        return trapIds.ToArray();
+    }
+
     // -------------------------------------------------------
     // 네트워크 전용 메서드
     // -------------------------------------------------------
