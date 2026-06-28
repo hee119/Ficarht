@@ -811,6 +811,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mage
       objectReference: {fileID: 0}
+    - target: {fileID: 6901572479294296042, guid: e68595dd7dde54b91bd73c723fe1ec38, type: 3}
+      propertyPath: sceneId
+      value: 1052211145
+      objectReference: {fileID: 0}
+    - target: {fileID: 6901572479294296042, guid: e68595dd7dde54b91bd73c723fe1ec38, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
