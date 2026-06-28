@@ -26,7 +26,6 @@ public static class BuffApplier
             BuffEffect effect = slot.currentCard.data.buffEffect;
             targetStats.ApplyBuff(effect);
 
-            Debug.Log($"[BuffApplier] '{slot.currentCard.data.cardName}' 적용 완료 → {targetStats}");
         }
     }
 
@@ -41,6 +40,5 @@ public static class BuffApplier
             return;
         }
         targetStats.ApplyBuff(buffCard.buffEffect);
-        Debug.Log($"[BuffApplier] '{buffCard.cardName}' 단일 적용 → {targetStats}");
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine.Serialization;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.InputSystem;
+using MTextButton = TinyGiantStudio.Text.Button;
 
 public class CardSystemManager : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class CardSystemManager : MonoBehaviour
     public List<CardData> trapDeck =
         new List<CardData>();
 
+    public List<CardData> mapDeck =
+        new List<CardData>();
+
     [Header("--- 드로우 포지션 (월드) ---")]
     public List<Transform> characterDrawPositions =
         new List<Transform>();
@@ -28,6 +32,9 @@ public class CardSystemManager : MonoBehaviour
 
     [FormerlySerializedAs("skillDrawPositions")]
     public List<Transform> trapDrawPositions =
+        new List<Transform>();
+
+    public List<Transform> mapDrawPositions =
         new List<Transform>();
 
     [Header("--- 슬롯 ---")]
@@ -41,8 +48,23 @@ public class CardSystemManager : MonoBehaviour
     public List<CardSlot> trapSlots =
         new List<CardSlot>();
 
+    public List<CardSlot> mapSlots =
+        new List<CardSlot>();
+
     [Header("--- UI ---")]
     public TextMeshProUGUI timerText;
+
+    [Header("--- Collect 버튼 ---")]
+    public string collectButtonName = "Collect_Button";
+
+    [Header("--- 선택 완료 조건 ---")]
+    public int requiredCharacterCards = 1;
+
+    public int requiredBuffCards = 2;
+
+    public int requiredTrapCards = 2;
+
+    public float selectionMessageDuration = 1.5f;
 
     [Header("--- 타이머 ---")]
     public float turnDuration = 60f;
@@ -52,11 +74,26 @@ public class CardSystemManager : MonoBehaviour
     public List<CardObject> playerHand =
         new List<CardObject>();
 
+    private readonly List<CardObject> drawOrder =
+        new List<CardObject>();
+
     private bool isTurnActive = false;
+
+    // 맵 카드 드로우 허용 여부 (멀티: Host만 true, Client는 false)
+    private bool _drawMapCard = true;
+
+    // 랜덤으로 선택된 맵 카드 데이터 (물리 오브젝트 없이 저장)
+    private CardData _selectedMapCardData = null;
 
     private float turnTimer = 0f;
 
+    private float selectionMessageTimer = 0f;
+
     private RuntimeStats myStats = null;
+
+    private int lastCollectFrame = -1;
+
+    private MTextButton collectButton;
 
     private void Awake()
     {
@@ -71,6 +108,8 @@ public class CardSystemManager : MonoBehaviour
 
     private void Start()
     {
+        BindCollectButton();
+
         SetTimerText("3D 박스를 클릭하세요!");
     }
 
@@ -105,7 +144,12 @@ public class CardSystemManager : MonoBehaviour
                 hit.collider.name == "CardBox"
             )
             {
-                StartGame();
+                // 멀티: 서버에 시작 요청 → RpcStartCards → StartGameExternal()
+                // 싱글(로컬 테스트): 바로 StartGame()
+                if (NetworkCardBridge.LocalInstance != null)
+                    NetworkCardBridge.LocalInstance.CmdRequestStartCards();
+                else
+                    StartGame();
             }
         }
     }
@@ -115,15 +159,6 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     public void StartGame()
     {
-        
-        CheckAllCardPrefabs();
-
-        Debug.Log("[CardSystemManager] 게임 시작!");
-
-        ClearAll();
-        
-        Debug.Log("[CardSystemManager] 게임 시작!");
-
         ClearAll();
 
         // 캐릭터 1장
@@ -140,12 +175,25 @@ public class CardSystemManager : MonoBehaviour
             buffDrawPositions
         );
 
-        // 함정 3장
+        // 함정 2장
         DrawCards(
             trapDeck,
-            3,
+            2,
             trapDrawPositions
         );
+
+        // 맵 카드 - Host만 (멀티 시), 싱글은 항상
+        // 물리 오브젝트 없이 랜덤으로 하나 선택 → UI로만 표시
+        _selectedMapCardData = null;
+        if (_drawMapCard && mapDeck != null && mapDeck.Count > 0)
+        {
+            var validMaps = mapDeck.FindAll(c => c != null);
+            if (validMaps.Count > 0)
+            {
+                _selectedMapCardData = validMaps[Random.Range(0, validMaps.Count)];
+                Debug.Log($"[CardSystem] 맵 카드 선택: {_selectedMapCardData.cardName} ({_selectedMapCardData.mapSceneName})");
+            }
+        }
 
         // 부채꼴 정렬
         HandLayoutManager.Instance
@@ -174,29 +222,43 @@ public class CardSystemManager : MonoBehaviour
             return;
         }
 
+        if (positions == null || positions.Count == 0)
+        {
+            Debug.LogWarning("드로우 포지션이 비어있습니다. Inspector에서 연결 확인.");
+            return;
+        }
+
         List<CardData> availableCards =
+            new List<CardData>();
+
+        List<CardData> validCards =
             new List<CardData>();
 
         foreach (var card in deck)
         {
             if (card != null)
-                availableCards.Add(card);
+            {
+                validCards.Add(card);
+            }
         }
 
-        if (availableCards.Count == 0)
+        if (validCards.Count == 0)
         {
             Debug.LogWarning("유효한 카드가 없습니다.");
             return;
         }
+
+        availableCards.AddRange(validCards);
 
         for (int i = 0; i < count; i++)
         {
             if (availableCards.Count == 0)
             {
                 Debug.LogWarning(
-                    $"카드 부족! 요청:{count}"
+                    $"카드 종류 부족! 요청:{count}, 덱:{validCards.Count}. 같은 카드가 다시 나올 수 있습니다."
                 );
-                break;
+
+                availableCards.AddRange(validCards);
             }
 
             Transform spawnTf =
@@ -249,9 +311,8 @@ public class CardSystemManager : MonoBehaviour
 
             playerHand.Add(card);
 
-            Debug.Log(
-                $"[CardSystemManager] '{data.cardName}' 드로우"
-            );
+            drawOrder.Add(card);
+
         }
     }
 
@@ -268,8 +329,260 @@ public class CardSystemManager : MonoBehaviour
         HandLayoutManager.Instance
             ?.ReArrange(playerHand);
 
-        Debug.Log(
-            $"[CardSystemManager] '{card.data.cardName}' 배치됨. 남은 핸드: {playerHand.Count}장"
+    }
+
+    public void ReturnPlacedCardToHand(CardObject card)
+    {
+        if (card == null || !isTurnActive)
+            return;
+
+        CardSlot slot = card.GetPlacedSlot();
+
+        if (slot == null || !slot.TryRemoveCard(card))
+            return;
+
+        card.ReturnToHand();
+
+        if (!playerHand.Contains(card))
+        {
+            playerHand.Add(card);
+        }
+
+        SortHandByDrawOrder();
+
+        HandLayoutManager.Instance
+            ?.ReArrange(playerHand);
+
+    }
+
+    private void BindCollectButton()
+    {
+        if (string.IsNullOrWhiteSpace(collectButtonName))
+            return;
+
+        GameObject collectButtonObject =
+            GameObject.Find(collectButtonName);
+
+        if (collectButtonObject == null)
+        {
+            Debug.LogWarning(
+                $"[CardSystemManager] '{collectButtonName}' 버튼을 찾지 못했습니다."
+            );
+
+            return;
+        }
+
+        collectButton =
+            collectButtonObject.GetComponent<MTextButton>();
+
+        if (collectButton == null)
+        {
+            Debug.LogWarning(
+                $"[CardSystemManager] '{collectButtonName}'에 M3D Button 컴포넌트가 없습니다."
+            );
+
+            return;
+        }
+
+        collectButton.pressCompleteEvent
+            .RemoveListener(CollectPlacedCards);
+
+        collectButton.pressCompleteEvent
+            .AddListener(CollectPlacedCards);
+    }
+
+    public void CollectPlacedCards()
+    {
+        if (lastCollectFrame == Time.frameCount)
+            return;
+
+        lastCollectFrame = Time.frameCount;
+
+        if (!isTurnActive)
+        {
+            ShowSelectionMessage(
+                "카드를 먼저 뽑으세요."
+            );
+
+            return;
+        }
+
+        int collectedCount = 0;
+
+        collectedCount +=
+            CollectCardsFromSlots(characterSlots);
+
+        collectedCount +=
+            CollectCardsFromSlots(buffSlots);
+
+        collectedCount +=
+            CollectCardsFromSlots(trapSlots);
+
+        if (collectedCount == 0)
+        {
+            ShowSelectionMessage(
+                "회수할 카드가 없습니다."
+            );
+
+            return;
+        }
+
+        SortHandByDrawOrder();
+
+        HandLayoutManager.Instance
+            ?.ReArrange(playerHand);
+
+    }
+
+    private void SortHandByDrawOrder()
+    {
+        playerHand.RemoveAll(card => card == null);
+
+        playerHand.Sort(
+            (left, right) =>
+                GetDrawOrderIndex(left)
+                .CompareTo(GetDrawOrderIndex(right))
+        );
+    }
+
+    private int GetDrawOrderIndex(
+        CardObject card
+    )
+    {
+        int index = drawOrder.IndexOf(card);
+
+        return index >= 0
+            ? index
+            : int.MaxValue;
+    }
+
+    private int CollectCardsFromSlots(
+        List<CardSlot> slots
+    )
+    {
+        if (slots == null)
+            return 0;
+
+        int collectedCount = 0;
+
+        foreach (var slot in slots)
+        {
+            CardObject card = slot?.currentCard;
+
+            if (card == null)
+                continue;
+
+            if (!slot.TryRemoveCard(card))
+                continue;
+
+            card.ReturnToHand();
+
+            if (!playerHand.Contains(card))
+            {
+                playerHand.Add(card);
+            }
+
+            collectedCount++;
+        }
+
+        return collectedCount;
+    }
+
+    public bool IsSelectionComplete()
+    {
+        if (!isTurnActive)
+            return false;
+
+        return
+            CountPlacedCards(characterSlots) >=
+            requiredCharacterCards &&
+            CountPlacedCards(buffSlots) >=
+            requiredBuffCards &&
+            CountPlacedCards(trapSlots) >=
+            requiredTrapCards;
+    }
+
+    public bool CanMoveToBattleScene()
+    {
+        if (!isTurnActive)
+        {
+            ShowSelectionMessage(
+                "카드더미를 클릭해서 카드를 먼저 뽑으세요."
+            );
+
+            return false;
+        }
+
+        int characterCount =
+            CountPlacedCards(characterSlots);
+
+        int buffCount =
+            CountPlacedCards(buffSlots);
+
+        int trapCount =
+            CountPlacedCards(trapSlots);
+
+        if (characterCount < requiredCharacterCards)
+        {
+            ShowSelectionMessage(
+                $"캐릭터 카드를 {requiredCharacterCards}장 배치해야 합니다. ({characterCount}/{requiredCharacterCards})"
+            );
+
+            return false;
+        }
+
+        if (buffCount < requiredBuffCards)
+        {
+            ShowSelectionMessage(
+                $"버프 카드를 {requiredBuffCards}장 배치해야 합니다. ({buffCount}/{requiredBuffCards})"
+            );
+
+            return false;
+        }
+
+        if (trapCount < requiredTrapCards)
+        {
+            ShowSelectionMessage(
+                $"함정 카드를 {requiredTrapCards}장 배치해야 합니다. ({trapCount}/{requiredTrapCards})"
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private int CountPlacedCards(
+        List<CardSlot> slots
+    )
+    {
+        if (slots == null)
+            return 0;
+
+        int count = 0;
+
+        foreach (var slot in slots)
+        {
+            if (slot?.currentCard != null)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private void ShowSelectionMessage(
+        string message
+    )
+    {
+        selectionMessageTimer =
+            selectionMessageDuration;
+
+        SetTimerText(message);
+
+        Debug.LogWarning(
+            $"[CardSystemManager] {message}"
         );
     }
 
@@ -283,9 +596,16 @@ public class CardSystemManager : MonoBehaviour
 
         turnTimer -= Time.deltaTime;
 
-        SetTimerText(
-            $"남은 시간: {Mathf.CeilToInt(turnTimer)}초"
-        );
+        if (selectionMessageTimer > 0f)
+        {
+            selectionMessageTimer -= Time.deltaTime;
+        }
+        else
+        {
+            SetTimerText(
+                $"남은 시간: {Mathf.CeilToInt(turnTimer)}초"
+            );
+        }
 
         if (turnTimer <= 0f)
         {
@@ -298,6 +618,7 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     private void OnTimerEnd()
     {
+        if (!isTurnActive) return; // 중복 호출 방지
         isTurnActive = false;
 
         SetTimerText("시간 종료!");
@@ -310,16 +631,43 @@ public class CardSystemManager : MonoBehaviour
                 buffSlots,
                 myStats
             );
-
-            Debug.Log(
-                $"[CardSystemManager] 버프 적용 후 스탯: {myStats}"
-            );
         }
 
         CardRevealSystem.Instance
             ?.RevealAllCards();
 
         FinalizeCards();
+
+        // 멀티: 서버에 카드 선택 결과 전송
+        NetworkCardBridge.LocalInstance?.SubmitCardSelection();
+    }
+
+    // -------------------------------------------------------
+    // 네트워크 전용 메서드
+    // -------------------------------------------------------
+
+    /// <summary>서버 RpcStartCards()에서 호출 - 네트워크 시작 신호</summary>
+    public void StartGameExternal()
+    {
+        if (isTurnActive) return;
+        StartGame();
+    }
+
+    /// <summary>멀티: NetworkCardBridge.RpcStartCards()에서 Host 여부 전달</summary>
+    public void SetDrawMapCard(bool draw) => _drawMapCard = draw;
+
+    /// <summary>서버 타이머 종료 시 강제 제출 - RpcForceEndCards()에서 호출</summary>
+    public void ForceEndTurn()
+    {
+        if (!isTurnActive) return;
+        turnTimer = 0f; // 타이머 강제 종료 → HandleTimer가 OnTimerEnd 호출
+    }
+
+    /// <summary>서버에서 5초마다 타이머 보정값 수신</summary>
+    public void SyncTimerFromServer(float remaining)
+    {
+        if (!isTurnActive) return;
+        turnTimer = remaining;
     }
 
     // -------------------------------------------------------
@@ -418,6 +766,8 @@ public class CardSystemManager : MonoBehaviour
 
         playerHand.Clear();
 
+        drawOrder.Clear();
+
         List<CardSlot> allSlots =
             new List<CardSlot>();
 
@@ -444,6 +794,47 @@ public class CardSystemManager : MonoBehaviour
     }
 
     // -------------------------------------------------------
+    // 선택된 맵 씬 이름 반환
+    // -------------------------------------------------------
+    public string GetSelectedMapScene()
+    {
+        // 1순위: StartGame에서 랜덤 선택된 맵 카드 데이터
+        if (_selectedMapCardData != null &&
+            !string.IsNullOrEmpty(_selectedMapCardData.mapSceneName))
+            return _selectedMapCardData.mapSceneName;
+
+        // 2순위: playerHand에 있는 맵 카드 (물리 오브젝트가 있을 경우 대비)
+        foreach (var card in playerHand)
+        {
+            if (card?.data?.cardType == CardType.Map &&
+                !string.IsNullOrEmpty(card.data.mapSceneName))
+                return card.data.mapSceneName;
+        }
+
+        // 3순위: mapSlots에 배치된 맵 카드
+        foreach (var slot in mapSlots)
+        {
+            if (slot?.currentCard?.data?.cardType == CardType.Map &&
+                !string.IsNullOrEmpty(slot.currentCard.data.mapSceneName))
+                return slot.currentCard.data.mapSceneName;
+        }
+
+        return "";
+    }
+
+    /// <summary>맵 카드 이름 반환 (MapCardDisplayUI에서 표시용)</summary>
+    public string GetSelectedMapCardName()
+    {
+        return _selectedMapCardData?.cardName ?? "";
+    }
+
+    /// <summary>맵 카드 이미지 반환 (MapCardDisplayUI에서 표시용)</summary>
+    public UnityEngine.Sprite GetSelectedMapCardImage()
+    {
+        return _selectedMapCardData?.cardImage;
+    }
+
+    // -------------------------------------------------------
     // 타이머 텍스트
     // -------------------------------------------------------
     private void SetTimerText(string msg)
@@ -451,45 +842,6 @@ public class CardSystemManager : MonoBehaviour
         if (timerText != null)
         {
             timerText.text = msg;
-        }
-    }
-    
-    private void CheckAllCardPrefabs()
-    {
-        Debug.Log("===== 카드 프리팹 검사 시작 =====");
-
-        CheckDeck(characterDeck);
-        CheckDeck(buffDeck);
-        CheckDeck(trapDeck);
-
-        Debug.Log("===== 카드 프리팹 검사 종료 =====");
-    }
-
-    private void CheckDeck(List<CardData> deck)
-    {
-        foreach (var card in deck)
-        {
-            if (card == null)
-            {
-                Debug.LogError(
-                    "[카드 데이터 누락] CardData가 비어있음"
-                );
-
-                continue;
-            }
-
-            if (card.cardPrefab == null)
-            {
-                Debug.LogError(
-                    $"[프리팹 누락] 이름:{card.cardName} 타입:{card.cardType} 에셋:{card.name}"
-                );
-            }
-            else
-            {
-                Debug.Log(
-                    $"[정상] 이름:{card.cardName} → {card.cardPrefab.name}"
-                );
-            }
         }
     }
 }

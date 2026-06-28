@@ -37,10 +37,8 @@ public class SkillRegistry : MonoBehaviour
 
             SkillID id = slot.currentCard.data.skillID;
             registeredSkills.Add(id);
-            Debug.Log($"[SkillRegistry] 스킬 등록: {id}");
         }
 
-        Debug.Log($"[SkillRegistry] 총 {registeredSkills.Count}개 스킬 등록 완료.");
     }
 
     // -------------------------------------------------------
@@ -74,7 +72,6 @@ public class SkillRegistry : MonoBehaviour
         }
 
         registeredSkills.Remove(id);
-        Debug.Log($"[SkillRegistry] {id} 사용 완료 → 남은 스킬: {registeredSkills.Count}개");
         return true;
     }
 
