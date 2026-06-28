@@ -29,6 +29,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     private List<SkillID> registeredSkills = new List<SkillID>();
 
+    private List<TrapID> registeredTraps = new List<TrapID>();
+
     // ─────────────────────────────────────────────
     // 방 생성 / 참가 (기존 코드 유지)
     // ─────────────────────────────────────────────
@@ -87,7 +89,51 @@ public class PlayerNetwork : NetworkBehaviour
         defense      = def;
         intelligence = intel;
 
+        ApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
+
+        if (netId != 0)
+            RpcApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
+
         Debug.Log($"[Server] {netId} 스탯 적용: HP={hp} STM={stm} PWR={pwr} DEF={def} INT={intel}");
+    }
+
+    [ClientRpc]
+    private void RpcApplyStatsToCharacterComponents(float hp, float stm, float pwr, float def, float intel)
+    {
+        ApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
+    }
+
+    private void ApplyStatsToCharacterComponents(float hp, float stm, float pwr, float def, float intel)
+    {
+        CharaStat charaStat = GetComponent<CharaStat>();
+
+        if (charaStat == null && currentCharacter != null)
+            charaStat = currentCharacter.GetComponent<CharaStat>();
+
+        if (charaStat == null)
+            return;
+
+        charaStat.maxHealth = Mathf.Max(hp, 1f);
+        charaStat.health = charaStat.maxHealth;
+        charaStat.maxStamina = Mathf.Max(stm, 0f);
+        charaStat.stamina = charaStat.maxStamina;
+        charaStat.power = Mathf.Max(pwr, 0f);
+        charaStat.defense = Mathf.Max(def, 0f);
+        charaStat.intelligence = Mathf.Max(intel, 0f);
+
+        if (charaStat.healthBar != null)
+        {
+            charaStat.healthBar.maxValue = charaStat.maxHealth;
+            charaStat.healthBar.value = charaStat.health;
+        }
+
+        if (charaStat.staminaBar != null)
+        {
+            charaStat.staminaBar.maxValue = charaStat.maxStamina;
+            charaStat.staminaBar.value = charaStat.stamina;
+        }
+
+        GetComponent<PlayerController>()?.RefreshSpeed();
     }
 
     [Server]
@@ -95,6 +141,52 @@ public class PlayerNetwork : NetworkBehaviour
     {
         registeredSkills = new List<SkillID>(skills);
         Debug.Log($"[Server] {netId} 스킬 등록: {skills.Count}개");
+    }
+
+    [Server]
+    public void RegisterTraps(int[] trapInts)
+    {
+        registeredTraps.Clear();
+
+        if (trapInts == null)
+            return;
+
+        foreach (int trapInt in trapInts)
+        {
+            TrapID trapId = (TrapID)trapInt;
+
+            if (trapId == TrapID.None)
+                continue;
+
+            registeredTraps.Add(trapId);
+        }
+
+        Debug.Log($"[Server] {netId} 함정 등록: {registeredTraps.Count}개");
+    }
+
+    public List<TrapID> GetRegisteredTraps()
+    {
+        return new List<TrapID>(registeredTraps);
+    }
+
+    [Server]
+    public void CopyBattleSetupFrom(PlayerNetwork source)
+    {
+        if (source == null)
+            return;
+
+        ApplyStats(
+            source.maxHealth,
+            source.stamina,
+            source.power,
+            source.defense,
+            source.intelligence
+        );
+
+        selectedCharacterId = source.selectedCharacterId;
+        selectedMapScene = source.selectedMapScene;
+        registeredSkills = new List<SkillID>(source.registeredSkills);
+        registeredTraps = new List<TrapID>(source.registeredTraps);
     }
 
     // ─────────────────────────────────────────────
@@ -113,11 +205,27 @@ public class PlayerNetwork : NetworkBehaviour
         float reduction  = Mathf.Clamp(defense * 0.005f, 0f, 0.5f);
         float finalDamage = rawDamage * (1f - reduction);
 
-        health = Mathf.Max(0f, health - finalDamage);
+        ApplyDamageValue(finalDamage);
 
         Debug.Log($"[Server] {netId} 데미지 {rawDamage:F1} → 최종 {finalDamage:F1} / 남은 HP {health:F1}");
+    }
 
-        RpcOnDamageEffect(finalDamage);
+    [Server]
+    public void TakeTrueDamage(float damage)
+    {
+        if (isDead) return;
+
+        ApplyDamageValue(damage);
+
+        Debug.Log($"[Server] {netId} 함정 고정 피해 {damage:F1} / 남은 HP {health:F1}");
+    }
+
+    [Server]
+    private void ApplyDamageValue(float damage)
+    {
+        health = Mathf.Max(0f, health - damage);
+
+        RpcOnDamageEffect(damage);
 
         if (health <= 0f)
             ServerDie();
@@ -166,8 +274,15 @@ public class PlayerNetwork : NetworkBehaviour
     [Server]
     public void ApplySlow(float duration)
     {
+        ApplySlow(duration, 0.5f);
+    }
+
+    [Server]
+    public void ApplySlow(float duration, float speedMultiplier)
+    {
         if (isDead) return;
         currentState = PlayerStateType.Slow;
+        TargetApplySpeedMultiplier(connectionToClient, speedMultiplier, duration);
         StartCoroutine(ClearStateAfter(duration));
     }
 
@@ -177,6 +292,17 @@ public class PlayerNetwork : NetworkBehaviour
         if (isDead) return;
         currentState = PlayerStateType.Freeze;
         StartCoroutine(ClearStateAfter(duration));
+    }
+
+    [TargetRpc]
+    private void TargetApplySpeedMultiplier(NetworkConnection target, float multiplier, float duration)
+    {
+        PlayerController controller = GetComponent<PlayerController>();
+
+        if (controller == null && currentCharacter != null)
+            controller = currentCharacter.GetComponent<PlayerController>();
+
+        controller?.ApplyTemporarySpeedMultiplier(multiplier, duration);
     }
 
     [Server]

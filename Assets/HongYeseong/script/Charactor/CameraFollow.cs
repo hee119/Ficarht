@@ -6,7 +6,7 @@ using Mirror;
 ///
 /// ■ 싱글 플레이: PlayerController 가 있는 오브젝트를 찾아 추적
 /// ■ Mirror 멀티: isOwned == true 인 PlayerController 를 추적
-/// ■ 오프셋 / 스무딩 Inspector에서 조절 가능
+/// ■ 마우스 좌우로 카메라가 플레이어 주위를 회전
 /// </summary>
 public class CameraFollow : MonoBehaviour
 {
@@ -14,22 +14,28 @@ public class CameraFollow : MonoBehaviour
     public Transform target;
 
     [Header("카메라 오프셋 (플레이어 기준)")]
-    public Vector3 offset = new Vector3(0f, 8f, -6f);
+    public Vector3 offset = new Vector3(0f, 5f, -4f);
 
-    [Header("회전 각도 (X축)")]
-    public float pitchAngle = 50f;
+    [Header("회전 각도 (X축 고정 피치)")]
+    public float pitchAngle = 45f;
 
     [Header("부드러운 이동 속도 (높을수록 빠름)")]
     public float smoothSpeed = 8f;
+
+    [Header("마우스 감도 (도/픽셀)")]
+    public float mouseSensitivity = 0.2f;
 
     [Header("자동 탐색 재시도 간격 (초)")]
     public float searchInterval = 0.5f;
 
     private float _searchTimer = 0f;
+    private float _yaw = 0f;   // 카메라 수평 회전값
 
     // ─────────────────────────────────────────────
     void Start()
     {
+        // 현재 카메라 yaw를 초기값으로 설정
+        _yaw = transform.eulerAngles.y;
         TryFindTarget();
     }
 
@@ -47,14 +53,22 @@ public class CameraFollow : MonoBehaviour
             return;
         }
 
-        // 목표 위치 계산
-        Vector3 desiredPos = target.position + Quaternion.Euler(pitchAngle, 0f, 0f) * offset;
+        // pitch(수직고정) + yaw(마우스 수평) 로 카메라 위치 계산
+        Vector3 desiredPos = target.position + Quaternion.Euler(pitchAngle, _yaw, 0f) * offset;
 
         // 스무딩 이동
         transform.position = Vector3.Lerp(transform.position, desiredPos, smoothSpeed * Time.deltaTime);
 
         // 플레이어를 바라봄
         transform.LookAt(target.position + Vector3.up * 1.5f);
+    }
+
+    // ─────────────────────────────────────────────
+    // PlayerController.OnMouseLook 에서 호출
+    // ─────────────────────────────────────────────
+    public void AddYawDelta(float delta)
+    {
+        _yaw += delta * mouseSensitivity;
     }
 
     // ─────────────────────────────────────────────

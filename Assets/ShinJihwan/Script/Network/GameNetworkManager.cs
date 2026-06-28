@@ -36,51 +36,100 @@ public class GameNetworkManager : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
+        Debug.Log($"[Server] OnServerSceneChanged: '{sceneName}'");
         if (!nonBattleScenes.Contains(sceneName))
         {
             Debug.Log($"[Server] 전투 씬 감지 ({sceneName}) → 캐릭터 스폰");
             SpawnCharacters();
         }
+        else
+        {
+            Debug.Log($"[Server] '{sceneName}' 은 비전투 씬 — 스폰 스킵");
+        }
     }
     
-    // 플레이어 1, 2 스폰 위치
-    private static readonly Vector3[] spawnPoints = {
-        new Vector3(-4f, 0f, 0f),
-        new Vector3( 4f, 0f, 0f)
+    // SpawnPoint spawnID 순서 (연결 순서 = P1→P2)
+    private static readonly string[] spawnIDs = { "spawn_P1", "spawn_P2" };
+
+    // SpawnPoint가 없는 맵을 위한 기본 폴백 위치
+    private static readonly Vector3[] fallbackSpawnPositions = {
+        new Vector3(-4f, 1f, 0f),
+        new Vector3( 4f, 1f, 0f)
     };
 
     [Server]
     void SpawnCharacters()
     {
+        // 씬의 SpawnPoint 수집 (spawnID → world position)
+        var spawnPointMap = new Dictionary<string, Vector3>();
+        foreach (SpawnPoint sp in FindObjectsOfType<SpawnPoint>())
+        {
+            if (!string.IsNullOrEmpty(sp.spawnID))
+                spawnPointMap[sp.spawnID] = sp.transform.position;
+        }
+        Debug.Log($"[Server] 씬 SpawnPoint {spawnPointMap.Count}개 발견: {string.Join(", ", spawnPointMap.Keys)}");
+
         int spawnIndex = 0;
+        List<PlayerNetwork> battlePlayers = new List<PlayerNetwork>();
 
         foreach (var conn in NetworkServer.connections.Values)
         {
-            if (conn.identity == null) continue;
+            if (conn.identity == null)
+            {
+                Debug.LogWarning($"[Server] conn {conn.connectionId} identity 없음 — 스킵");
+                continue;
+            }
 
             PlayerNetwork playerNet = conn.identity.GetComponent<PlayerNetwork>();
             int charId = playerNet != null ? playerNet.selectedCharacterId : 0;
 
-            // characterPrefabs 배열에서 선택된 캐릭터 프리팹 결정
-            // characterPrefabs[0]=Paladin, [1]=Bard, [2]=Berserker, [3]=Mage
-            GameObject prefabToSpawn = testCharacterPrefab; // 기본값 (미선택 시 폴백)
+            // 캐릭터 프리팹 결정
+            GameObject prefabToSpawn = null;
             if (characterPrefabs != null && charId >= 0 && charId < characterPrefabs.Length && characterPrefabs[charId] != null)
                 prefabToSpawn = characterPrefabs[charId];
-            else
+            else if (testCharacterPrefab != null)
+            {
                 Debug.LogWarning($"[Server] characterPrefabs[{charId}] 없음 → testCharacterPrefab 사용");
+                prefabToSpawn = testCharacterPrefab;
+            }
+            else
+            {
+                Debug.LogError($"[Server] 스폰할 프리팹 없음! characterPrefabs와 testCharacterPrefab 모두 null");
+                spawnIndex++;
+                continue;
+            }
 
-            GameObject character = Instantiate(prefabToSpawn);
-            character.transform.position = spawnPoints[spawnIndex % spawnPoints.Length];
+            // 스폰 위치: 씬의 SpawnPoint 우선, 없으면 폴백
+            string targetSpawnID = spawnIDs[spawnIndex % spawnIDs.Length];
+            Vector3 spawnPos = spawnPointMap.ContainsKey(targetSpawnID)
+                ? spawnPointMap[targetSpawnID]
+                : fallbackSpawnPositions[spawnIndex % fallbackSpawnPositions.Length];
+
+            GameObject character = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+
+            PlayerNetwork characterNet = character.GetComponent<PlayerNetwork>();
+
+            PlayerController controller = character.GetComponent<PlayerController>();
 
             NetworkServer.Spawn(character, conn);
 
-            // 플레이어 오브젝트에 현재 캐릭터 참조 저장
-            if (playerNet != null)
-                playerNet.currentCharacter = character;
+            if (characterNet != null && playerNet != null && characterNet != playerNet)
+                characterNet.CopyBattleSetupFrom(playerNet);
 
-            Debug.Log($"[Server] 플레이어 {conn.connectionId} → 캐릭터ID={charId} 스폰 위치={character.transform.position}");
+            if (controller != null)
+                controller.ServerSetOwnerPlayerNetwork(playerNet);
+
+            if (playerNet != null)
+            {
+                playerNet.currentCharacter = character;
+                battlePlayers.Add(characterNet != null ? characterNet : playerNet);
+            }
+
+            Debug.Log($"[Server] P{spawnIndex + 1} (conn={conn.connectionId}) charId={charId} → {targetSpawnID} {spawnPos}");
             spawnIndex++;
         }
+
+        Trap_Card.GetOrCreate().InitializeFromPlayers(battlePlayers);
     }
 
 

@@ -77,9 +77,13 @@ public class StartButtonSceneLoader : MonoBehaviour
             : 3f;
         yield return new WaitForSecondsRealtime(wait);
 
-        // ✅ 씬 이름에 따라 스폰포인트 ID 저장
-        string spawnID = GetSpawnPointID(targetScene);
-        PlayerPrefs.SetString("SpawnPointID", spawnID);
+        // 선택한 캐릭터 정보 저장 (BattleSceneInitializer에서 싱글플레이 스폰에 사용)
+        string charName = CardSystemManager.Instance != null
+            ? CardSystemManager.Instance.GetSelectedCharacterName()
+            : "";
+        PlayerPrefs.SetString("SinglePlayer_CharName", charName);
+        Debug.Log($"[StartButtonSceneLoader] 캐릭터 저장: name={charName}");
+        PlayerPrefs.Save();
 
         SceneManager.LoadScene(targetScene);
     }

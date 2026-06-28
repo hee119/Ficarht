@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Mirror;
 
 /// <summary>
 /// 메인메뉴 버튼 이벤트 연결용.
-/// 씬의 MenuController 오브젝트에 붙이고 Inspector 연결.
+/// NetworkManager와 같은 오브젝트에 붙음 (DontDestroyOnLoad).
 ///
 /// [버튼 연결 방법]
 /// - Start 버튼         → Press Complete → MenuController.ShowHostUI
@@ -11,6 +12,10 @@ using Mirror;
 /// - Join 버튼          → Press Complete → MenuController.JoinRoom
 /// - Game Start 버튼    → Press Complete → MenuController.GameStart
 /// - Leave the room 버튼→ Press Complete → MenuController.LeaveRoom
+///
+/// [Inspector 추가 연결]
+/// - joinedPanel : __________UI_HMIE__________ (연결된 방 패널)
+/// - basicPanel  : __________UI_Basic__________ 또는 UI_Host (Join 실패 시 되돌릴 패널)
 /// </summary>
 public class MenuController : MonoBehaviour
 {
@@ -24,6 +29,26 @@ public class MenuController : MonoBehaviour
 
     [Header("카드 씬 이름")]
     public string cardSceneName = "CardMap";
+
+    private bool _isLeaving = false;
+
+    private void Awake()
+    {
+        // DontDestroyOnLoad 오브젝트는 씬 리로드 후에도 살아있으므로
+        // 씬 로드 이벤트로 _isLeaving 초기화
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        _isLeaving = false;
+        Debug.Log("[MenuController] 씬 로드 완료 - 상태 초기화");
+    }
 
     // ─────────────────────────────────────────────
     // Start 버튼 → Press Complete에 연결
@@ -48,12 +73,13 @@ public class MenuController : MonoBehaviour
         NetworkManager.singleton.StartHost();
         Debug.Log("[MenuController] Host 시작 (방 만들기)");
 
-        // 방 코드 생성 및 UI 업데이트
         RoomNetworkManager.Instance?.OnRoomCreated();
     }
 
     // ─────────────────────────────────────────────
     // Join 버튼 → Press Complete에 연결
+    // NextUI_Animation.Next_UI()가 먼저 실행된 뒤 이 메서드가 호출됨.
+    // 코드가 없으면 패널을 되돌린다.
     // ─────────────────────────────────────────────
     public void JoinRoom()
     {
@@ -63,13 +89,22 @@ public class MenuController : MonoBehaviour
             return;
         }
 
-        // RoomNetworkManager가 Input Field에서 코드 읽어서 처리
+        // 코드 미입력 검증
+        string code = "";
+        if (m3dInputField != null)
+            code = m3dInputField.Text?.Trim() ?? "";
+
+        if (string.IsNullOrEmpty(code))
+        {
+            Debug.LogWarning("[MenuController] 방 코드를 입력하세요");
+            return;
+        }
+
         RoomNetworkManager.Instance?.OnJoinRoom();
     }
 
     // ─────────────────────────────────────────────
     // Game Start 버튼 → Press Complete에 연결
-    // Host만 실행 가능, 2명 접속 시에만 동작
     // ─────────────────────────────────────────────
     public void GameStart()
     {
@@ -94,11 +129,27 @@ public class MenuController : MonoBehaviour
     // ─────────────────────────────────────────────
     public void LeaveRoom()
     {
+        if (_isLeaving)
+        {
+            Debug.Log("[MenuController] 이미 나가는 중");
+            return;
+        }
+
+        if (!NetworkServer.active && !NetworkClient.isConnected)
+        {
+            Debug.Log("[MenuController] 연결 상태가 아님");
+            return;
+        }
+
+        _isLeaving = true;
+        Debug.Log("[MenuController] 방 나가기");
+
         if (NetworkServer.active && NetworkClient.isConnected)
             NetworkManager.singleton.StopHost();
         else if (NetworkClient.isConnected)
             NetworkManager.singleton.StopClient();
 
-        Debug.Log("[MenuController] 방 나가기");
+        RoomNetworkManager.Instance?.ResetUI();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

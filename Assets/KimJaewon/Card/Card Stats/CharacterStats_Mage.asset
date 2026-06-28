@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: CharacterStats_Mage
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Mage
+  characterId: 3
   health: 0
   stamina: 0
   power: 0

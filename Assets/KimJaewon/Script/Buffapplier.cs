@@ -24,8 +24,20 @@ public static class BuffApplier
             if (slot.currentCard.data.cardType != CardType.Buff) continue;
 
             BuffEffect effect = slot.currentCard.data.buffEffect;
+            if (effect == null)
+            {
+                Debug.LogWarning(
+                    $"[BuffApplier] '{slot.currentCard.data.cardName}' 버프 효과가 비어 있습니다."
+                );
+
+                continue;
+            }
+
             targetStats.ApplyBuff(effect);
 
+            Debug.Log(
+                $"[BuffApplier] '{slot.currentCard.data.cardName}' 적용: {targetStats}"
+            );
         }
     }
 
@@ -39,6 +51,12 @@ public static class BuffApplier
             Debug.LogWarning("[BuffApplier] Buff 타입 카드가 아닙니다.");
             return;
         }
+        if (buffCard.buffEffect == null)
+        {
+            Debug.LogWarning("[BuffApplier] buffEffect가 비어 있습니다.");
+            return;
+        }
+
         targetStats.ApplyBuff(buffCard.buffEffect);
     }
 }

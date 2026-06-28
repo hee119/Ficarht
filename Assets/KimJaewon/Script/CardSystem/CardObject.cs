@@ -88,6 +88,8 @@ public class CardObject : MonoBehaviour
 
     private static CardObject currentHoveredCard;
 
+    private static CardObject draggingCard;
+
     private static readonly RaycastHit[] hoverHits =
         new RaycastHit[32];
 
@@ -116,6 +118,11 @@ public class CardObject : MonoBehaviour
         targetScale = originalScale;
 
         originalRotation = transform.rotation;
+
+        // targetRotation 미초기화 시 (0,0,0,0) 제로 쿼터니언이 되어
+        // Quaternion.Lerp에서 Assertion 에러 발생 → 반드시 초기화
+        targetRotation = transform.rotation;
+        targetPosition = transform.position;
 
         CacheRenderers();
     }
@@ -258,6 +265,9 @@ public class CardObject : MonoBehaviour
 
         isDragging = false;
 
+        if (draggingCard == this)
+            draggingCard = null;
+
         isMouseDown = false;
 
         mouseDownTimer = 0f;
@@ -265,6 +275,7 @@ public class CardObject : MonoBehaviour
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
+            CardTooltipUI.Instance?.Hide();
         }
 
         RestoreRenderOrder();
@@ -285,6 +296,9 @@ public class CardObject : MonoBehaviour
 
         isDragging = false;
 
+        if (draggingCard == this)
+            draggingCard = null;
+
         isMouseDown = false;
 
         mouseDownTimer = 0f;
@@ -294,6 +308,7 @@ public class CardObject : MonoBehaviour
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
+            CardTooltipUI.Instance?.Hide();
         }
 
         targetPosition = transform.position;
@@ -493,6 +508,12 @@ public class CardObject : MonoBehaviour
 
         lastHoverUpdateFrame = Time.frameCount;
 
+        if (draggingCard != null)
+        {
+            SetHoveredCard(null);
+            return;
+        }
+
         if (Mouse.current == null || Camera.main == null)
         {
             SetHoveredCard(null);
@@ -613,6 +634,9 @@ public class CardObject : MonoBehaviour
             GetRestScale() * hoverScaleMultiplier;
 
         BoostRenderOrder();
+
+        CardTooltipUI.GetOrCreate()
+            .Show(data);
     }
 
     private void HoverExit()
@@ -633,9 +657,12 @@ public class CardObject : MonoBehaviour
         if (currentHoveredCard == this)
         {
             currentHoveredCard = null;
+            CardTooltipUI.Instance?.Hide();
         }
 
         RestoreRenderOrder();
+
+        CardTooltipUI.Instance?.Hide();
     }
 
     // -------------------------------------------------------
@@ -653,6 +680,8 @@ public class CardObject : MonoBehaviour
 
         isDragging = true;
 
+        draggingCard = this;
+
         isMouseDown = false;
 
         mouseDownTimer = 0f;
@@ -665,6 +694,8 @@ public class CardObject : MonoBehaviour
         }
 
         BoostRenderOrder();
+
+        CardTooltipUI.Instance?.Hide();
 
         if (data != null)
         {
@@ -765,6 +796,9 @@ public class CardObject : MonoBehaviour
     private void StopDrag()
     {
         isDragging = false;
+
+        if (draggingCard == this)
+            draggingCard = null;
 
         if (SlotGuideManager.Instance != null)
         {

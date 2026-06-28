@@ -15,6 +15,7 @@ public class PrefabInfo : MonoBehaviour
     public bool isBuff;
     public bool isDebuff;
     public float burnDamage;
+    public float staminaCost;
 
 
     public void Awake()
@@ -35,6 +36,7 @@ public class PrefabInfo : MonoBehaviour
         coolTime = skillData.coolTime;
         defense = skillData.defense;
         duration = skillData.duration;
+        staminaCost = skillData.staminaCost;
     }
     public void SkillDataUpdate(float _attack, float _speed, float _cooldown, float _duration)
     {

@@ -57,6 +57,13 @@ public class CardSystemManager : MonoBehaviour
     [Header("--- Collect 버튼 ---")]
     public string collectButtonName = "Collect_Button";
 
+    [Header("--- 시작 드로우 수 ---")]
+    public int drawCharacterCards = 1;
+
+    public int drawBuffCards = 3;
+
+    public int drawTrapCards = 4;
+
     [Header("--- 선택 완료 조건 ---")]
     public int requiredCharacterCards = 1;
 
@@ -161,24 +168,22 @@ public class CardSystemManager : MonoBehaviour
     {
         ClearAll();
 
-        // 캐릭터 1장
+        // 캐릭터 1장 / 버프 3장 / 함정 5장을 기본으로 드로우
         DrawCards(
             characterDeck,
-            1,
+            drawCharacterCards,
             characterDrawPositions
         );
 
-        // 버프 2장
         DrawCards(
             buffDeck,
-            2,
+            drawBuffCards,
             buffDrawPositions
         );
 
-        // 함정 2장
         DrawCards(
             trapDeck,
-            2,
+            drawTrapCards,
             trapDrawPositions
         );
 
@@ -262,12 +267,7 @@ public class CardSystemManager : MonoBehaviour
             }
 
             Transform spawnTf =
-                positions[
-                    Mathf.Min(
-                        i,
-                        positions.Count - 1
-                    )
-                ];
+                positions[i % positions.Count];
 
             int randomIndex =
                 Random.Range(
@@ -623,15 +623,7 @@ public class CardSystemManager : MonoBehaviour
 
         SetTimerText("시간 종료!");
 
-        myStats = GetCharacterStats();
-
-        if (myStats != null)
-        {
-            BuffApplier.ApplyAll(
-                buffSlots,
-                myStats
-            );
-        }
+        myStats = BuildFinalStats();
 
         CardRevealSystem.Instance
             ?.RevealAllCards();
@@ -640,6 +632,29 @@ public class CardSystemManager : MonoBehaviour
 
         // 멀티: 서버에 카드 선택 결과 전송
         NetworkCardBridge.LocalInstance?.SubmitCardSelection();
+    }
+
+
+    public int[] GetSelectedTrapIds()
+    {
+        List<int> trapIds = new List<int>();
+
+        foreach (var slot in trapSlots)
+        {
+            CardData data = slot?.currentCard?.data;
+
+            if (data == null || data.cardType != CardType.Trap)
+                continue;
+
+            TrapID trapId = data.GetTrapID();
+
+            if (trapId == TrapID.None)
+                continue;
+
+            trapIds.Add((int)trapId);
+        }
+
+        return trapIds.ToArray();
     }
 
     // -------------------------------------------------------
@@ -712,6 +727,25 @@ public class CardSystemManager : MonoBehaviour
         );
 
         return null;
+    }
+
+    private RuntimeStats BuildFinalStats()
+    {
+        RuntimeStats finalStats = GetCharacterStats();
+
+        if (finalStats != null)
+        {
+            BuffApplier.ApplyAll(
+                buffSlots,
+                finalStats
+            );
+
+            Debug.Log(
+                $"[CardSystemManager] 최종 스탯 계산 완료: {finalStats}"
+            );
+        }
+
+        return finalStats;
     }
 
     // -------------------------------------------------------
@@ -790,6 +824,11 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     public RuntimeStats GetFinalStats()
     {
+        if (myStats == null)
+        {
+            myStats = BuildFinalStats();
+        }
+
         return myStats;
     }
 
@@ -819,6 +858,30 @@ public class CardSystemManager : MonoBehaviour
                 return slot.currentCard.data.mapSceneName;
         }
 
+        return "";
+    }
+
+    /// <summary>배치된 캐릭터 카드의 characterId 반환. 없으면 -1.</summary>
+    public int GetSelectedCharacterId()
+    {
+        foreach (var slot in characterSlots)
+        {
+            if (slot?.currentCard?.data?.cardType == CardType.Character &&
+                slot.currentCard.data.characterStats != null)
+                return slot.currentCard.data.characterStats.characterId;
+        }
+        return -1;
+    }
+
+    /// <summary>배치된 캐릭터 카드의 이름 반환. 없으면 "".</summary>
+    public string GetSelectedCharacterName()
+    {
+        foreach (var slot in characterSlots)
+        {
+            if (slot?.currentCard?.data?.cardType == CardType.Character &&
+                slot.currentCard.data.characterStats != null)
+                return slot.currentCard.data.characterStats.characterName;
+        }
         return "";
     }
 

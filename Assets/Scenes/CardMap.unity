@@ -3886,9 +3886,6 @@ MonoBehaviour:
   sceneName: Forest
   updateInteractableByCardSelection: 1
   collectButtonName: Collect_Button
-  singlePlayerCharPrefabs:
-  - {fileID: 755554410987823595, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-  singlePlayerSpawnPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &776376476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6845,7 +6842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 390752
+  GUIID: 915022
 --- !u!4 &1217812101
 Transform:
   m_ObjectHideFlags: 0
@@ -7845,7 +7842,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 124561db791df409fbe3ff75bb297ce0, type: 2}
   - {fileID: 11400000, guid: 072ae088cbbf84c008ee706b7bed72f4, type: 2}
   - {fileID: 11400000, guid: 62114cb6053b04704a89c382c1394d58, type: 2}
-  - {fileID: 11400000, guid: f3b29f744e11543bf944ad7d3df21af5, type: 2}
   - {fileID: 11400000, guid: 16b5011099f2a40b9849883078871209, type: 2}
   - {fileID: 11400000, guid: 39bfd41d2985a4145b496f59156ffb99, type: 2}
   characterDrawPositions:
@@ -7869,6 +7865,9 @@ MonoBehaviour:
   mapSlots: []
   timerText: {fileID: 0}
   collectButtonName: Collect_Button
+  drawCharacterCards: 1
+  drawBuffCards: 3
+  drawTrapCards: 4
   requiredCharacterCards: 1
   requiredBuffCards: 2
   requiredTrapCards: 2
@@ -9168,7 +9167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapCardDisplayUI
   displayDuration: 2.5
   flipDuration: 0.35
-  cardBackSprite: {fileID: -1750003668, guid: 50a546e79145e4f32a219c686a7302dc, type: 3}
+  cardBackSprite: {fileID: 21300000, guid: d37f9faf39ad04c96af05a693d5981a5, type: 3}
 --- !u!114 &1842327474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9805,7 +9804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 390934
+  GUIID: 915490
 --- !u!4 &1947411261
 Transform:
   m_ObjectHideFlags: 0

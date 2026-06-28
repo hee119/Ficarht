@@ -41,7 +41,16 @@ public class PlayerController : NetworkBehaviour
     public LayerMask groundLayer;
 
     public bool isRoll = false;
+
+    [SyncVar]
+    private uint ownerPlayerNetId;
+
+    private Coroutine speedMultiplierRoutine;
+    private float speedMultiplier = 1f;
     
+    public float rollSpeed = 8f;
+    public float rollDuration = 0.7f;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,6 +67,12 @@ public class PlayerController : NetworkBehaviour
         }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    [Server]
+    public void ServerSetOwnerPlayerNetwork(PlayerNetwork owner)
+    {
+        ownerPlayerNetId = owner != null ? owner.netId : 0;
     }
 
     // ─────────────────────────────────────────────
@@ -78,11 +93,15 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocallyControlled) return;
         if (isAttacking || isRoll) return;
 
-        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
+
+        if (characterStats != null && characterStats.stamina <= 0)
+            isRunning = false;
 
         currentSpeed = moveInput.magnitude > 0.01f
             ? (isRunning ? runSpeed : walkSpeed)
+                * GetEffectiveSpeedMultiplier(pn)
             : 0f;
 
         animator.SetFloat("MoveX", moveInput.x);
@@ -102,13 +121,28 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocallyControlled) return;
         if (isAttacking || isRoll) return;
 
-        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
 
-        Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
+        // 카메라 기준 이동 방향 계산
+        Vector3 moveDir = Vector3.zero;
+        Camera cam = Camera.main;
+        if (cam != null && moveInput.magnitude > 0.01f)
+        {
+            Vector3 camForward = cam.transform.forward; camForward.y = 0f; camForward.Normalize();
+            Vector3 camRight   = cam.transform.right;   camRight.y   = 0f; camRight.Normalize();
+            moveDir = (camForward * moveInput.z + camRight * moveInput.x).normalized;
+        }
 
+        // 이동 방향으로 플레이어 회전 (자연스럽게 Slerp)
+        if (moveDir.magnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * 10f);
+        }
+
+        Vector3 velocity = moveDir * currentSpeed;
         velocity.y = rb.linearVelocity.y;
-
         rb.linearVelocity = velocity;
     }
 
@@ -130,8 +164,25 @@ public class PlayerController : NetworkBehaviour
     public void OnRun(InputAction.CallbackContext context)
     {
         if (!IsLocallyControlled) return;
-        if (context.started)  isRunning = true;
-        if (context.canceled) isRunning = false;
+
+        if (context.started)
+        {
+            isRunning = true;
+
+            if (characterStats != null)
+                characterStats.staminaDrainCoroutine = StartCoroutine(characterStats.StaminaDrain());
+
+            if (NetworkClient.active && isOwned)
+                CmdNotifyRunStarted();
+        }
+
+        if (context.canceled)
+        {
+            isRunning = false;
+
+            if (characterStats != null && characterStats.staminaDrainCoroutine != null)
+                StopCoroutine(characterStats.staminaDrainCoroutine);
+        }
     }
 
     // =========================
@@ -139,8 +190,8 @@ public class PlayerController : NetworkBehaviour
     // =========================
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!context.started)
-            return;
+        if (!IsLocallyControlled) return;
+        if (!context.started) return;
 
         bool grounded = IsGrounded();
 
@@ -154,24 +205,23 @@ public class PlayerController : NetworkBehaviour
             );
 
             Debug.Log("점프!");
+
+            if (NetworkClient.active && isOwned)
+                CmdNotifyJump();
         }
     }
 
     // =========================
-    // MOUSE LOOK
+    // MOUSE LOOK → 카메라 회전 (플레이어 회전 없음)
     // =========================
     public void OnMouseLook(InputAction.CallbackContext context)
     {
+        if (!IsLocallyControlled) return;
         Vector2 mouseInput = context.ReadValue<Vector2>();
 
-        mouseInputY += mouseInput.x * mouseSensitivity * Time.deltaTime;
-
-        // TPS라서 플레이어는 좌우만 회전
-        transform.rotation = Quaternion.Euler(
-            0f,
-            mouseInputY,
-            0f
-        );
+        // 카메라에 마우스 델타 전달
+        CameraFollow camFollow = Camera.main?.GetComponent<CameraFollow>();
+        camFollow?.AddYawDelta(mouseInput.x);
     }
 
     // =========================
@@ -182,7 +232,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocallyControlled) return;
         if (!context.started || isAttacking) return;
 
-        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanAttack()) return;
 
         if (NetworkClient.active)
@@ -202,9 +252,23 @@ public class PlayerController : NetworkBehaviour
     // Network
     // ─────────────────────────────────────────────
     [Command]
+    void CmdNotifyJump()
+    {
+        Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
+    }
+
+    [Command]
+    void CmdNotifyRunStarted()
+    {
+        Trap_Card.Instance?.NotifyRunStarted(GetPlayerNetwork());
+    }
+
+    [Command]
     void CmdRequestAttack()
     {
-        GetComponent<PlayerNetwork>()?.ServerRequestAttack();
+        PlayerNetwork pn = GetPlayerNetwork();
+        pn?.ServerRequestAttack();
+        Trap_Card.Instance?.NotifyAttack(pn);
         RpcPlayAttackAnimation();
     }
 
@@ -222,7 +286,7 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(1f);
         isAttacking = false;
     }
-    
+
     public bool IsGrounded()
     {
         bool isGrounded = Physics.Raycast(
@@ -243,31 +307,97 @@ public class PlayerController : NetworkBehaviour
 
     public IEnumerator IERoll()
     {
-        Debug.Log("kkk");
         isRoll = true;
-        rb.linearVelocity = Vector3.zero;
-        float duration = 0.7f;
+
+        Vector3 dir = moveInput != Vector3.zero
+            ? transform.TransformDirection(moveInput).normalized
+            : transform.forward;
+
         float elapsed = 0f;
 
-        Vector3 start = transform.position;
-        Vector3 target = moveInput != Vector3.zero ? start + transform.TransformDirection(moveInput) * 4f : start + transform.forward * 4f;
-
-        while (elapsed < duration)
+        while (elapsed < rollDuration)
         {
             elapsed += Time.deltaTime;
 
-            rb.MovePosition(
-                Vector3.Lerp(start, target, elapsed / duration)
+            // Y축 속도는 유지해서 점프/낙하가 자연스럽게 되도록
+            rb.linearVelocity = new Vector3(
+                dir.x * rollSpeed,
+                rb.linearVelocity.y,
+                dir.z * rollSpeed
             );
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
+
+        // 구르기 종료
+        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
         isRoll = false;
     }
-    
+
     public void RefreshSpeed()
     {
+        if (characterStats == null)
+            characterStats = GetComponent<CharaStat>();
+
+        if (characterStats == null)
+            return;
+
         walkSpeed = characterStats.speed;
         runSpeed = characterStats.runSpeed;
+    }
+
+    public void ApplyTemporarySpeedMultiplier(float multiplier, float duration)
+    {
+        if (speedMultiplierRoutine != null)
+            StopCoroutine(speedMultiplierRoutine);
+
+        speedMultiplierRoutine = StartCoroutine(
+            SpeedMultiplierRoutine(multiplier, duration)
+        );
+    }
+
+    private IEnumerator SpeedMultiplierRoutine(float multiplier, float duration)
+    {
+        speedMultiplier = multiplier;
+        yield return new WaitForSeconds(duration);
+        speedMultiplier = 1f;
+        speedMultiplierRoutine = null;
+    }
+
+    private float GetEffectiveSpeedMultiplier(PlayerNetwork playerNetwork)
+    {
+        if (speedMultiplier < 0.99f)
+            return speedMultiplier;
+
+        if (playerNetwork != null && playerNetwork.currentState == PlayerStateType.Slow)
+            return 0.5f;
+
+        return 1f;
+    }
+
+    private PlayerNetwork GetPlayerNetwork()
+    {
+        PlayerNetwork selfNetwork = GetComponent<PlayerNetwork>();
+
+        if (selfNetwork != null)
+            return selfNetwork;
+
+        if (ownerPlayerNetId == 0)
+            return null;
+
+        NetworkIdentity identity = null;
+
+        if (NetworkServer.active)
+        {
+            NetworkServer.spawned.TryGetValue(ownerPlayerNetId, out identity);
+        }
+        else if (NetworkClient.active)
+        {
+            NetworkClient.spawned.TryGetValue(ownerPlayerNetId, out identity);
+        }
+
+        return identity != null
+            ? identity.GetComponent<PlayerNetwork>()
+            : null;
     }
 }
