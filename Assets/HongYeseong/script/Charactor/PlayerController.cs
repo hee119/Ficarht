@@ -124,10 +124,25 @@ public class PlayerController : NetworkBehaviour
         PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
 
-        Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
+        // 카메라 기준 이동 방향 계산
+        Vector3 moveDir = Vector3.zero;
+        Camera cam = Camera.main;
+        if (cam != null && moveInput.magnitude > 0.01f)
+        {
+            Vector3 camForward = cam.transform.forward; camForward.y = 0f; camForward.Normalize();
+            Vector3 camRight   = cam.transform.right;   camRight.y   = 0f; camRight.Normalize();
+            moveDir = (camForward * moveInput.z + camRight * moveInput.x).normalized;
+        }
 
+        // 이동 방향으로 플레이어 회전 (자연스럽게 Slerp)
+        if (moveDir.magnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * 10f);
+        }
+
+        Vector3 velocity = moveDir * currentSpeed;
         velocity.y = rb.linearVelocity.y;
-
         rb.linearVelocity = velocity;
     }
 
@@ -197,20 +212,16 @@ public class PlayerController : NetworkBehaviour
     }
 
     // =========================
-    // MOUSE LOOK
+    // MOUSE LOOK → 카메라 회전 (플레이어 회전 없음)
     // =========================
     public void OnMouseLook(InputAction.CallbackContext context)
     {
+        if (!IsLocallyControlled) return;
         Vector2 mouseInput = context.ReadValue<Vector2>();
 
-        mouseInputY += mouseInput.x * mouseSensitivity * Time.deltaTime;
-
-        // TPS라서 플레이어는 좌우만 회전
-        transform.rotation = Quaternion.Euler(
-            0f,
-            mouseInputY,
-            0f
-        );
+        // 카메라에 마우스 델타 전달
+        CameraFollow camFollow = Camera.main?.GetComponent<CameraFollow>();
+        camFollow?.AddYawDelta(mouseInput.x);
     }
 
     // =========================
@@ -325,6 +336,12 @@ public class PlayerController : NetworkBehaviour
 
     public void RefreshSpeed()
     {
+        if (characterStats == null)
+            characterStats = GetComponent<CharaStat>();
+
+        if (characterStats == null)
+            return;
+
         walkSpeed = characterStats.speed;
         runSpeed = characterStats.runSpeed;
     }
