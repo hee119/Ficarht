@@ -31,6 +31,7 @@ public class CharaStat : MonoBehaviour
     private float shieldHp;
     public bool isShield = false;
     public GameObject shieldObject;
+    public Coroutine staminaDrainCoroutine;
     
     private Renderer[] allRenderers;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
@@ -447,7 +448,7 @@ public class CharaStat : MonoBehaviour
         }
     }
     
-    private IEnumerator StaminaDrain()
+    public IEnumerator StaminaDrain()
     {
         while (true)
         {
@@ -474,6 +475,6 @@ public class CharaStat : MonoBehaviour
             if (staminaBar != null)
                 staminaBar.value = stamina;
         }
-    }[
-    =]
+    }
+    
 }

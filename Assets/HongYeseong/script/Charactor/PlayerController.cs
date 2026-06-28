@@ -81,6 +81,9 @@ public class PlayerController : NetworkBehaviour
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
         if (pn != null && !pn.CanMove()) return;
 
+        
+        if(characterStats.stamina <= 0) isRunning = false;
+
         currentSpeed = moveInput.magnitude > 0.01f
             ? (isRunning ? runSpeed : walkSpeed)
             : 0f;
@@ -131,7 +134,9 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsLocallyControlled) return;
         if (context.started)  isRunning = true;
+        characterStats.staminaDrainCoroutine = StartCoroutine(characterStats.StaminaDrain());
         if (context.canceled) isRunning = false;
+        StopCoroutine(characterStats.staminaDrainCoroutine);
     }
 
     // =========================
