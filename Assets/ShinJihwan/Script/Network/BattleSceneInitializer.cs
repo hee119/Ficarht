@@ -1,19 +1,16 @@
 using System.Collections;
-using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 /// <summary>
 /// 각 전투 씬 루트 오브젝트에 붙인다.
 ///
-/// - 멀티플레이: NetworkServer.active → GameNetworkManager.OnServerSceneChanged가 이미
-///               SpawnCharacters()를 호출하므로 여기서는 아무것도 안 함.
-/// - 싱글플레이: SceneManager.LoadScene으로 들어온 경우 서버가 없으므로
-///               PlayerPrefs에 저장된 characterId로 캐릭터를 직접 스폰.
+/// - 멀티플레이: NetworkServer.active → GameNetworkManager.OnServerSceneChanged가 처리
+/// - 싱글플레이: PlayerPrefs["SinglePlayer_CharName"] (캐릭터 이름)으로 프리팹을 이름 매칭해 스폰.
+///              배열 순서에 의존하지 않으므로 Inspector 순서가 달라도 정상 작동.
 ///
 /// [Inspector 연결]
-/// - characterPrefabs : GameNetworkManager와 동일한 순서로 캐릭터 프리팹 배열 할당
-///                      (없으면 GameNetworkManager.characterPrefabs 자동 참조 시도)
+/// - characterPrefabs : 비워두면 GameNetworkManager.characterPrefabs 자동 참조
 /// </summary>
 public class BattleSceneInitializer : MonoBehaviour
 {
@@ -23,25 +20,21 @@ public class BattleSceneInitializer : MonoBehaviour
 
     private IEnumerator Start()
     {
-        // 멀티플레이 중이면 GameNetworkManager가 처리하므로 종료
         if (NetworkServer.active)
         {
             Debug.Log("[BattleSceneInitializer] 서버 활성 → 멀티플레이 경로, 스킵");
             yield break;
         }
 
-        // 싱글플레이: 1프레임 대기 후 스폰 (SpawnPoint들이 모두 Start() 완료되도록)
-        yield return null;
+        yield return null; // SpawnPoint Start() 완료 대기
 
         Debug.Log("[BattleSceneInitializer] 싱글플레이 감지 → 캐릭터 스폰 시작");
 
-        // GameNetworkManager 프리팹 배열 자동 참조
         GameObject[] prefabs = characterPrefabs;
         if (prefabs == null || prefabs.Length == 0)
         {
             GameNetworkManager gnm = NetworkManager.singleton as GameNetworkManager;
-            if (gnm != null)
-                prefabs = gnm.characterPrefabs;
+            if (gnm != null) prefabs = gnm.characterPrefabs;
         }
 
         if (prefabs == null || prefabs.Length == 0)
@@ -50,28 +43,42 @@ public class BattleSceneInitializer : MonoBehaviour
             yield break;
         }
 
-        // 선택된 캐릭터 ID 읽기
-        int charId = PlayerPrefs.GetInt("SinglePlayer_CharId", 0);
-        if (charId < 0 || charId >= prefabs.Length || prefabs[charId] == null)
+        // 이름으로 프리팹 탐색 (배열 순서 무관)
+        string charName = PlayerPrefs.GetString("SinglePlayer_CharName", "");
+        Debug.Log($"[BattleSceneInitializer] 저장된 캐릭터 이름: '{charName}'");
+
+        GameObject prefabToSpawn = FindPrefabByName(prefabs, charName);
+
+        if (prefabToSpawn == null)
         {
-            Debug.LogWarning($"[BattleSceneInitializer] characterPrefabs[{charId}] 없음 → index 0 사용");
-            charId = 0;
+            Debug.LogWarning($"[BattleSceneInitializer] '{charName}' 프리팹 없음 → 첫 번째 프리팹 사용");
+            prefabToSpawn = prefabs[0];
         }
 
-        // SpawnPoint "spawn_P1" 찾기
         Vector3 spawnPos = FindSpawnPosition("spawn_P1");
 
-        // 캐릭터 스폰
-        GameObject character = Instantiate(prefabs[charId], spawnPos, Quaternion.identity);
-        Debug.Log($"[BattleSceneInitializer] charId={charId} → {prefabs[charId].name} 스폰 @ {spawnPos}");
+        GameObject character = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+        Debug.Log($"[BattleSceneInitializer] '{prefabToSpawn.name}' 스폰 @ {spawnPos}");
 
-        // PlayerController 설정 (단일 플레이어이므로 소유자 없음)
         PlayerController controller = character.GetComponent<PlayerController>();
         if (controller != null)
             controller.ServerSetOwnerPlayerNetwork(null);
     }
 
-    /// <summary>씬의 SpawnPoint 중 spawnID가 일치하는 것의 위치 반환. 없으면 폴백.</summary>
+    /// <summary>prefab 이름이 charName을 포함하는 것을 반환 (대소문자 무시).</summary>
+    private GameObject FindPrefabByName(GameObject[] prefabs, string charName)
+    {
+        if (string.IsNullOrEmpty(charName)) return null;
+
+        string lower = charName.ToLower();
+        foreach (var p in prefabs)
+        {
+            if (p != null && p.name.ToLower().Contains(lower))
+                return p;
+        }
+        return null;
+    }
+
     private Vector3 FindSpawnPosition(string spawnID)
     {
         foreach (SpawnPoint sp in FindObjectsOfType<SpawnPoint>())

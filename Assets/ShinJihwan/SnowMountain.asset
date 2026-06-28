@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardID: 0
   cardName: 
+  cardDescription: 
   cardType: 4
-  cardImage: {fileID: 21300000, guid: 04847635de0c84c268264fb31fa36d5e, type: 3}
+  cardImage: {fileID: 21300000, guid: 403e95d3d9e7c4ab680e12ded117d3e3, type: 3}
   cardPrefab: {fileID: 0}
   characterStats: {fileID: 0}
   buffEffect:
@@ -25,4 +26,5 @@ MonoBehaviour:
     defenseMod: 0
     intelligenceMod: 0
   skillID: 0
+  trapID: 0
   mapSceneName: SnowMountain

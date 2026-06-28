@@ -857,6 +857,18 @@ public class CardSystemManager : MonoBehaviour
         return -1;
     }
 
+    /// <summary>배치된 캐릭터 카드의 이름 반환. 없으면 "".</summary>
+    public string GetSelectedCharacterName()
+    {
+        foreach (var slot in characterSlots)
+        {
+            if (slot?.currentCard?.data?.cardType == CardType.Character &&
+                slot.currentCard.data.characterStats != null)
+                return slot.currentCard.data.characterStats.characterName;
+        }
+        return "";
+    }
+
     /// <summary>맵 카드 이름 반환 (MapCardDisplayUI에서 표시용)</summary>
     public string GetSelectedMapCardName()
     {

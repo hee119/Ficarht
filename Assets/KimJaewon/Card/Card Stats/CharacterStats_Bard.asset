@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: CharacterStats_Bard
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Bard
+  characterId: 1
   health: 0
   stamina: 0
   power: 0

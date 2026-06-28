@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: CharacterStats_Berserker
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Berserker
+  characterId: 2
   health: 0
   stamina: 0
   power: 0
