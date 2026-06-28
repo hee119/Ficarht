@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace TinyGiantStudio.Text
@@ -34,16 +35,65 @@ namespace TinyGiantStudio.Text
 
 
         /// <summary>
-        /// Recieves ray
+        /// Recieves ray. 여러 콜라이더가 겹칠 경우 스크린상에서 마우스와 가장 가까운 UI 요소를 반환.
         /// </summary>
-        /// <param name="ray"></param>
-        /// <returns>What was hit</returns>
-        public Transform RaycastCheck(Ray ray)
+        public Transform RaycastCheck(Ray ray, Camera cam = null)
         {
-            if (Physics.Raycast(ray, out RaycastHit hit, maxRayDistance, UILayer))
-                return hit.transform;
+            RaycastHit[] hits = Physics.RaycastAll(ray, maxRayDistance, UILayer);
+            if (hits.Length == 0) return null;
+            if (hits.Length == 1) return ResolveUIElement(hits[0].transform);
 
-            return null;
+            // 중복 제거 후 스크린 거리 기준으로 가장 가까운 UI 요소 선택
+            Vector2 mouseScreenPos = GetMouseScreenPosition();
+            var candidates = new List<(Transform t, float dist)>();
+            var seen = new HashSet<Transform>();
+
+            foreach (RaycastHit hit in hits)
+            {
+                Transform resolved = ResolveUIElement(hit.transform);
+                if (resolved == null || !seen.Add(resolved)) continue;
+
+                float screenDist = float.MaxValue;
+                if (cam != null)
+                {
+                    Vector3 sp = cam.WorldToScreenPoint(resolved.position);
+                    if (sp.z > 0f)
+                        screenDist = Vector2.Distance(new Vector2(sp.x, sp.y), mouseScreenPos);
+                }
+                candidates.Add((resolved, screenDist));
+            }
+
+            if (candidates.Count == 0) return null;
+            candidates.Sort((a, b) => a.dist.CompareTo(b.dist));
+            return candidates[0].t;
+        }
+
+        static Vector2 GetMouseScreenPosition()
+        {
+#if ENABLE_INPUT_SYSTEM
+            var pointer = UnityEngine.InputSystem.Pointer.current;
+            if (pointer != null) return pointer.position.ReadValue();
+            return Vector2.zero;
+#else
+            return new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+#endif
+        }
+
+        /// <summary>
+        /// 히트한 Transform에 UI 컴포넌트가 없으면 부모 계층을 올라가며 찾는다.
+        /// </summary>
+        Transform ResolveUIElement(Transform t)
+        {
+            Transform current = t;
+            while (current != null)
+            {
+                if (current.GetComponent<Button>() != null ||
+                    current.GetComponent<InputField>() != null ||
+                    current.GetComponent<SliderHandle>() != null)
+                    return current;
+                current = current.parent;
+            }
+            return t;
         }
 
         public void PressTarget(Transform hit)
