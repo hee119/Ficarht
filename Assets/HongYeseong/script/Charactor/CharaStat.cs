@@ -26,6 +26,11 @@ public class CharaStat : MonoBehaviour
     private float restoreStatRunSpeedDebuff;
     private float restoreStatRunSpeedBuff;
     
+    [Header("Block")]
+    public bool isBlocking = false;
+    public float blockDamageReduction = 50f; // %
+    public float blockStaminaPerSecond = 10f;
+    
     [Header("Stats")]
     public float health;
     public float stamina;
@@ -104,7 +109,13 @@ public class CharaStat : MonoBehaviour
         if (healthBar == null)
             Debug.LogWarning($"{name} : healthBar가 NULL입니다.");
 
+        if (isBlocking)
+        {
+            damage *= (100f - blockDamageReduction) / 100f;
+        }
+
         health -= damage;
+        
         if(healthBar != null)
             healthBar.value = health;
     }

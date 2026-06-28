@@ -20,6 +20,8 @@ public class AnimManager : MonoBehaviour
     private bool isTriggerPlaying = false;
     
     public PlayerController playerController;
+    
+    CharaStat charaStat;
 
     public enum CharactorType
     {
@@ -34,6 +36,7 @@ public class AnimManager : MonoBehaviour
         coolTime = GetComponent<CoolTime>();
         animator = GetComponent<Animator>();
         playerController = GetComponent<PlayerController>();
+        charaStat = GetComponent<CharaStat>();
         for (int i = 0; i < animator.layerCount; i++)
         {
             Debug.Log("Layer " + i + ": " + animator.GetLayerName(i));
@@ -87,6 +90,13 @@ public class AnimManager : MonoBehaviour
                     Debug.Log($"[Bool 변경] '{animName}' = true");
                     break;
                 }
+                
+                if (animName == "1Hand_Up_Shield_Block_Idle_1")
+                {
+                    animator.SetBool(animName, true);
+
+                    charaStat.isBlocking = true;
+                }
             }
 
             if (context.canceled)
@@ -97,6 +107,7 @@ public class AnimManager : MonoBehaviour
                     Debug.Log($"[Bool 변경] '{animName}' = false");
                     break;
                 }
+                charaStat.isBlocking = false;
             }
 
             break;

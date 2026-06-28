@@ -66,15 +66,18 @@ public class BerserkerSkillLogic : MonoBehaviour
         if (targetStat == null)
             Debug.LogError($"{name} : targetStat이 NULL입니다.");
 
-        switch (skillType)
+        if (other.gameObject == target)
         {
-            case SkillType.BerserkerDefaultSlash:
-                targetStat.Hit(prefabInfo.power);
-                break;
+            switch (skillType)
+            {
+                case SkillType.BerserkerDefaultSlash:
+                    targetStat.Hit(prefabInfo.power);
+                    break;
 
-            case SkillType.BerserkerBloodyAxeChopping:
-                targetStat.Hit(prefabInfo.power);
-                break;
+                case SkillType.BerserkerBloodyAxeChopping:
+                    targetStat.Hit(prefabInfo.power);
+                    break;
+            }
         }
     }
 }
