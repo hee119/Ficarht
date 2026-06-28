@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9fcff9b256f7482c8f37132a05f706e, type: 3}
   m_Name: 3_Coffee
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardID: 0
+  cardID: 3
   cardName: Coffee
+  cardDescription: "\uCEE4\uD53C\uB85C \uC2A4\uD0DC\uBBF8\uB098\uB97C \uC62C\uB9BD\uB2C8\uB2E4."
   cardType: 1
   cardImage: {fileID: 21300000, guid: 2a3fd3ffd9b2540f3bb7b96d1e2e735d, type: 3}
   cardPrefab: {fileID: 3433824009120179653, guid: 1b9bb3da9e31f42f4853fb4b9381e881, type: 3}
   characterStats: {fileID: 0}
   buffEffect:
     healthMod: 0
-    staminaMod: 0
+    staminaMod: 20
     powerMod: 0
     defenseMod: 0
     intelligenceMod: 0

@@ -88,6 +88,8 @@ public class CardObject : MonoBehaviour
 
     private static CardObject currentHoveredCard;
 
+    private static CardObject draggingCard;
+
     private static readonly RaycastHit[] hoverHits =
         new RaycastHit[32];
 
@@ -263,6 +265,9 @@ public class CardObject : MonoBehaviour
 
         isDragging = false;
 
+        if (draggingCard == this)
+            draggingCard = null;
+
         isMouseDown = false;
 
         mouseDownTimer = 0f;
@@ -290,6 +295,9 @@ public class CardObject : MonoBehaviour
         isPlaced = false;
 
         isDragging = false;
+
+        if (draggingCard == this)
+            draggingCard = null;
 
         isMouseDown = false;
 
@@ -500,6 +508,12 @@ public class CardObject : MonoBehaviour
 
         lastHoverUpdateFrame = Time.frameCount;
 
+        if (draggingCard != null)
+        {
+            SetHoveredCard(null);
+            return;
+        }
+
         if (Mouse.current == null || Camera.main == null)
         {
             SetHoveredCard(null);
@@ -666,6 +680,8 @@ public class CardObject : MonoBehaviour
 
         isDragging = true;
 
+        draggingCard = this;
+
         isMouseDown = false;
 
         mouseDownTimer = 0f;
@@ -780,6 +796,9 @@ public class CardObject : MonoBehaviour
     private void StopDrag()
     {
         isDragging = false;
+
+        if (draggingCard == this)
+            draggingCard = null;
 
         if (SlotGuideManager.Instance != null)
         {
