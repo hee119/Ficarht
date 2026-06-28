@@ -41,7 +41,13 @@ public class PlayerController : NetworkBehaviour
     public LayerMask groundLayer;
 
     public bool isRoll = false;
-    
+
+    [SyncVar]
+    private uint ownerPlayerNetId;
+
+    private Coroutine speedMultiplierRoutine;
+    private float speedMultiplier = 1f;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,6 +64,12 @@ public class PlayerController : NetworkBehaviour
         }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    [Server]
+    public void ServerSetOwnerPlayerNetwork(PlayerNetwork owner)
+    {
+        ownerPlayerNetId = owner != null ? owner.netId : 0;
     }
 
     // ─────────────────────────────────────────────
@@ -78,14 +90,15 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocallyControlled) return;
         if (isAttacking || isRoll) return;
 
-        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
 
-        
-        if(characterStats.stamina <= 0) isRunning = false;
+        if (characterStats != null && characterStats.stamina <= 0)
+            isRunning = false;
 
         currentSpeed = moveInput.magnitude > 0.01f
             ? (isRunning ? runSpeed : walkSpeed)
+                * GetEffectiveSpeedMultiplier(pn)
             : 0f;
 
         animator.SetFloat("MoveX", moveInput.x);
@@ -105,7 +118,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocallyControlled) return;
         if (isAttacking || isRoll) return;
 
-        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
 
         Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
@@ -133,10 +146,25 @@ public class PlayerController : NetworkBehaviour
     public void OnRun(InputAction.CallbackContext context)
     {
         if (!IsLocallyControlled) return;
-        if (context.started)  isRunning = true;
-        characterStats.staminaDrainCoroutine = StartCoroutine(characterStats.StaminaDrain());
-        if (context.canceled) isRunning = false;
-        StopCoroutine(characterStats.staminaDrainCoroutine);
+
+        if (context.started)
+        {
+            isRunning = true;
+
+            if (characterStats != null)
+                characterStats.staminaDrainCoroutine = StartCoroutine(characterStats.StaminaDrain());
+
+            if (NetworkClient.active && isOwned)
+                CmdNotifyRunStarted();
+        }
+
+        if (context.canceled)
+        {
+            isRunning = false;
+
+            if (characterStats != null && characterStats.staminaDrainCoroutine != null)
+                StopCoroutine(characterStats.staminaDrainCoroutine);
+        }
     }
 
     // =========================
@@ -144,8 +172,8 @@ public class PlayerController : NetworkBehaviour
     // =========================
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!context.started)
-            return;
+        if (!IsLocallyControlled) return;
+        if (!context.started) return;
 
         bool grounded = IsGrounded();
 
@@ -159,6 +187,9 @@ public class PlayerController : NetworkBehaviour
             );
 
             Debug.Log("점프!");
+
+            if (NetworkClient.active && isOwned)
+                CmdNotifyJump();
         }
     }
 
@@ -187,7 +218,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocallyControlled) return;
         if (!context.started || isAttacking) return;
 
-        PlayerNetwork pn = GetComponent<PlayerNetwork>();
+        PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanAttack()) return;
 
         if (NetworkClient.active)
@@ -207,9 +238,23 @@ public class PlayerController : NetworkBehaviour
     // Network
     // ─────────────────────────────────────────────
     [Command]
+    void CmdNotifyJump()
+    {
+        Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
+    }
+
+    [Command]
+    void CmdNotifyRunStarted()
+    {
+        Trap_Card.Instance?.NotifyRunStarted(GetPlayerNetwork());
+    }
+
+    [Command]
     void CmdRequestAttack()
     {
-        GetComponent<PlayerNetwork>()?.ServerRequestAttack();
+        PlayerNetwork pn = GetPlayerNetwork();
+        pn?.ServerRequestAttack();
+        Trap_Card.Instance?.NotifyAttack(pn);
         RpcPlayAttackAnimation();
     }
 
@@ -227,7 +272,7 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(1f);
         isAttacking = false;
     }
-    
+
     public bool IsGrounded()
     {
         bool isGrounded = Physics.Raycast(
@@ -269,10 +314,65 @@ public class PlayerController : NetworkBehaviour
         }
         isRoll = false;
     }
-    
+
     public void RefreshSpeed()
     {
         walkSpeed = characterStats.speed;
         runSpeed = characterStats.runSpeed;
+    }
+
+    public void ApplyTemporarySpeedMultiplier(float multiplier, float duration)
+    {
+        if (speedMultiplierRoutine != null)
+            StopCoroutine(speedMultiplierRoutine);
+
+        speedMultiplierRoutine = StartCoroutine(
+            SpeedMultiplierRoutine(multiplier, duration)
+        );
+    }
+
+    private IEnumerator SpeedMultiplierRoutine(float multiplier, float duration)
+    {
+        speedMultiplier = multiplier;
+        yield return new WaitForSeconds(duration);
+        speedMultiplier = 1f;
+        speedMultiplierRoutine = null;
+    }
+
+    private float GetEffectiveSpeedMultiplier(PlayerNetwork playerNetwork)
+    {
+        if (speedMultiplier < 0.99f)
+            return speedMultiplier;
+
+        if (playerNetwork != null && playerNetwork.currentState == PlayerStateType.Slow)
+            return 0.5f;
+
+        return 1f;
+    }
+
+    private PlayerNetwork GetPlayerNetwork()
+    {
+        PlayerNetwork selfNetwork = GetComponent<PlayerNetwork>();
+
+        if (selfNetwork != null)
+            return selfNetwork;
+
+        if (ownerPlayerNetId == 0)
+            return null;
+
+        NetworkIdentity identity = null;
+
+        if (NetworkServer.active)
+        {
+            NetworkServer.spawned.TryGetValue(ownerPlayerNetId, out identity);
+        }
+        else if (NetworkClient.active)
+        {
+            NetworkClient.spawned.TryGetValue(ownerPlayerNetId, out identity);
+        }
+
+        return identity != null
+            ? identity.GetComponent<PlayerNetwork>()
+            : null;
     }
 }
