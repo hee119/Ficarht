@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -25,6 +27,17 @@ public class CharaStat : MonoBehaviour
     private float restoreStatDefenseBuff;
     private float restoreStatRunSpeedDebuff;
     private float restoreStatRunSpeedBuff;
+    private float shieldHp;
+    public bool isShield = false;
+    public GameObject shieldObject;
+    
+    private Renderer[] allRenderers;
+    private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
+
+    
+    [Header("Hit Flash")]
+    public float flashDuration = 0.1f;
+    public Color flashColor = Color.white;
     
     [Header("Block")]
     public bool isBlocking = false;
@@ -32,8 +45,11 @@ public class CharaStat : MonoBehaviour
     public float blockStaminaPerSecond = 10f;
     
     [Header("Stats")]
+    public float maxHealth;
     public float health;
+    public float maxStamina;
     public float stamina;
+    public float staminaRegenRate;
     public float power;
     public float defense;
     public float intelligence;
@@ -87,7 +103,9 @@ public class CharaStat : MonoBehaviour
         if (healthBar == null)
             Debug.LogError($"{name} : healthBar가 NULL입니다.");
 
+        maxHealth = characterStats.health;
         health = characterStats.health;
+        maxStamina = characterStats.stamina;
         stamina = characterStats.stamina;
         power = characterStats.power;
         defense = characterStats.defense;
@@ -102,22 +120,115 @@ public class CharaStat : MonoBehaviour
         {
             healthBar.maxValue = characterStats.health;
         }
+        
+        CacheRenderers();
+
+    }
+    
+    private void OnEnable()
+    {
+        StartCoroutine(StaminaRegen());
+    }
+    
+    private void CacheRenderers()
+    {
+        allRenderers = GetComponentsInChildren<Renderer>(true);
+
+        foreach (var rend in allRenderers)
+        {
+            // 각 렌더러의 머티리얼 색 저장
+            var mats = rend.materials;
+            Color[] cols = new Color[mats.Length];
+
+            for (int i = 0; i < mats.Length; i++)
+            {
+                if (mats[i].HasProperty("_Color"))
+                    cols[i] = mats[i].color;
+                else
+                    cols[i] = Color.white;
+            }
+
+            originalColors[rend] = cols;
+        }
     }
 
     public void Hit(float damage)
     {
+        if (isShield)
+        {
+            shieldHp -= damage;
+
+            if (shieldHp <= 0)
+            {
+                shieldHp = 0;
+                PoolManager.Instance.Release("PaladinShield" ,shieldObject);
+                isShield = false;
+            }
+            
+            return;
+        }
         if (healthBar == null)
             Debug.LogWarning($"{name} : healthBar가 NULL입니다.");
 
+        // 1. 블록 적용
         if (isBlocking)
         {
             damage *= (100f - blockDamageReduction) / 100f;
         }
 
+        // 2. 방어력 적용 (핵심)
+        float defenseFactor = 100f / (100f + defense);
+        damage *= defenseFactor;
+
+        // 3. 최소 데미지 보장 (0 방지)
+        if (damage < 1f)
+            damage = 1f;
+
         health -= damage;
-        
-        if(healthBar != null)
+
+        if (healthBar != null)
             healthBar.value = health;
+
+        StopAllCoroutines();
+        StartCoroutine(HitFlash());
+    }
+    
+    private IEnumerator HitFlash()
+    {
+        SetFlashColor(flashColor);
+
+        yield return new WaitForSeconds(flashDuration);
+
+        RestoreOriginalColors();
+    }
+    
+    private void RestoreOriginalColors()
+    {
+        foreach (var rend in allRenderers)
+        {
+            if (!originalColors.ContainsKey(rend)) continue;
+
+            var mats = rend.materials;
+            var cols = originalColors[rend];
+
+            for (int i = 0; i < mats.Length && i < cols.Length; i++)
+            {
+                if (mats[i].HasProperty("_Color"))
+                    mats[i].color = cols[i];
+            }
+        }
+    }
+    private void SetFlashColor(Color c)
+    {
+        foreach (var rend in allRenderers)
+        {
+            var mats = rend.materials;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                if (mats[i].HasProperty("_Color"))
+                    mats[i].color = c;
+            }
+        }
     }
 
     public void Burn(float duration, float damagePerSecond)
@@ -301,5 +412,31 @@ public class CharaStat : MonoBehaviour
             this.defense -= this.defense * (defense / 100f);
 
         playerController.RefreshSpeed();
+    }
+
+    public IEnumerator ApplyShield(float defense, float duration, GameObject shield)
+    {
+        isShield = true;
+        shieldObject = shield;
+        shieldHp = defense;
+        yield return new WaitForSeconds(duration);
+        isShield = false;
+    }
+    
+    private IEnumerator StaminaRegen()
+    {
+        while (true)
+        {
+            if (stamina < maxStamina)
+            {
+                stamina += staminaRegenRate * Time.deltaTime;
+                stamina = Mathf.Min(stamina, maxStamina);
+
+                if (healthBar != null)
+                    healthBar.value = stamina;
+            }
+
+            yield return null;
+        }
     }
 }
