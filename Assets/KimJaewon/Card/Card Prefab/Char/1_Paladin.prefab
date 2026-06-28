@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 225092122879552906}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.01999998}
+  m_LocalPosition: {x: 0, y: 0.12, z: -0.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1438270333, guid: 576800f95560340eebcc8ff9008be1f2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c0cc2d5e8e8ea4dc4b3ff73fb8b0e8fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -119,7 +119,7 @@ Transform:
   m_GameObject: {fileID: 2429316085626964367}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 2.63, y: -0.14, z: 12.582}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -191,6 +191,10 @@ MonoBehaviour:
   cardFrontRenderer: {fileID: 0}
   cardBackObject: {fileID: 0}
   hoverHeight: 0.1
+  hoverScaleMultiplier: 1.08
+  handHoverScreenLift: 80
+  dragHeight: 0.35
+  hoverSortingOrderBoost: 100
   moveSpeed: 15
   placedScaleMultiplier: 0.55
   characterPlacedScale: 0.68
@@ -225,7 +229,7 @@ Transform:
   m_GameObject: {fileID: 2809465515681592320}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.13, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -280,7 +284,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1750003668, guid: 50a546e79145e4f32a219c686a7302dc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2dfad4107d5be4e928badbef1f634c7f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
