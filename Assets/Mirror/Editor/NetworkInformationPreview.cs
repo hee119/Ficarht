@@ -60,7 +60,13 @@ namespace Mirror
         }
 
         GUIContent title;
-        Styles styles = new Styles();
+        Styles _styles;
+        Styles styles => _styles ??= new Styles();
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+        }
 
         public override GUIContent GetPreviewTitle()
         {
@@ -95,8 +101,7 @@ namespace Mirror
             if (identity == null)
                 return;
 
-            if (styles == null)
-                styles = new Styles();
+            // styles is lazily initialized via property
 
 
             // padding
