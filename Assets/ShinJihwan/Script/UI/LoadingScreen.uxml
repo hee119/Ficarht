@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="LoadingScreen.uss" />
+    <ui:VisualElement name="root" class="root">
+        <ui:Label name="loading-label" class="loading-label" text="Loading..." />
+    </ui:VisualElement>
+</ui:UXML>

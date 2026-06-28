@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="HpBar.uss" />
+    <ui:VisualElement name="hud-root" class="hud-root">
+
+        <!-- 내 HP - 왼쪽 아래 -->
+        <ui:VisualElement name="my-panel" class="hp-panel my-panel">
+            <ui:Label name="my-name" class="name-label" text="Player" />
+            <ui:VisualElement class="hp-track">
+                <ui:VisualElement name="my-fill" class="hp-fill my-fill" />
+            </ui:VisualElement>
+            <ui:Label name="my-hp-text" class="hp-text" text="100 / 100" />
+        </ui:VisualElement>
+
+        <!-- 상대방 HP - 오른쪽 위 -->
+        <ui:VisualElement name="enemy-panel" class="hp-panel enemy-panel">
+            <ui:Label name="enemy-name" class="name-label enemy-name-label" text="Enemy" />
+            <ui:VisualElement class="hp-track">
+                <ui:VisualElement name="enemy-fill" class="hp-fill enemy-fill" />
+            </ui:VisualElement>
+            <ui:Label name="enemy-hp-text" class="hp-text" text="100 / 100" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

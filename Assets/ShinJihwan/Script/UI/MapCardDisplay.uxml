@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="MapCardDisplay.uss" />
+    <ui:VisualElement name="overlay" class="overlay">
+        <ui:VisualElement name="card" class="card" />
+    </ui:VisualElement>
+</ui:UXML>
