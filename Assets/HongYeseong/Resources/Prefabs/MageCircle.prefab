@@ -19470,6 +19470,8 @@ MonoBehaviour:
   defense: 0
   duration: 0
   isBuff: 0
+  isDebuff: 0
+  burnDamage: 0
 --- !u!114 &-2479241754651558825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19522,6 +19524,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477f15f6ada9c4b3c8892f7038cf98fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MageSkillLogic
+  skillType: 2
+  target: {fileID: 0}
+  player: {fileID: 0}
+  targetStat: {fileID: 0}
+  playerStat: {fileID: 0}
 --- !u!1 &5655975489359116220
 GameObject:
   m_ObjectHideFlags: 0

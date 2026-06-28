@@ -70,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 7b953c62a8d5242129b9842bab29cfdb, type: 2}
     - target: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
       propertyPath: m_Name
-      value: SM_Wep_Sword_03
+      value: PaladinDivineProtection
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -91,6 +91,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
       insertIndex: -1
       addedObject: {fileID: -6826804811890100877}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8105361892428815304}
   m_SourcePrefab: {fileID: 100100000, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
 --- !u!1 &1315324474620319471 stripped
 GameObject:
@@ -139,6 +142,8 @@ MonoBehaviour:
   defense: 0
   duration: 0
   isBuff: 0
+  isDebuff: 0
+  burnDamage: 0
 --- !u!114 &-4952052235158982491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,3 +182,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DefaultPosRot
   defaultLocalPosition: {x: 0, y: 0, z: 0}
   defaultLocalRotation: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8105361892428815304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315324474620319471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b749b0168be74f788aac5da7311f154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PaladinSkillLogic
+  skillType: 2
+  target: {fileID: 0}
+  player: {fileID: 0}
+  targetStat: {fileID: 0}
+  playerStat: {fileID: 0}

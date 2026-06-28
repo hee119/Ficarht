@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -7302894549285967995}
   - component: {fileID: 5707635045635843963}
   - component: {fileID: -9141253819398512099}
+  - component: {fileID: 5857991733346239988}
   m_Layer: 0
   m_Name: PaladinDefenseBuff
   m_TagString: Untagged
@@ -4863,6 +4864,8 @@ MonoBehaviour:
   defense: 0
   duration: 0
   isBuff: 1
+  isDebuff: 0
+  burnDamage: 0
 --- !u!114 &-7302894549285967995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4903,6 +4906,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DefaultPosRot
   defaultLocalPosition: {x: 0, y: 0, z: 0}
   defaultLocalRotation: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5857991733346239988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3874635022589376825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b749b0168be74f788aac5da7311f154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PaladinSkillLogic
+  skillType: 1
+  target: {fileID: 0}
+  player: {fileID: 0}
+  targetStat: {fileID: 0}
+  playerStat: {fileID: 0}
 --- !u!1 &4605854091000326379
 GameObject:
   m_ObjectHideFlags: 0

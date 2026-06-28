@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         walkSpeed = characterStats.speed;
-        runSpeed = characterStats.speed * 2f;
+        runSpeed = characterStats.runSpeed;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -213,5 +213,11 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         isRoll = false;
+    }
+    
+    public void RefreshSpeed()
+    {
+        walkSpeed = characterStats.speed;
+        runSpeed = characterStats.runSpeed;
     }
 }

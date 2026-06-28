@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: -4627974044819017300}
   - component: {fileID: -7716198299777072244}
   - component: {fileID: -7029801054260625689}
+  - component: {fileID: -5430615665547619431}
+  - component: {fileID: 2971117650645288348}
   m_Layer: 0
   m_Name: PaladinDefaultAttack
   m_TagString: Untagged
@@ -4919,6 +4921,8 @@ MonoBehaviour:
   defense: 0
   duration: 0
   isBuff: 0
+  isDebuff: 0
+  burnDamage: 0
 --- !u!114 &-4627974044819017300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4959,6 +4963,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DefaultPosRot
   defaultLocalPosition: {x: 0, y: 0, z: 0}
   defaultLocalRotation: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &-5430615665547619431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605090278490190731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b749b0168be74f788aac5da7311f154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PaladinSkillLogic
+  skillType: 0
+  target: {fileID: 0}
+  player: {fileID: 0}
+  targetStat: {fileID: 0}
+  playerStat: {fileID: 0}
+--- !u!65 &2971117650645288348
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605090278490190731}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4, y: 1, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7140177950299603820
 GameObject:
   m_ObjectHideFlags: 0

@@ -9800,11 +9800,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1173243701402730150}
   - component: {fileID: 7364936370289906279}
+  - component: {fileID: 1954158766697823964}
   - component: {fileID: 4752034024110402706}
   - component: {fileID: 4113610744957800758}
   - component: {fileID: 8151551235115645807}
   - component: {fileID: -369509168740304748}
   - component: {fileID: 555716822302164436}
+  - component: {fileID: 1110535482513588352}
   m_Layer: 0
   m_Name: BerserkerDefaultSlash
   m_TagString: Untagged
@@ -14609,6 +14611,23 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &1954158766697823964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5503505460791601945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8f046f91f4d47c2ae0b2d9de1a2730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BerserkerSkillLogic
+  skillType: 3
+  target: {fileID: 0}
+  player: {fileID: 0}
+  targetStat: {fileID: 0}
+  playerStat: {fileID: 0}
 --- !u!199 &4752034024110402706
 ParticleSystemRenderer:
   serializedVersion: 7
@@ -14709,6 +14728,8 @@ MonoBehaviour:
   defense: 0
   duration: 0
   isBuff: 0
+  isDebuff: 0
+  burnDamage: 0
 --- !u!114 &8151551235115645807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14749,6 +14770,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DefaultPosRot
   defaultLocalPosition: {x: 0, y: 0, z: 0}
   defaultLocalRotation: {x: 0, y: 0, z: 0, w: 0}
+--- !u!65 &1110535482513588352
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5503505460791601945}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5, y: 2, z: 5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8373613166400002822
 GameObject:
   m_ObjectHideFlags: 0

@@ -9826,6 +9826,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3769969031047562847}
   - component: {fileID: 1426245440731515418}
+  - component: {fileID: 1905403307178117620}
   - component: {fileID: 4705501379079182426}
   - component: {fileID: 1891331501348739591}
   - component: {fileID: 435939904035327997}
@@ -14580,6 +14581,23 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &1905403307178117620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3874635022589376825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8f046f91f4d47c2ae0b2d9de1a2730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BerserkerSkillLogic
+  skillType: 1
+  target: {fileID: 0}
+  player: {fileID: 0}
+  targetStat: {fileID: 0}
+  playerStat: {fileID: 0}
 --- !u!199 &4705501379079182426
 ParticleSystemRenderer:
   serializedVersion: 7
@@ -14680,6 +14698,8 @@ MonoBehaviour:
   defense: 0
   duration: 0
   isBuff: 1
+  isDebuff: 0
+  burnDamage: 0
 --- !u!114 &435939904035327997
 MonoBehaviour:
   m_ObjectHideFlags: 0

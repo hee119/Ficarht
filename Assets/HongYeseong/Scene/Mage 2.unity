@@ -537,38 +537,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[0].coolTime
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[2].coolTime
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[3].coolTime
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[0].animationName
-      value: Jump Attack
-      objectReference: {fileID: 0}
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[1].animationName
-      value: DefaltAttack
-      objectReference: {fileID: 0}
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[2].animationName
-      value: how
-      objectReference: {fileID: 0}
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[3].animationName
-      value: Roar
-      objectReference: {fileID: 0}
-    - target: {fileID: -8580922265796652803, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
-      propertyPath: skillCoolTimes.Array.data[4].animationName
-      value: Roll
-      objectReference: {fileID: 0}
     - target: {fileID: 755554410987823595, guid: 27414671a9b964c71810ca2759b0a5ab, type: 3}
       propertyPath: m_Name
       value: Berserker

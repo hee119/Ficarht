@@ -21,3 +21,4 @@ MonoBehaviour:
   duration: 0
   isBuff: 0
   isDebuff: 0
+  burnDamage: 5

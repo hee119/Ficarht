@@ -1,25 +1,39 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 public class CharaStat : MonoBehaviour
 {
     public CharacterStats characterStats;
 
     private Rigidbody charactorRb;
-    private AnimManager animManager;
     public Slider healthBar;
-    
+    public UnityEngine.InputSystem.PlayerInput playerInput;
+    private PlayerController playerController;
+    private Animator animator;
+    public GameObject iceObject;
+    public GameObject faintingObject;
+    public string faintingAnimationName = "Stun";
     private float burnDamage;
     private float slowAmount;
-    private bool isSlow;
-
-    [Header("Stats")] 
-    public float health; // 체력
-    public float stamina; // 스테미너
-    public float power; // 힘
-    public float defense; // 방어력
-    public float intelligence; // 지식
-    public float speed; // 속도
+    private float restoreStatPowerDebuff;
+    private float restoreStatSpeedDebuff;
+    private float restoreStatDefenseDebuff;
+    private float restoreStatPowerBuff;
+    private float restoreStatSpeedBuff;
+    private float restoreStatDefenseBuff;
+    private float restoreStatRunSpeedDebuff;
+    private float restoreStatRunSpeedBuff;
+    
+    [Header("Stats")]
+    public float health;
+    public float stamina;
+    public float power;
+    public float defense;
+    public float intelligence;
+    public float speed;
+    public float runSpeed;
     public float projectileSpeed;
     public float cooldown;
     public float duration;
@@ -39,8 +53,34 @@ public class CharaStat : MonoBehaviour
 
     void Awake()
     {
+        if (characterStats == null)
+            Debug.LogError($"{name} : characterStats가 NULL입니다.");
+
         charactorRb = GetComponent<Rigidbody>();
-        animManager = GetComponent<AnimManager>();
+        playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
+        playerController = GetComponent<PlayerController>();
+        
+        if (iceObject != null)
+            iceObject.SetActive(false);
+        
+        if (faintingObject != null)
+            faintingObject.SetActive(false);
+        
+        animator = GetComponent<Animator>();
+
+        if (animator == null)
+            Debug.LogError($"{name} : Animator가 없습니다.");
+        
+        
+
+        if (charactorRb == null)
+            Debug.LogError($"{name} : Rigidbody가 없습니다.");
+
+        if (playerInput == null)
+            Debug.LogError($"{name} : PlayerController가 없습니다.");
+
+        if (healthBar == null)
+            Debug.LogError($"{name} : healthBar가 NULL입니다.");
 
         health = characterStats.health;
         stamina = characterStats.stamina;
@@ -48,17 +88,25 @@ public class CharaStat : MonoBehaviour
         defense = characterStats.defense;
         intelligence = characterStats.intelligence;
         speed = characterStats.speed;
+        runSpeed = characterStats.runSpeed;
         projectileSpeed = characterStats.projectileSpeed;
         cooldown = characterStats.cooldown;
         duration = characterStats.duration;
-        
-        healthBar.maxValue = characterStats.health;
+
+        if (healthBar != null)
+        {
+            healthBar.maxValue = characterStats.health;
+        }
     }
 
     public void Hit(float damage)
     {
+        if (healthBar == null)
+            Debug.LogWarning($"{name} : healthBar가 NULL입니다.");
+
         health -= damage;
-        healthBar.value = health;
+        if(healthBar != null)
+            healthBar.value = health;
     }
 
     public void Burn(float duration, float damagePerSecond)
@@ -82,10 +130,12 @@ public class CharaStat : MonoBehaviour
     {
         ApplyStatus(Status.Freezing, duration);
     }
-
+    
     private void ApplyStatus(Status newStatus, float duration)
     {
-        // 우선순위가 낮으면 무시
+        if (playerInput == null)
+            Debug.LogError($"{name} : PlayerController가 NULL입니다.");
+
         if ((int)newStatus < (int)currentStatus)
             return;
 
@@ -102,53 +152,143 @@ public class CharaStat : MonoBehaviour
 
             case Status.Slowdown:
                 ApplyDebuff(0, slowAmount, 0);
-                isSlow = true;
                 break;
 
             case Status.Fainting:
-                animManager.enabled = false;
+                playerInput.enabled = false;
+
+                if (animator != null)
+                    animator.Play(faintingAnimationName);
+
+                if (faintingObject != null)
+                    faintingObject.SetActive(true);
+                else
+                    Debug.LogError($"{name} : faintingObject가 NULL입니다.");
+
                 break;
 
             case Status.Freezing:
-                speed = 0;
-                animManager.enabled = false;
+                playerInput.enabled = false;
+
+                if (iceObject != null)
+                    iceObject.SetActive(true);
+                else
+                    Debug.LogError($"{name} : iceObject가 NULL입니다.");
+
                 break;
         }
+
         statusCoroutine = StartCoroutine(StatusTimer(duration));
     }
-    
+
     private IEnumerator BurnDamage()
     {
         while (currentStatus == Status.Burn)
         {
-            Hit(burnDamage);
+            if (burnDamage <= 0)
+                Debug.LogError($"{name} : burnDamage가 0입니다.");
+            Hit(health / burnDamage);
             yield return new WaitForSeconds(1f);
         }
     }
 
     private IEnumerator StatusTimer(float duration)
     {
+        if (playerInput == null)
+            Debug.LogError($"{name} : PlayerController가 NULL입니다.");
+
         yield return new WaitForSeconds(duration);
 
+        switch (currentStatus)
+        {
+            case Status.Burn:
+                break;
+
+            case Status.Slowdown:
+                break;
+
+            case Status.Fainting:
+                playerInput.enabled = true;
+
+                if (faintingObject != null)
+                    faintingObject.SetActive(false);
+
+                break;
+
+            case Status.Freezing:
+                playerInput.enabled = true;
+
+                if (iceObject != null)
+                    iceObject.SetActive(false);
+
+                break;
+        }
+
+        power += restoreStatPowerDebuff;
+        speed += restoreStatSpeedDebuff;
+        runSpeed += restoreStatRunSpeedDebuff;
+        defense += restoreStatDefenseDebuff;
+
+        playerController.RefreshSpeed();
         currentStatus = Status.Default;
         statusCoroutine = null;
-        if (isSlow)
-        {
-            ApplyBuff(0, slowAmount,0);
-        }
+    }
+    
+    private IEnumerator BuffTimer(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        power += restoreStatPowerBuff;
+        speed += restoreStatSpeedBuff;
+        runSpeed += restoreStatRunSpeedBuff;
+        defense += restoreStatDefenseBuff;
+
+        playerController.RefreshSpeed();
     }
 
-    public void ApplyBuff(float power, float speed, float defense)
+    public void ApplyBuff(float power, float speed, float defense, float duration)
     {
-        if (power   != 0) this.power   += this.power   * power;
-        if (speed   != 0) this.speed   += this.speed   * speed;
-        if (defense != 0) this.defense += this.defense * defense;
+        restoreStatPowerBuff = this.power * (power / 100f);
+        restoreStatSpeedBuff = this.speed * (speed / 100f);
+        restoreStatRunSpeedBuff = this.runSpeed * (speed / 100f);
+        restoreStatDefenseBuff = this.defense * (defense / 100f);
+
+        if (power != 0)
+            this.power += this.power * (power / 100f);
+
+        if (speed != 0)
+        {
+            this.speed += this.speed * (speed / 100f);
+            this.runSpeed += this.runSpeed * (speed / 100f);
+        }
+
+        if (defense != 0)
+            this.defense += this.defense * (defense / 100f);
+
+        playerController.RefreshSpeed();
+
+        StartCoroutine(BuffTimer(duration));
     }
 
     public void ApplyDebuff(float power, float speed, float defense)
     {
-        if (power   != 0) this.power   -= this.power   * power;
-        if (speed   != 0) this.speed   -= this.speed   * speed;
-        if (defense != 0) this.defense -= this.defense * defense;
+        restoreStatPowerDebuff = this.power * (power / 100f);
+        restoreStatSpeedDebuff = this.speed * (speed / 100f);
+        restoreStatRunSpeedDebuff = this.runSpeed * (speed / 100f);
+        restoreStatDefenseDebuff = this.defense * (defense / 100f);
+
+        if (power != 0)
+            this.power -= this.power * (power / 100f);
+
+        if (speed != 0)
+        {
+            this.speed -= this.speed * (speed / 100f);
+            this.runSpeed -= this.runSpeed * (speed / 100f);
+        }
+
+        if (defense != 0)
+            this.defense -= this.defense * (defense / 100f);
+
+        playerController.RefreshSpeed();
     }
 }

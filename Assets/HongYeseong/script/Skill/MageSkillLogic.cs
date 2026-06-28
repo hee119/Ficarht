@@ -5,13 +5,14 @@ public class MageSkillLogic : MonoBehaviour
 {
     [SerializeField]
     SkillType skillType;
-    
+
     PrefabInfo prefabInfo;
-    
+
     public GameObject target;
     public GameObject player;
     public CharaStat targetStat;
     public CharaStat playerStat;
+
     enum SkillType
     {
         ice,
@@ -20,25 +21,55 @@ public class MageSkillLogic : MonoBehaviour
         defaultAttack
     }
 
+    void Start()
+    {
+        if (prefabInfo == null)
+        {
+            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+            return;
+        }
 
+        if (playerStat == null)
+        {
+            Debug.LogError($"{name} : playerStat이 NULL입니다.");
+            return;
+        }
+
+        prefabInfo.power += playerStat.intelligence * (prefabInfo.power / 100f);
+    }
+    
     public void OnEnable()
     {
+        if (prefabInfo == null)
+            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+
+        if (playerStat == null)
+            Debug.LogError($"{name} : playerStat이 NULL입니다.");
+
         if (skillType == SkillType.buff)
-            playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense);
+            playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
     }
 
     public void OnTriggerEnter(Collider other)
     {
+        if (prefabInfo == null)
+            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+
+        if (targetStat == null)
+            Debug.LogError($"{name} : targetStat이 NULL입니다.");
+
         switch (skillType)
         {
             case SkillType.ice:
                 targetStat.Hit(prefabInfo.power);
                 targetStat.Freezing(prefabInfo.duration);
                 break;
+
             case SkillType.fire:
                 targetStat.Hit(prefabInfo.power);
-                targetStat.Burn(prefabInfo.duration, prefabInfo.power);
+                targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
                 break;
+
             case SkillType.defaultAttack:
                 targetStat.Hit(prefabInfo.power);
                 break;
