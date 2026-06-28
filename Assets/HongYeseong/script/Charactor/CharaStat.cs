@@ -11,6 +11,7 @@ public class CharaStat : MonoBehaviour
 
     private Rigidbody charactorRb;
     public Slider healthBar;
+    public Slider staminaBar;
     public UnityEngine.InputSystem.PlayerInput playerInput;
     private PlayerController playerController;
     private Animator animator;
@@ -50,6 +51,7 @@ public class CharaStat : MonoBehaviour
     public float maxStamina;
     public float stamina;
     public float staminaRegenRate;
+    public float staminaDrainRate; // 초당 소비량
     public float power;
     public float defense;
     public float intelligence;
@@ -119,6 +121,11 @@ public class CharaStat : MonoBehaviour
         if (healthBar != null)
         {
             healthBar.maxValue = characterStats.health;
+        }
+        
+        if (staminaBar != null)
+        {
+            staminaBar.maxValue = characterStats.stamina;
         }
         
         CacheRenderers();
@@ -432,11 +439,41 @@ public class CharaStat : MonoBehaviour
                 stamina += staminaRegenRate * Time.deltaTime;
                 stamina = Mathf.Min(stamina, maxStamina);
 
-                if (healthBar != null)
-                    healthBar.value = stamina;
+                if (staminaBar != null) 
+                    staminaBar.value = stamina;
             }
 
             yield return null;
         }
     }
+    
+    private IEnumerator StaminaDrain()
+    {
+        while (true)
+        {
+            if (stamina > 0f)
+            {
+                stamina -= staminaDrainRate * Time.deltaTime;
+                stamina = Mathf.Max(stamina, 0f);
+
+                if (staminaBar != null)
+                    staminaBar.value = stamina;
+            }
+
+            yield return null;
+        }
+    }
+    
+    public void StaminaDrain(float drainRate)
+    {
+        if (stamina > 0f)
+        {
+            stamina -= drainRate * Time.deltaTime;
+            stamina = Mathf.Max(stamina, 0f);
+
+            if (staminaBar != null)
+                staminaBar.value = stamina;
+        }
+    }[
+    =]
 }
