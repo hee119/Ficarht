@@ -97,6 +97,9 @@ public class MenuController : MonoBehaviour
         if (string.IsNullOrEmpty(code))
         {
             Debug.LogWarning("[MenuController] 방 코드를 입력하세요");
+            // Next_UI()가 이미 커넥티드 패널을 열었으므로 되돌리기
+            RoomNetworkManager.Instance?.ResetUI();
+            if (hostUIPanel != null) hostUIPanel.SetActive(true);
             return;
         }
 
@@ -110,13 +113,13 @@ public class MenuController : MonoBehaviour
     {
         if (!NetworkServer.active)
         {
-            Debug.Log("[MenuController] Host만 Game Start 가능");
+            Debug.LogWarning("[MenuController] Host만 Game Start 가능 (현재 Client)");
             return;
         }
 
         if (NetworkServer.connections.Count < 2)
         {
-            Debug.Log($"[MenuController] 플레이어 부족 ({NetworkServer.connections.Count}/2)");
+            Debug.LogWarning($"[MenuController] 플레이어 부족 ({NetworkServer.connections.Count}/2) - 상대방이 참가해야 시작 가능");
             return;
         }
 
@@ -137,7 +140,8 @@ public class MenuController : MonoBehaviour
 
         if (!NetworkServer.active && !NetworkClient.isConnected)
         {
-            Debug.Log("[MenuController] 연결 상태가 아님");
+            Debug.Log("[MenuController] 연결 상태가 아님 → UI만 리셋");
+            RoomNetworkManager.Instance?.ResetUI();
             return;
         }
 
