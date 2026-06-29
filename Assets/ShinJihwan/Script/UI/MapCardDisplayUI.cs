@@ -32,6 +32,7 @@ public class MapCardDisplayUI : MonoBehaviour
         _card    = root.Q<VisualElement>("card");
 
         Debug.Log($"[MapCardDisplayUI] Awake — overlay={_overlay != null}, card={_card != null}");
+
         HideImmediate();
     }
 

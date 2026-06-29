@@ -25,6 +25,12 @@ public class CameraFollow : MonoBehaviour
     [Header("마우스 감도 (도/픽셀)")]
     public float mouseSensitivity = 0.2f;
 
+    [Header("벽 충돌 방지")]
+    [Tooltip("카메라와 플레이어 사이 장애물 감지 레이어")]
+    public LayerMask wallLayers = ~0;           // 기본: 모든 레이어
+    [Tooltip("벽에 닿았을 때 카메라를 플레이어 쪽으로 당기는 여유 거리")]
+    public float wallOffset = 0.3f;
+
     [Header("자동 탐색 재시도 간격 (초)")]
     public float searchInterval = 0.5f;
 
@@ -56,11 +62,24 @@ public class CameraFollow : MonoBehaviour
         // pitch(수직고정) + yaw(마우스 수평) 로 카메라 위치 계산
         Vector3 desiredPos = target.position + Quaternion.Euler(pitchAngle, _yaw, 0f) * offset;
 
+        // ── 벽 관통 방지: 플레이어 → desiredPos 방향으로 SphereCast ──
+        Vector3 lookAt   = target.position + Vector3.up * 1.5f;
+        Vector3 dir      = desiredPos - lookAt;
+        float   maxDist  = dir.magnitude;
+
+        Vector3 finalPos = desiredPos;
+        if (Physics.SphereCast(lookAt, 0.2f, dir.normalized, out RaycastHit hit,
+                               maxDist, wallLayers, QueryTriggerInteraction.Ignore))
+        {
+            // 장애물 앞으로 카메라를 끌어당김
+            finalPos = hit.point + hit.normal * wallOffset;
+        }
+
         // 스무딩 이동
-        transform.position = Vector3.Lerp(transform.position, desiredPos, smoothSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, finalPos, smoothSpeed * Time.deltaTime);
 
         // 플레이어를 바라봄
-        transform.LookAt(target.position + Vector3.up * 1.5f);
+        transform.LookAt(lookAt);
     }
 
     // ─────────────────────────────────────────────
