@@ -30499,12 +30499,18 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerInput: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
+  isAttacking: 0
+  castRadius: 0.3
+  groundCheckDistance: 0.3
+  groundCheckThreshold: 0.1
+  maxSlopeAngle: 200
+  slopeCheck: {fileID: 0}
   mouseSensitivity: 100
   jumpForce: 5
   groundCheck: {fileID: 5597873944974067643}
-  groundCheckDistance: 0.3
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -30686,6 +30692,7 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   staminaBar: {fileID: 0}
   playerInput: {fileID: 0}
+  playerController: {fileID: 0}
   iceObject: {fileID: 2600381665041950395}
   faintingObject: {fileID: 239674119952048339}
   fireObject: {fileID: 1844871986104495926}

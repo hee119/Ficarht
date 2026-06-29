@@ -25,8 +25,12 @@ public class PlayerController : NetworkBehaviour
     private bool isRunning;
     public bool isAttacking;
     
-    public float fallThresholdY = -10f;
-
+    [Header("Slope")]
+    public float maxSlopeAngle = 45f;
+    public float SLOPE_RAY_DISTANCE = 2f;
+    private RaycastHit slopeHit;
+    
+    [SerializeField] private Transform slopeCheck;
     // Mirror 없는 싱글 테스트에서도 입력 처리
     private bool IsLocallyControlled => isOwned || !NetworkClient.active;
 
@@ -150,6 +154,22 @@ public class PlayerController : NetworkBehaviour
             Vector3.down * groundCheckDistance,
             IsGrounded() ? Color.green : Color.red
         );
+        
+        // IsGrounded 레이 (초록=땅, 빨강=공중)
+        Debug.DrawRay(groundCheck.position, Vector3.down * groundCheckDistance,
+            IsGrounded() ? Color.green : Color.red);
+        
+
+// 다음 프레임 위치 레이 (노랑=각도 체크)
+        if (moveInput.magnitude > 0.01f && Camera.main != null)
+        {
+            Vector3 cf = Camera.main.transform.forward; cf.y = 0; cf.Normalize();
+            Vector3 cr = Camera.main.transform.right;   cr.y = 0; cr.Normalize();
+            Vector3 debugDir = (cf * moveInput.z + cr * moveInput.x).normalized;
+            Vector3 nextPos = transform.position + debugDir * currentSpeed * Time.fixedDeltaTime;
+            Debug.DrawLine(transform.position, nextPos, Color.cyan);         // 이동 방향
+            Debug.DrawRay(nextPos, Vector3.down * SLOPE_RAY_DISTANCE, Color.yellow); // 다음 위치 지형 체크
+        }
     }
 
     void FixedUpdate()
@@ -170,32 +190,69 @@ public class PlayerController : NetworkBehaviour
             moveDir = (camForward * moveInput.z + camRight * moveInput.x).normalized;
         }
 
-        // 이동 방향으로 플레이어 회전 (자연스럽게 Slerp)
+        // 이동 방향으로 플레이어 회전
         if (moveDir.magnitude > 0.01f)
         {
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * 10f);
         }
+
+        bool grounded = IsGrounded();
         
-        if (transform.position.y < fallThresholdY && !isRunning && currentSpeed > 0)
+        // [수정] 발밑이 경사면이거나, 혹은 내가 '갈 곳'이 경사면일 때 모두 체크하도록 변경
+        // CanMoveToSlope에서 slopeHit 정보를 갱신하도록 함수를 연결해주는 것이 좋습니다.
+        bool isOnSlope = CheckSlope(moveDir); 
+
+        // 키보드 입력이 있는지 확인
+        bool hasInput = moveInput.magnitude > 0.01f;
+
+        if (grounded && isOnSlope)
         {
+            if (hasInput)
+            {
+                // 이동 중일 때는 경사면에 맞게 벡터를 꺾어서 이동
+                rb.useGravity = false;
+                rb.linearVelocity = AdjustDirectionToSlope(moveDir) * currentSpeed;
+            }
+            else
+            {
+                // [꿀팁] 경사면에서 멈췄을 때 미끄러짐 방지 (속도를 완전히 0으로 잡고 중력 끄기)
+                rb.useGravity = false;
+                rb.linearVelocity = new Vector3(0f, 0f, 0f);
+            }
+        }
+        else
+        {
+            // 평지 or 공중
+            rb.useGravity = true;
             rb.linearVelocity = new Vector3(
-                rb.linearVelocity.x,
-                walkSpeed,
-                rb.linearVelocity.z
+                moveDir.x * currentSpeed,
+                rb.linearVelocity.y,  // 점프/낙하 Y값 유지
+                moveDir.z * currentSpeed
             );
         }
-        else if (transform.position.y < fallThresholdY && isRunning && currentSpeed > 0)
+    }
+
+    // [기존 IsOnSlope와 CanMoveToSlope를 하나로 통합한 깔끔한 지형 체크 함수]
+    private bool CheckSlope(Vector3 moveDir)
+    {
+        // 1. 우선 순위: 내가 이동할 앞방향 체크 (Look-Ahead)
+        // 입력이 있을 때는 앞쪽을 먼저 레이캐스트 쳐서 부드럽게 진입하게 함
+        Vector3 origin = slopeCheck.position + moveDir.normalized * 0.3f;
+        if (moveDir.magnitude > 0.01f && Physics.Raycast(origin, Vector3.down, out slopeHit, SLOPE_RAY_DISTANCE, groundLayer))
         {
-            rb.linearVelocity = new Vector3(
-                rb.linearVelocity.x,
-                runSpeed,
-                rb.linearVelocity.z
-            );
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            if (angle > 0.1f && angle <= maxSlopeAngle) return true;
         }
-        Vector3 velocity = moveDir * currentSpeed;
-        velocity.y = rb.linearVelocity.y;
-        rb.linearVelocity = velocity;
+
+        // 2. 입력이 없거나 앞쪽에 걸리는 게 없다면 현재 발밑 체크
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, SLOPE_RAY_DISTANCE, groundLayer))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            if (angle > 0.1f && angle <= maxSlopeAngle) return true;
+        }
+
+        return false;
     }
 
     // ─────────────────────────────────────────────
@@ -325,6 +382,7 @@ public class PlayerController : NetworkBehaviour
         Trap_Card.Instance?.NotifyAttack(pn);
         RpcPlayAttackAnimation();
     }
+    
 
     [ClientRpc]
     void RpcPlayAttackAnimation()
@@ -452,5 +510,10 @@ public class PlayerController : NetworkBehaviour
         return identity != null
             ? identity.GetComponent<PlayerNetwork>()
             : null;
+    }
+
+    private Vector3 AdjustDirectionToSlope(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
     }
 }
