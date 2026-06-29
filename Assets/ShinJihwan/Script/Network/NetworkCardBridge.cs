@@ -134,7 +134,12 @@ public class NetworkCardBridge : NetworkBehaviour
         CmdSubmitStats(stats.maxHealth, stats.stamina, stats.power,
             stats.defense, stats.intelligence, skillInts, trapInts, characterId, mapScene);
 
-        Debug.Log($"[NetworkCardBridge] 제출: HP={stats.maxHealth} 캐릭터ID={characterId} 맵={mapScene} 함정={trapInts.Length}");
+        Debug.Log(
+            $"[CARD TEST][SUBMIT] 카드 선택 제출: " +
+            $"HP={stats.maxHealth}, STM={stats.stamina}, PWR={stats.power}, " +
+            $"DEF={stats.defense}, INT={stats.intelligence}, " +
+            $"캐릭터ID={characterId}, 맵={mapScene}, 함정={trapInts.Length}개"
+        );
     }
 
     // ─────────────────────────────────────────────

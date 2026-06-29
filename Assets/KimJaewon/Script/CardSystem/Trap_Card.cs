@@ -40,7 +40,6 @@ public class Trap_Card : MonoBehaviour
         return trapObject.AddComponent<Trap_Card>();
     }
 
-    [Server]
     public void InitializeFromPlayers(IEnumerable<PlayerNetwork> battlePlayers)
     {
         players.Clear();
@@ -68,36 +67,40 @@ public class Trap_Card : MonoBehaviour
             }
         }
 
-        Debug.Log($"[Trap_Card] 활성 함정 {activeTraps.Count}개 초기화");
+        Debug.Log(
+            $"[CARD TEST][TRAP] 전투 씬 활성 함정 초기화: " +
+            $"players={players.Count}, active={activeTraps.Count}, " +
+            $"traps={string.Join(", ", activeTraps)}"
+        );
     }
 
-    [Server]
     public void NotifyJump(PlayerNetwork actor)
     {
         if (actor == null)
             return;
 
+        Debug.Log($"[CARD TEST][TRAP] 행동 감지: Jump actor={actor.netId}");
         TryActivate(TrapID.Fracture, actor);
         TryActivate(TrapID.NaturalDisaster, actor);
     }
 
-    [Server]
     public void NotifyRunStarted(PlayerNetwork actor)
     {
         if (actor == null)
             return;
 
+        Debug.Log($"[CARD TEST][TRAP] 행동 감지: RunStarted actor={actor.netId}");
         TryActivate(TrapID.HeavyStep, actor);
         TryActivate(TrapID.LackOfFocus, actor);
         TryActivate(TrapID.Anxiety, actor);
     }
 
-    [Server]
     public void NotifyAttack(PlayerNetwork actor)
     {
         if (actor == null)
             return;
 
+        Debug.Log($"[CARD TEST][TRAP] 행동 감지: Attack actor={actor.netId}");
         TryActivate(TrapID.ThornArmor, actor);
         TryActivate(TrapID.Coward, actor);
         TryActivate(TrapID.NoViolence, actor);
@@ -106,23 +109,27 @@ public class Trap_Card : MonoBehaviour
         TryActivate(TrapID.Whatever, actor);
     }
 
-    [Server]
     public void NotifySkillUsed(PlayerNetwork actor)
     {
         if (actor == null)
             return;
 
+        Debug.Log($"[CARD TEST][TRAP] 행동 감지: SkillUsed actor={actor.netId}");
         TryActivate(TrapID.PositionSwap, actor);
     }
 
-    [Server]
     private bool TryActivate(TrapID trapId, PlayerNetwork actor)
     {
         if (!activeTraps.Contains(trapId))
             return false;
 
         if (!IsReady(trapId))
+        {
+            Debug.Log($"[CARD TEST][TRAP] 쿨타임 중: {trapId}");
             return false;
+        }
+
+        Debug.Log($"[CARD TEST][TRAP] 발동 시도: {trapId} actor={actor.netId}");
 
         switch (trapId)
         {
@@ -179,10 +186,10 @@ public class Trap_Card : MonoBehaviour
         }
 
         StartCooldown(trapId);
+        Debug.Log($"[CARD TEST][TRAP] 발동 완료: {trapId}");
         return true;
     }
 
-    [Server]
     private bool IsReady(TrapID trapId)
     {
         if (!nextReadyTimes.TryGetValue(trapId, out float readyTime))
@@ -191,7 +198,6 @@ public class Trap_Card : MonoBehaviour
         return Time.time >= readyTime;
     }
 
-    [Server]
     private void StartCooldown(TrapID trapId)
     {
         nextReadyTimes[trapId] = Time.time + GetCooldown(trapId);
@@ -215,32 +221,27 @@ public class Trap_Card : MonoBehaviour
         }
     }
 
-    [Server]
     public void ApplyFractureTrap(PlayerNetwork actor)
     {
         float damage = actor.maxHealth * fractureMaxHealthDamageRate;
         actor.TakeTrueDamage(damage);
     }
 
-    [Server]
     public void ApplyHeavyStepTrap(PlayerNetwork actor)
     {
         actor.ApplySlow(heavyStepSlowDuration, heavyStepSpeedMultiplier);
     }
 
-    [Server]
     public void ApplyCowardTrap(PlayerNetwork actor)
     {
         actor.ApplySlow(2f, 0.7f);
     }
 
-    [Server]
     public void ApplyThornArmorTrap(PlayerNetwork actor)
     {
         actor.TakeTrueDamage(actor.maxHealth * 0.02f);
     }
 
-    [Server]
     public void ApplyNaturalDisasterTrap(PlayerNetwork actor)
     {
         foreach (PlayerNetwork player in players)
@@ -249,20 +250,17 @@ public class Trap_Card : MonoBehaviour
         }
     }
 
-    [Server]
     public void ApplyLastResistanceTrap(PlayerNetwork actor)
     {
         if (actor.health <= actor.maxHealth * 0.3f)
             actor.ApplyStun(1f);
     }
 
-    [Server]
     public void ApplyNoViolenceTrap(PlayerNetwork actor)
     {
         actor.ApplyStun(1f);
     }
 
-    [Server]
     public void ApplyFairWorldTrap(PlayerNetwork actor)
     {
         foreach (PlayerNetwork player in players)
@@ -271,13 +269,11 @@ public class Trap_Card : MonoBehaviour
         }
     }
 
-    [Server]
     public void ApplyLackOfFocusTrap(PlayerNetwork actor)
     {
         actor.TakeTrueDamage(actor.maxHealth * 0.01f);
     }
 
-    [Server]
     public void ApplyPositionSwapTrap(PlayerNetwork actor)
     {
         if (players.Count < 2)
@@ -299,13 +295,11 @@ public class Trap_Card : MonoBehaviour
         second.position = tempPosition;
     }
 
-    [Server]
     public void ApplyAnxietyTrap(PlayerNetwork actor)
     {
         actor.ApplySlow(2f, 0.75f);
     }
 
-    [Server]
     public void ApplyWhateverTrap(PlayerNetwork actor)
     {
         int randomEffect = Random.Range(0, 3);

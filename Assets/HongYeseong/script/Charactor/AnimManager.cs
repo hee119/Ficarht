@@ -37,19 +37,10 @@ public class AnimManager : MonoBehaviour
         animator = GetComponent<Animator>();
         playerController = GetComponent<PlayerController>();
         charaStat = GetComponent<CharaStat>();
-        for (int i = 0; i < animator.layerCount; i++)
-        {
-            Debug.Log("Layer " + i + ": " + animator.GetLayerName(i));
-        }
     }
 
     public void OnKey(InputAction.CallbackContext context)
     {
-        Debug.Log(
-            $"Action : {context.action.name}, Control : {context.control.name}, phase : {context.phase}"
-        );
-        Debug.Log(context.control.name);
-
         for (int i = 0; i < KeyList.Count; i++)
         {
             if (context.control.name != KeyList[i])
@@ -64,7 +55,6 @@ public class AnimManager : MonoBehaviour
                     // 다른 트리거 애니메이션 재생 중이면 무시
                     if (isTriggerPlaying || !coolTime.CoolTimeCheck(animName))
                     {
-                        Debug.Log("[Trigger 차단] 현재 다른 트리거 애니메이션 재생 중");
                         break;
                     }
 
@@ -72,10 +62,8 @@ public class AnimManager : MonoBehaviour
                     animator.SetTrigger(animName);
                     if(animName == "Roll")
                     {
-                        Debug.Log("Roll");
                         playerController.Roll();
                     }
-                    Debug.Log($"[Trigger 재생] '{animName}'");
                     break;
                 }
 
@@ -83,11 +71,9 @@ public class AnimManager : MonoBehaviour
                 {
                     if (isTriggerPlaying)
                     {
-                        Debug.Log("[Trigger 차단] 현재 다른 트리거 애니메이션 재생 중");
                         break;
                     }
                     animator.SetBool(animName, true);
-                    Debug.Log($"[Bool 변경] '{animName}' = true");
                     break;
                 }
                 
@@ -104,7 +90,6 @@ public class AnimManager : MonoBehaviour
                 if (IsBool(animName))
                 {
                     animator.SetBool(animName, false);
-                    Debug.Log($"[Bool 변경] '{animName}' = false");
                     break;
                 }
                 charaStat.isBlocking = false;

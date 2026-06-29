@@ -22,13 +22,10 @@ public class BattleSceneInitializer : MonoBehaviour
     {
         if (NetworkServer.active)
         {
-            Debug.Log("[BattleSceneInitializer] 서버 활성 → 멀티플레이 경로, 스킵");
             yield break;
         }
 
         yield return null; // SpawnPoint Start() 완료 대기
-
-        Debug.Log("[BattleSceneInitializer] 싱글플레이 감지 → 캐릭터 스폰 시작");
 
         GameObject[] prefabs = characterPrefabs;
         if (prefabs == null || prefabs.Length == 0)
@@ -45,7 +42,6 @@ public class BattleSceneInitializer : MonoBehaviour
 
         // 이름으로 프리팹 탐색 (배열 순서 무관)
         string charName = PlayerPrefs.GetString("SinglePlayer_CharName", "");
-        Debug.Log($"[BattleSceneInitializer] 저장된 캐릭터 이름: '{charName}'");
 
         GameObject prefabToSpawn = FindPrefabByName(prefabs, charName);
 
@@ -58,11 +54,100 @@ public class BattleSceneInitializer : MonoBehaviour
         Vector3 spawnPos = FindSpawnPosition("spawn_P1");
 
         GameObject character = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
-        Debug.Log($"[BattleSceneInitializer] '{prefabToSpawn.name}' 스폰 @ {spawnPos}");
+
+        ApplySinglePlayerCardSelection(character);
 
         PlayerController controller = character.GetComponent<PlayerController>();
         if (controller != null)
             controller.ServerSetOwnerPlayerNetwork(null);
+    }
+
+    private void ApplySinglePlayerCardSelection(GameObject character)
+    {
+        if (character == null)
+            return;
+
+        PlayerNetwork playerNetwork = character.GetComponent<PlayerNetwork>();
+
+        if (PlayerPrefs.HasKey("SinglePlayer_HP"))
+        {
+            float hp = PlayerPrefs.GetFloat("SinglePlayer_HP", 100f);
+            float stamina = PlayerPrefs.GetFloat("SinglePlayer_STM", 50f);
+            float power = PlayerPrefs.GetFloat("SinglePlayer_PWR", 50f);
+            float defense = PlayerPrefs.GetFloat("SinglePlayer_DEF", 50f);
+            float intelligence = PlayerPrefs.GetFloat("SinglePlayer_INT", 50f);
+
+            if (playerNetwork != null)
+                playerNetwork.ApplyStatsForLocalTest(hp, stamina, power, defense, intelligence);
+
+            ApplyStatsToCharaStat(character, hp, stamina, power, defense, intelligence);
+
+            Debug.Log(
+                $"[CARD TEST][SINGLE][BUFF] 전투 캐릭터에 적용: " +
+                $"HP={hp}, STM={stamina}, PWR={power}, DEF={defense}, INT={intelligence}"
+            );
+        }
+
+        int trapCount = PlayerPrefs.GetInt("SinglePlayer_TrapCount", 0);
+        int[] trapIds = new int[trapCount];
+
+        for (int i = 0; i < trapCount; i++)
+            trapIds[i] = PlayerPrefs.GetInt($"SinglePlayer_Trap_{i}", 0);
+
+        if (playerNetwork != null)
+        {
+            playerNetwork.RegisterTrapsForLocalTest(trapIds);
+            Trap_Card.GetOrCreate().InitializeFromPlayers(new[] { playerNetwork });
+        }
+
+        Debug.Log($"[CARD TEST][SINGLE][TRAP] 전투 캐릭터에 등록: {trapCount}개");
+    }
+
+    private void ApplyStatsToCharaStat(
+        GameObject character,
+        float hp,
+        float stamina,
+        float power,
+        float defense,
+        float intelligence
+    )
+    {
+        CharaStat charaStat = character.GetComponent<CharaStat>();
+
+        if (charaStat == null)
+        {
+            Debug.LogWarning("[CARD TEST][SINGLE][BUFF] CharaStat이 없어 실제 캐릭터 스탯 적용 실패");
+            return;
+        }
+
+        charaStat.maxHealth = Mathf.Max(hp, 1f);
+        charaStat.health = charaStat.maxHealth;
+        charaStat.maxStamina = Mathf.Max(stamina, 0f);
+        charaStat.stamina = charaStat.maxStamina;
+        charaStat.power = Mathf.Max(power, 0f);
+        charaStat.defense = Mathf.Max(defense, 0f);
+        charaStat.intelligence = Mathf.Max(intelligence, 0f);
+
+        if (charaStat.healthBar != null)
+        {
+            charaStat.healthBar.maxValue = charaStat.maxHealth;
+            charaStat.healthBar.value = charaStat.health;
+        }
+
+        if (charaStat.staminaBar != null)
+        {
+            charaStat.staminaBar.maxValue = charaStat.maxStamina;
+            charaStat.staminaBar.value = charaStat.stamina;
+        }
+
+        character.GetComponent<PlayerController>()?.RefreshSpeed();
+
+        Debug.Log(
+            $"[CARD TEST][SINGLE][BUFF] CharaStat 직접 적용 확인: " +
+            $"HP={charaStat.health}/{charaStat.maxHealth}, " +
+            $"STM={charaStat.stamina}/{charaStat.maxStamina}, " +
+            $"PWR={charaStat.power}, DEF={charaStat.defense}, INT={charaStat.intelligence}"
+        );
     }
 
     /// <summary>prefab 이름이 charName을 포함하는 것을 반환 (대소문자 무시).</summary>
@@ -85,7 +170,6 @@ public class BattleSceneInitializer : MonoBehaviour
         {
             if (sp.spawnID == spawnID)
             {
-                Debug.Log($"[BattleSceneInitializer] SpawnPoint '{spawnID}' @ {sp.transform.position}");
                 return sp.transform.position;
             }
         }
