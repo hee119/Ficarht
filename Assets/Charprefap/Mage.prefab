@@ -72814,6 +72814,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isRoll: 0
+  rollSpeed: 8
+  rollDuration: 1
 --- !u!114 &5381683265668426095
 MonoBehaviour:
   m_ObjectHideFlags: 0

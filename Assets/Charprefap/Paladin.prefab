@@ -126253,6 +126253,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isRoll: 0
+  rollSpeed: 8
+  rollDuration: 1
 --- !u!65 &7799465851737577305
 BoxCollider:
   m_ObjectHideFlags: 0
