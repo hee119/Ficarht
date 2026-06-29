@@ -119,9 +119,9 @@ public class CardObject : MonoBehaviour
 
         originalRotation = transform.rotation;
 
-        // targetRotation 미초기화 시 (0,0,0,0) 제로 쿼터니언이 되어
-        // Quaternion.Lerp에서 Assertion 에러 발생 → 반드시 초기화
+        // (0,0,0,0) 제로 쿼터니언 방지 → 모두 초기화
         targetRotation = transform.rotation;
+        fanRotation    = transform.rotation;
         targetPosition = transform.position;
 
         CacheRenderers();
@@ -135,11 +135,13 @@ public class CardObject : MonoBehaviour
             Time.deltaTime * moveSpeed
         );
 
-        transform.rotation = Quaternion.Lerp(
-            transform.rotation,
-            targetRotation,
-            Time.deltaTime * moveSpeed
-        );
+        // zero quaternion 방어 (assertion 에러 방지)
+        if (targetRotation != new Quaternion(0f, 0f, 0f, 0f))
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                targetRotation,
+                Time.deltaTime * moveSpeed
+            );
 
         transform.localScale = Vector3.Lerp(
             transform.localScale,
