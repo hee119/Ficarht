@@ -82,6 +82,26 @@ public class PlayerNetwork : NetworkBehaviour
     [Server]
     public void ApplyStats(float hp, float stm, float pwr, float def, float intel)
     {
+        SetStatsValues(hp, stm, pwr, def, intel);
+
+        if (netId != 0)
+            RpcApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
+
+        Debug.Log($"[Server] {netId} 스탯 적용: HP={hp} STM={stm} PWR={pwr} DEF={def} INT={intel}");
+    }
+
+    public void ApplyStatsForLocalTest(float hp, float stm, float pwr, float def, float intel)
+    {
+        SetStatsValues(hp, stm, pwr, def, intel);
+
+        Debug.Log(
+            $"[CARD TEST][SINGLE][BUFF] PlayerNetwork 로컬 스탯 적용: " +
+            $"HP={hp}, STM={stm}, PWR={pwr}, DEF={def}, INT={intel}"
+        );
+    }
+
+    private void SetStatsValues(float hp, float stm, float pwr, float def, float intel)
+    {
         maxHealth    = hp;
         health       = hp;
         stamina      = stm;
@@ -90,11 +110,6 @@ public class PlayerNetwork : NetworkBehaviour
         intelligence = intel;
 
         ApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
-
-        if (netId != 0)
-            RpcApplyStatsToCharacterComponents(hp, stm, pwr, def, intel);
-
-        Debug.Log($"[Server] {netId} 스탯 적용: HP={hp} STM={stm} PWR={pwr} DEF={def} INT={intel}");
     }
 
     [ClientRpc]
@@ -146,6 +161,26 @@ public class PlayerNetwork : NetworkBehaviour
     [Server]
     public void RegisterTraps(int[] trapInts)
     {
+        SetRegisteredTraps(trapInts);
+
+        Debug.Log(
+            $"[CARD TEST][TRAP] PlayerNetwork 등록 완료: netId={netId}, " +
+            $"count={registeredTraps.Count}, traps={string.Join(", ", registeredTraps)}"
+        );
+    }
+
+    public void RegisterTrapsForLocalTest(int[] trapInts)
+    {
+        SetRegisteredTraps(trapInts);
+
+        Debug.Log(
+            $"[CARD TEST][SINGLE][TRAP] PlayerNetwork 로컬 등록 완료: " +
+            $"count={registeredTraps.Count}, traps={string.Join(", ", registeredTraps)}"
+        );
+    }
+
+    private void SetRegisteredTraps(int[] trapInts)
+    {
         registeredTraps.Clear();
 
         if (trapInts == null)
@@ -160,8 +195,6 @@ public class PlayerNetwork : NetworkBehaviour
 
             registeredTraps.Add(trapId);
         }
-
-        Debug.Log($"[Server] {netId} 함정 등록: {registeredTraps.Count}개");
     }
 
     public List<TrapID> GetRegisteredTraps()

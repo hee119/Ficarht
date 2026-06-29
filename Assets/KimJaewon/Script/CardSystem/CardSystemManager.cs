@@ -652,8 +652,10 @@ public class CardSystemManager : MonoBehaviour
                 continue;
 
             trapIds.Add((int)trapId);
+            Debug.Log($"[CARD TEST][TRAP] 선택됨: {data.cardName} => {trapId}");
         }
 
+        Debug.Log($"[CARD TEST][TRAP] 서버로 보낼 함정 수: {trapIds.Count}");
         return trapIds.ToArray();
     }
 
