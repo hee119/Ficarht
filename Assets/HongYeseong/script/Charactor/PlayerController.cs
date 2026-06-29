@@ -14,6 +14,7 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody rb;
     private Animator animator;
     private CharaStat characterStats;
+    public UnityEngine.InputSystem.PlayerInput playerInput;
 
     [Header("Speed")]
     public float walkSpeed = 3f;
