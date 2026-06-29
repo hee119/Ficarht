@@ -65,15 +65,18 @@ public class MageSkillLogic : MonoBehaviour
                 case SkillType.ice:
                     targetStat.Hit(prefabInfo.power);
                     targetStat.Freezing(prefabInfo.duration);
+                    PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                     break;
 
                 case SkillType.fire:
                     targetStat.Hit(prefabInfo.power);
                     targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
+                    PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                     break;
 
                 case SkillType.defaultAttack:
                     targetStat.Hit(prefabInfo.power);
+                    PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                     break;
             }
         }

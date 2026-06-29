@@ -30382,7 +30382,6 @@ GameObject:
   - component: {fileID: 8061790043514018927}
   - component: {fileID: 6805549504342042016}
   - component: {fileID: -8746308342505396966}
-  - component: {fileID: 1258270317292152593}
   - component: {fileID: 1343204362251186390}
   - component: {fileID: 8836462767790654131}
   - component: {fileID: -8580922265796652803}
@@ -30485,14 +30484,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!33 &1258270317292152593
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 755554410987823595}
-  m_Mesh: {fileID: -5493106956572371520, guid: f1dafa1906ae7c841b87a79bb1de384d, type: 3}
 --- !u!114 &1343204362251186390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30518,6 +30509,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isRoll: 0
+  rollSpeed: 8
+  rollDuration: 1
 --- !u!114 &8836462767790654131
 MonoBehaviour:
   m_ObjectHideFlags: 0
