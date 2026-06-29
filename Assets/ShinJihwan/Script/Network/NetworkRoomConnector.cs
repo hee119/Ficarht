@@ -25,19 +25,15 @@ public class NetworkRoomConnector : MonoBehaviour
     /// <param name="ipAddress">입력받은 상대방 IP 주소 (빈 값이면 localhost로 접속)</param>
     public void JoinRoom(string ipAddress)
     {
+        if (string.IsNullOrEmpty(ipAddress?.Trim()))
+        {
+            Debug.LogWarning("[NetworkRoomConnector] 방 코드를 입력하세요.");
+            return;
+        }
+
         if (!NetworkClient.isConnected && !NetworkServer.active)
         {
-            // 주소 공백 예외 처리 및 설정
-            if (string.IsNullOrEmpty(ipAddress))
-            {
-                NetworkManager.singleton.networkAddress = defaultAddress;
-            }
-            else
-            {
-                NetworkManager.singleton.networkAddress = ipAddress.Trim();
-            }
-
-            // 클라이언트 접속 시작
+            NetworkManager.singleton.networkAddress = ipAddress.Trim();
             NetworkManager.singleton.StartClient();
             Debug.Log($"🌐 [서버 소식] {NetworkManager.singleton.networkAddress} 주소로 연결을 시도합니다.");
         }

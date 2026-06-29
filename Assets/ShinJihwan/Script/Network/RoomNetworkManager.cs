@@ -42,6 +42,13 @@ public class RoomNetworkManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        // 시작 시 커넥티드 패널 숨기기
+        if (connectedPanel != null)
+            connectedPanel.SetActive(false);
+    }
+
     // ─────────────────────────────────────────────
     // 방 만들기 (Make Room 버튼 → MenuController.CreateRoom 에서 호출)
     // ─────────────────────────────────────────────
