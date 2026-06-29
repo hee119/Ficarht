@@ -1019,7 +1019,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -3465910019374988826, guid: ec824a14830595b43bea25b579291d93, type: 3}
       propertyPath: m_Convex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3465910019374988826, guid: ec824a14830595b43bea25b579291d93, type: 3}
       propertyPath: m_Material
@@ -3211,6 +3211,10 @@ MonoBehaviour:
   pitchAngle: 50
   smoothSpeed: 8
   mouseSensitivity: 0.2
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  wallOffset: 0.3
   searchInterval: 0.5
 --- !u!1001 &554000104
 PrefabInstance:
@@ -8584,6 +8588,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 372829837}
     m_Modifications:
+    - target: {fileID: 3957449231736784550, guid: 68243357fbb346e46a770486bb4b4124, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8585636519396908232, guid: 68243357fbb346e46a770486bb4b4124, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.4
