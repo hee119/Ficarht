@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/New Terrain 1.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/New Terrain 1.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/New Terrain.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/New Terrain.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.01_LP.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.01_LP.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.03_HP.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.03_HP.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/Script/Lava/LavaMapManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/Script/Lava/LavaMapManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/UI/NewUXMLTemplate.uxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/UI/NewUXMLTemplate.uxml.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Desert.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Desert.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Dungeon.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Dungeon.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Forest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Forest.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,18 +41,26 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Users/noyuchan/noUnity/GOSS/Golss/Ficarht/Assets/HongYeseong/script/Charactor/CharaStat.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/noyuchan/noUnity/GOSS/Golss/Ficarht/Assets/HongYeseong/script/Charactor/CharaStat.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CharaStat.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/Manager/PoolManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/ScripterScript/CharacterStats.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/Skill/SkillDuration.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/HongYeseong/script/prefab/DefaultPosRot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Slotguidemanager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/KimJaewon/Script/StartButtonSceneLoader.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Kimsechan/Scripte/Light_Animation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/Desert/DesertMapManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/Desert/SandstormUI.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/UI/NewUXMLTemplate.uxml" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Users/noyuchan/noUnity/GOSS/Golss/Ficarht/Assets/Scenes/Desert.unity" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/noyuchan/noUnity/GOSS/Golss/Ficarht/Assets/Scenes/Desert.unity" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/Lava/LavaDamageTrigger.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/Lava/LavaMapManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/SkyIsland/SkyMapManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/SnapToGridEditor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/Snow/SnowMapManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/Snow/SnowUI.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/Script/SpawnPoint.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/UI/Lava.uxml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Noyouchan/UI/Snow.uxml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scenes/Desert.unity" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@02433b2481ab/InputSystem/Utilities/DelegateHelpers.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@52e65280e89e/Runtime/UGUI/EventSystem/InputModules/BaseInput.cs" root0="SKIP_HIGHLIGHTING" />
@@ -53,20 +73,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Unity 에디터에 연결.Unity 에디터에 연결">
     <configuration name="유닛 테스트(배치 모드)" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="/Applications/Unity/Hub/Editor/6000.3.2f1/Unity.app/Contents/MacOS/Unity" />
@@ -150,6 +170,8 @@
       <workItem from="1782625064685" duration="1325000" />
       <workItem from="1782627936246" duration="5000" />
       <workItem from="1782650760432" duration="4403000" />
+      <workItem from="1782720181142" duration="2188000" />
+      <workItem from="1782724646151" duration="935000" />
     </task>
     <servers />
   </component>
