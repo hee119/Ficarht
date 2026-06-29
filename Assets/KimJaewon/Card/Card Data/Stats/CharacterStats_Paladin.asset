@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: CharacterStats_Paladin
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Paladin
+  characterId: 0
   health: 80
   stamina: 20
   power: 50

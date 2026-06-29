@@ -14,6 +14,7 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody rb;
     private Animator animator;
     private CharaStat characterStats;
+    public UnityEngine.InputSystem.PlayerInput playerInput;
 
     [Header("Speed")]
     public float walkSpeed = 3f;
@@ -49,7 +50,7 @@ public class PlayerController : NetworkBehaviour
     private float speedMultiplier = 1f;
     
     public float rollSpeed = 8f;
-    public float rollDuration = 0.7f;
+    public float rollDuration = 1f;
 
     void Awake()
     {
@@ -174,6 +175,8 @@ public class PlayerController : NetworkBehaviour
 
             if (NetworkClient.active && isOwned)
                 CmdNotifyRunStarted();
+            else if (!NetworkClient.active)
+                Trap_Card.Instance?.NotifyRunStarted(GetPlayerNetwork());
         }
 
         if (context.canceled)
@@ -195,8 +198,6 @@ public class PlayerController : NetworkBehaviour
 
         bool grounded = IsGrounded();
 
-        Debug.Log($"Grounded : {grounded}");
-
         if (grounded)
         {
             rb.AddForce(
@@ -204,10 +205,10 @@ public class PlayerController : NetworkBehaviour
                 ForceMode.Impulse
             );
 
-            Debug.Log("점프!");
-
             if (NetworkClient.active && isOwned)
                 CmdNotifyJump();
+            else if (!NetworkClient.active)
+                Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
         }
     }
 
@@ -243,7 +244,9 @@ public class PlayerController : NetworkBehaviour
         else
         {
             // 싱글: 직접 호출
-            GetComponent<PlayerNetwork>()?.ServerRequestAttack();
+            PlayerNetwork localNetwork = GetComponent<PlayerNetwork>();
+            localNetwork?.ServerRequestAttack();
+            Trap_Card.Instance?.NotifyAttack(localNetwork);
             StartCoroutine(AttackAnimation());
         }
     }
@@ -301,7 +304,6 @@ public class PlayerController : NetworkBehaviour
 
     public void Roll()
     {
-        Debug.Log("aaaa");
         StartCoroutine(IERoll());
     }
 

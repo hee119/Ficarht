@@ -65,7 +65,38 @@ public class StartButtonSceneLoader : MonoBehaviour
         if (string.IsNullOrEmpty(targetScene))
             targetScene = sceneName;
 
+        SaveSinglePlayerCardSelection(targetScene);
         StartCoroutine(SinglePlayerSceneLoad(targetScene));
+    }
+
+    private void SaveSinglePlayerCardSelection(string targetScene)
+    {
+        if (CardSystemManager.Instance == null)
+            return;
+
+        RuntimeStats stats = CardSystemManager.Instance.GetFinalStats();
+        int[] trapIds = CardSystemManager.Instance.GetSelectedTrapIds();
+
+        if (stats != null)
+        {
+            PlayerPrefs.SetFloat("SinglePlayer_HP", stats.maxHealth);
+            PlayerPrefs.SetFloat("SinglePlayer_STM", stats.stamina);
+            PlayerPrefs.SetFloat("SinglePlayer_PWR", stats.power);
+            PlayerPrefs.SetFloat("SinglePlayer_DEF", stats.defense);
+            PlayerPrefs.SetFloat("SinglePlayer_INT", stats.intelligence);
+        }
+
+        PlayerPrefs.SetInt("SinglePlayer_TrapCount", trapIds.Length);
+        for (int i = 0; i < trapIds.Length; i++)
+            PlayerPrefs.SetInt($"SinglePlayer_Trap_{i}", trapIds[i]);
+
+        PlayerPrefs.SetString("SinglePlayer_MapScene", targetScene);
+
+        Debug.Log(
+            $"[CARD TEST][SINGLE] 카드 선택 저장: " +
+            $"stats={(stats != null ? stats.ToString() : "null")}, " +
+            $"traps={trapIds.Length}개, map={targetScene}"
+        );
     }
 
     private IEnumerator SinglePlayerSceneLoad(string targetScene)
