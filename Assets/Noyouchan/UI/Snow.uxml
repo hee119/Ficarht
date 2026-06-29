@@ -1,0 +1,53 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="snow-root" style="
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+    ">
+        <!-- 화면 파란 오버레이 (어는 느낌) -->
+        <ui:VisualElement name="snow-overlay" style="
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0);
+        "/>
+
+        <!-- 상단 중앙 동상 게이지 -->
+        <ui:VisualElement name="freeze-gauge-root" style="
+            position: absolute;
+            top: 3%;
+            left: 0; right: 0;
+            align-items: center;
+        ">
+            <!-- 게이지 배경 -->
+            <ui:VisualElement name="gauge-bg" style="
+                width: 220px;
+                height: 18px;
+                background-color: rgba(30, 30, 60, 0.7);
+                border-radius: 9px;
+                padding: 2px;
+            ">
+                <!-- 게이지 바 -->
+                <ui:VisualElement name="gauge-fill" style="
+                    width: 0%;
+                    height: 100%;
+                    background-color: rgb(100, 180, 255);
+                    border-radius: 7px;
+                    transition-property: width;
+                    transition-duration: 0.2s;
+                "/>
+            </ui:VisualElement>
+
+            <!-- 게이지 라벨 -->
+            <ui:Label name="gauge-label" text="동상 위험" style="
+                font-size: 12px;
+                color: rgb(180, 220, 255);
+                -unity-font-style: bold;
+                margin-top: 3px;
+                -unity-text-align: middle-center;
+            "/>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
