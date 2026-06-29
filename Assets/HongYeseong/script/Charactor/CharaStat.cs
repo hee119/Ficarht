@@ -13,7 +13,7 @@ public class CharaStat : MonoBehaviour
     public Slider healthBar;
     public Slider staminaBar;
     public UnityEngine.InputSystem.PlayerInput playerInput;
-    private PlayerController playerController;
+    public PlayerController playerController;
     private Animator animator;
     public GameObject iceObject;
     public GameObject faintingObject;
@@ -198,6 +198,10 @@ public class CharaStat : MonoBehaviour
 
         health -= damage;
 
+        if (health <= 0)
+        {
+            Die();
+        }
         if (healthBar != null)
             healthBar.value = health;
 
@@ -481,5 +485,11 @@ public class CharaStat : MonoBehaviour
             if (staminaBar != null)
                 staminaBar.value = stamina;
         }
+    }
+
+    public void Die()
+    {
+        animator.SetTrigger("Die");
+        playerInput.enabled = false;
     }
 }
