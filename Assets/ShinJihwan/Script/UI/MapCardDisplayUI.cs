@@ -31,6 +31,8 @@ public class MapCardDisplayUI : MonoBehaviour
         _overlay = root.Q<VisualElement>("overlay");
         _card    = root.Q<VisualElement>("card");
 
+        Debug.Log($"[MapCardDisplayUI] Awake — overlay={_overlay != null}, card={_card != null}");
+
         HideImmediate();
     }
 
@@ -40,6 +42,8 @@ public class MapCardDisplayUI : MonoBehaviour
 
     public void ShowMapCard(string mapSceneName)
     {
+        Debug.Log($"[MapCardDisplayUI] ShowMapCard({mapSceneName}) — overlay={_overlay != null}");
+
         // 이미지 취득 순서
         // 1순위: 이미 선택된 카드 데이터 (Host / 단독 플레이어)
         Sprite image = CardSystemManager.Instance?.GetSelectedMapCardImage();
@@ -56,6 +60,8 @@ public class MapCardDisplayUI : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log($"[MapCardDisplayUI] 이미지={image != null}");
 
         if (_overlay != null)
             _overlay.style.display = DisplayStyle.Flex;

@@ -12,9 +12,10 @@
 }
 
 /* 카드 (초기: 뒷면 = 어두운 배경) */
+/* % 단위: overlay가 화면 전체이므로 화면 크기에 비례해서 스케일됨 */
 .card {
-    width: 190px;
-    height: 270px;
+    width: 195px;
+    height: 278px;
     border-radius: 12px;
     background-color: rgb(18, 12, 38);
     background-size: 100% 100%;
