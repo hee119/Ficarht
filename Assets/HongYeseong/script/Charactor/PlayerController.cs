@@ -49,7 +49,7 @@ public class PlayerController : NetworkBehaviour
     private float speedMultiplier = 1f;
     
     public float rollSpeed = 8f;
-    public float rollDuration = 0.7f;
+    public float rollDuration = 1f;
 
     void Awake()
     {
