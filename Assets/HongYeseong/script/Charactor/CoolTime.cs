@@ -53,9 +53,25 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
     // =========================
     public void UseSkill(string skillName, Transform owner)
     {
-        PrefabInfo prefabInfo =
-            PoolManager.Instance.GetPrefab(skillName, owner)
-                .GetComponent<PrefabInfo>();
+        if (PoolManager.Instance == null)
+        {
+            Debug.LogWarning("[CoolTime] PoolManager.Instance가 null — 씬에 PoolManager가 없습니다.");
+            return;
+        }
+
+        GameObject skillObj = PoolManager.Instance.GetPrefab(skillName, owner);
+        if (skillObj == null)
+        {
+            Debug.LogWarning($"[CoolTime] GetPrefab('{skillName}') 반환값이 null");
+            return;
+        }
+
+        PrefabInfo prefabInfo = skillObj.GetComponent<PrefabInfo>();
+        if (prefabInfo == null)
+        {
+            Debug.LogWarning($"[CoolTime] '{skillName}' 오브젝트에 PrefabInfo 없음");
+            return;
+        }
 
         prefabInfo.SkillDataUpdate(
             charaStat.power,

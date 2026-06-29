@@ -125,6 +125,12 @@ public class PoolManager : MonoBehaviour
     // 프리팹 자체 반환
     public GameObject GetPrefab(string id, Transform owner)
     {
+        if (!poolDictionary.ContainsKey(id))
+        {
+            Debug.LogError($"[PoolManager] ID '{id}' 없음 — Resources/Prefabs에 해당 skillId를 가진 프리팹이 있는지 확인");
+            return null;
+        }
+
         var obj = poolDictionary[id].Get();
 
         // 1. 먼저 부모부터 붙임 (중요)
@@ -132,8 +138,16 @@ public class PoolManager : MonoBehaviour
 
         // 2. local 초기화
         DefaultPosRot rot = obj.GetComponent<DefaultPosRot>();
-        obj.transform.localPosition = rot.defaultLocalPosition;
-        obj.transform.localRotation = rot.defaultLocalRotation;
+        if (rot != null)
+        {
+            obj.transform.localPosition = rot.defaultLocalPosition;
+            obj.transform.localRotation = rot.defaultLocalRotation;
+        }
+        else
+        {
+            obj.transform.localPosition = Vector3.zero;
+            obj.transform.localRotation = Quaternion.identity;
+        }
 
         obj.transform.SetParent(null);
         return obj;

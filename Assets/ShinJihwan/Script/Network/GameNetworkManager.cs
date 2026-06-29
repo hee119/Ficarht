@@ -36,10 +36,15 @@ public class GameNetworkManager : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
+        Debug.Log($"[Server] OnServerSceneChanged: '{sceneName}'");
         if (!nonBattleScenes.Contains(sceneName))
         {
             Debug.Log($"[Server] 전투 씬 감지 ({sceneName}) → 캐릭터 스폰");
             SpawnCharacters();
+        }
+        else
+        {
+            Debug.Log($"[Server] '{sceneName}' 은 비전투 씬 — 스폰 스킵");
         }
     }
     
@@ -103,14 +108,16 @@ public class GameNetworkManager : NetworkManager
             GameObject character = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
 
             PlayerNetwork characterNet = character.GetComponent<PlayerNetwork>();
+
+            PlayerController controller = character.GetComponent<PlayerController>();
+
+            NetworkServer.Spawn(character, conn);
+
             if (characterNet != null && playerNet != null && characterNet != playerNet)
                 characterNet.CopyBattleSetupFrom(playerNet);
 
-            PlayerController controller = character.GetComponent<PlayerController>();
             if (controller != null)
                 controller.ServerSetOwnerPlayerNetwork(playerNet);
-
-            NetworkServer.Spawn(character, conn);
 
             if (playerNet != null)
             {

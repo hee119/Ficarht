@@ -62,7 +62,7 @@ public class CardSystemManager : MonoBehaviour
 
     public int drawBuffCards = 3;
 
-    public int drawTrapCards = 5;
+    public int drawTrapCards = 4;
 
     [Header("--- 선택 완료 조건 ---")]
     public int requiredCharacterCards = 1;
@@ -623,15 +623,7 @@ public class CardSystemManager : MonoBehaviour
 
         SetTimerText("시간 종료!");
 
-        myStats = GetCharacterStats();
-
-        if (myStats != null)
-        {
-            BuffApplier.ApplyAll(
-                buffSlots,
-                myStats
-            );
-        }
+        myStats = BuildFinalStats();
 
         CardRevealSystem.Instance
             ?.RevealAllCards();
@@ -737,6 +729,25 @@ public class CardSystemManager : MonoBehaviour
         return null;
     }
 
+    private RuntimeStats BuildFinalStats()
+    {
+        RuntimeStats finalStats = GetCharacterStats();
+
+        if (finalStats != null)
+        {
+            BuffApplier.ApplyAll(
+                buffSlots,
+                finalStats
+            );
+
+            Debug.Log(
+                $"[CardSystemManager] 최종 스탯 계산 완료: {finalStats}"
+            );
+        }
+
+        return finalStats;
+    }
+
     // -------------------------------------------------------
     // 카드 확정
     // -------------------------------------------------------
@@ -813,6 +824,11 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     public RuntimeStats GetFinalStats()
     {
+        if (myStats == null)
+        {
+            myStats = BuildFinalStats();
+        }
+
         return myStats;
     }
 
@@ -843,6 +859,18 @@ public class CardSystemManager : MonoBehaviour
         }
 
         return "";
+    }
+
+    /// <summary>배치된 캐릭터 카드의 characterId 반환. 없으면 -1.</summary>
+    public int GetSelectedCharacterId()
+    {
+        foreach (var slot in characterSlots)
+        {
+            if (slot?.currentCard?.data?.cardType == CardType.Character &&
+                slot.currentCard.data.characterStats != null)
+                return slot.currentCard.data.characterStats.characterId;
+        }
+        return -1;
     }
 
     /// <summary>맵 카드 이름 반환 (MapCardDisplayUI에서 표시용)</summary>
