@@ -23,7 +23,9 @@ public class PlayerController : NetworkBehaviour
     private Vector3 moveInput;
     private float currentSpeed;
     private bool isRunning;
-    private bool isAttacking;
+    public bool isAttacking;
+    
+    public float fallThresholdY = -10f;
 
     // Mirror 없는 싱글 테스트에서도 입력 처리
     private bool IsLocallyControlled => isOwned || !NetworkClient.active;
@@ -57,6 +59,7 @@ public class PlayerController : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         characterStats = GetComponent<CharaStat>();
+        playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
     }
 
     void Start()
@@ -91,8 +94,17 @@ public class PlayerController : NetworkBehaviour
     // ─────────────────────────────────────────────
     void Update()
     {
+        if (isAttacking)
+        {
+            playerInput.enabled = false;
+        }
+        else
+        {
+            playerInput.enabled = true;
+        }
+        
         if (!IsLocallyControlled) return;
-        if (isAttacking || isRoll) return;
+        if(isRoll) return;
 
         PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
@@ -141,7 +153,23 @@ public class PlayerController : NetworkBehaviour
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * 10f);
         }
-
+        
+        if (transform.position.y < fallThresholdY && !isRunning && currentSpeed > 0)
+        {
+            rb.linearVelocity = new Vector3(
+                rb.linearVelocity.x,
+                walkSpeed,
+                rb.linearVelocity.z
+            );
+        }
+        else if (transform.position.y < fallThresholdY && isRunning && currentSpeed > 0)
+        {
+            rb.linearVelocity = new Vector3(
+                rb.linearVelocity.x,
+                runSpeed,
+                rb.linearVelocity.z
+            );
+        }
         Vector3 velocity = moveDir * currentSpeed;
         velocity.y = rb.linearVelocity.y;
         rb.linearVelocity = velocity;
