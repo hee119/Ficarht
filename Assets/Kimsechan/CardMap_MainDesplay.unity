@@ -2916,6 +2916,18 @@ MonoBehaviour:
   pressCompleteEvent:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 610237089}
+        m_TargetAssemblyTypeName: NextUI_Animation, Assembly-CSharp
+        m_MethodName: Next_UI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1741421700}
         m_TargetAssemblyTypeName: MenuController, Assembly-CSharp
         m_MethodName: JoinRoom
@@ -4896,7 +4908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 544028
+  GUIID: 318298
 --- !u!1001 &320917272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7905,7 +7917,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 544192
+  GUIID: 318506
 --- !u!1001 &505840413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9363,7 +9375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 809300
+  GUIID: 318610
 --- !u!1001 &629699459
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10613,7 +10625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 544358
+  GUIID: 318736
 --- !u!4 &758934123
 Transform:
   m_ObjectHideFlags: 0
@@ -13914,7 +13926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 809570
+  GUIID: 319012
 --- !u!1 &1075757965
 GameObject:
   m_ObjectHideFlags: 0
@@ -18275,7 +18287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 544728
+  GUIID: 319368
 --- !u!4 &1508753359
 Transform:
   m_ObjectHideFlags: 0
@@ -21512,7 +21524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 544878
+  GUIID: 319656
 --- !u!4 &1814983582
 Transform:
   m_ObjectHideFlags: 0
@@ -21914,7 +21926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 809914
+  GUIID: 319670
 --- !u!1 &1825575759
 GameObject:
   m_ObjectHideFlags: 0
@@ -24607,7 +24619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 545010
+  GUIID: 319936
 --- !u!4 &2087518430
 Transform:
   m_ObjectHideFlags: 0

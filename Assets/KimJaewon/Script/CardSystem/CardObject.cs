@@ -119,6 +119,11 @@ public class CardObject : MonoBehaviour
 
         originalRotation = transform.rotation;
 
+        // targetRotation 미초기화 시 (0,0,0,0) 제로 쿼터니언이 되어
+        // Quaternion.Lerp에서 Assertion 에러 발생 → 반드시 초기화
+        targetRotation = transform.rotation;
+        targetPosition = transform.position;
+
         CacheRenderers();
     }
 

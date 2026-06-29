@@ -77,11 +77,12 @@ public class StartButtonSceneLoader : MonoBehaviour
             : 3f;
         yield return new WaitForSecondsRealtime(wait);
 
-        // 선택한 캐릭터 ID 저장 (BattleSceneInitializer에서 싱글플레이 스폰에 사용)
-        int charId = CardSystemManager.Instance != null
-            ? CardSystemManager.Instance.GetSelectedCharacterId()
-            : 0;
-        PlayerPrefs.SetInt("SinglePlayer_CharId", Mathf.Max(0, charId));
+        // 선택한 캐릭터 정보 저장 (BattleSceneInitializer에서 싱글플레이 스폰에 사용)
+        string charName = CardSystemManager.Instance != null
+            ? CardSystemManager.Instance.GetSelectedCharacterName()
+            : "";
+        PlayerPrefs.SetString("SinglePlayer_CharName", charName);
+        Debug.Log($"[StartButtonSceneLoader] 캐릭터 저장: name={charName}");
         PlayerPrefs.Save();
 
         SceneManager.LoadScene(targetScene);

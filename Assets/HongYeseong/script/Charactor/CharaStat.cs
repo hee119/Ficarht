@@ -17,7 +17,6 @@ public class CharaStat : MonoBehaviour
     private Animator animator;
     public GameObject iceObject;
     public GameObject faintingObject;
-    public GameObject fireObject;
     public string faintingAnimationName = "Stun";
     private float burnDamage;
     private float slowAmount;
@@ -32,7 +31,6 @@ public class CharaStat : MonoBehaviour
     private float shieldHp;
     public bool isShield = false;
     public GameObject shieldObject;
-    public Coroutine staminaDrainCoroutine;
     
     private Renderer[] allRenderers;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
@@ -54,6 +52,7 @@ public class CharaStat : MonoBehaviour
     public float stamina;
     public float staminaRegenRate;
     public float staminaDrainRate; // 초당 소비량
+    [HideInInspector] public Coroutine staminaDrainCoroutine;
     public float power;
     public float defense;
     public float intelligence;
@@ -91,9 +90,6 @@ public class CharaStat : MonoBehaviour
         if (faintingObject != null)
             faintingObject.SetActive(false);
         
-        if (fireObject != null)
-            fireObject.SetActive(false);
-
         animator = GetComponent<Animator>();
 
         if (animator == null)
@@ -132,6 +128,7 @@ public class CharaStat : MonoBehaviour
         {
             staminaBar.maxValue = characterStats.stamina;
         }
+        
         CacheRenderers();
 
     }
@@ -200,7 +197,6 @@ public class CharaStat : MonoBehaviour
         if (healthBar != null)
             healthBar.value = health;
 
-        animator.SetTrigger("Hit");
         StopAllCoroutines();
         StartCoroutine(HitFlash());
     }
@@ -245,7 +241,6 @@ public class CharaStat : MonoBehaviour
 
     public void Burn(float duration, float damagePerSecond)
     {
-        fireObject.SetActive(true);
         burnDamage = damagePerSecond;
         ApplyStatus(Status.Burn, duration);
     }
@@ -325,7 +320,6 @@ public class CharaStat : MonoBehaviour
             Hit(health / burnDamage);
             yield return new WaitForSeconds(1f);
         }
-        fireObject.SetActive(false);
     }
 
     private IEnumerator StatusTimer(float duration)
@@ -446,7 +440,8 @@ public class CharaStat : MonoBehaviour
                 stamina += staminaRegenRate * Time.deltaTime;
                 stamina = Mathf.Min(stamina, maxStamina);
 
-                UpdateStaminaUI();
+                if (staminaBar != null) 
+                    staminaBar.value = stamina;
             }
 
             yield return null;
@@ -477,14 +472,8 @@ public class CharaStat : MonoBehaviour
             stamina -= drainRate * Time.deltaTime;
             stamina = Mathf.Max(stamina, 0f);
 
-            UpdateStaminaUI();
+            if (staminaBar != null)
+                staminaBar.value = stamina;
         }
-    }
-    
-    
-    private void UpdateStaminaUI()
-    {
-        if (staminaBar != null)
-            staminaBar.value = stamina;
     }
 }
