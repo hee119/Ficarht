@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +149,7 @@
       <workItem from="1782478759673" duration="7548000" />
       <workItem from="1782625064685" duration="1325000" />
       <workItem from="1782627936246" duration="5000" />
-      <workItem from="1782650760432" duration="3759000" />
+      <workItem from="1782650760432" duration="4403000" />
     </task>
     <servers />
   </component>

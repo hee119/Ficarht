@@ -17,6 +17,7 @@ public class CharaStat : MonoBehaviour
     private Animator animator;
     public GameObject iceObject;
     public GameObject faintingObject;
+    public GameObject fireObject;
     public string faintingAnimationName = "Stun";
     private float burnDamage;
     private float slowAmount;
@@ -89,6 +90,9 @@ public class CharaStat : MonoBehaviour
         
         if (faintingObject != null)
             faintingObject.SetActive(false);
+        
+        if (fireObject != null)
+            fireObject.SetActive(false);
         
         animator = GetComponent<Animator>();
 
@@ -313,6 +317,7 @@ public class CharaStat : MonoBehaviour
 
     private IEnumerator BurnDamage()
     {
+        fireObject.SetActive(true);
         while (currentStatus == Status.Burn)
         {
             if (burnDamage <= 0)
@@ -320,6 +325,7 @@ public class CharaStat : MonoBehaviour
             Hit(health / burnDamage);
             yield return new WaitForSeconds(1f);
         }
+        fireObject.SetActive(false);
     }
 
     private IEnumerator StatusTimer(float duration)

@@ -54,9 +54,7 @@ public class CardTooltipUI : MonoBehaviour
             return;
         }
 
-        titleText.text = string.IsNullOrWhiteSpace(cardData.cardName)
-            ? "이름 없는 카드"
-            : cardData.cardName;
+        titleText.text = GetDisplayName(cardData);
 
         typeText.text = GetTypeLabel(cardData.cardType);
         bodyText.text = BuildDescription(cardData);
@@ -270,6 +268,194 @@ public class CardTooltipUI : MonoBehaviour
             default:
                 return "카드 효과 정보가 아직 입력되지 않았습니다.";
         }
+    }
+
+    private string GetDisplayName(CardData cardData)
+    {
+        switch (cardData.cardType)
+        {
+            case CardType.Character:
+                return GetCharacterDisplayName(cardData);
+
+            case CardType.Buff:
+                return GetBuffDisplayName(cardData);
+
+            case CardType.Trap:
+                return GetTrapDisplayName(cardData.GetTrapID());
+
+            case CardType.Map:
+                return GetMapDisplayName(cardData);
+
+            default:
+                return string.IsNullOrWhiteSpace(cardData.cardName)
+                    ? "이름 없는 카드"
+                    : cardData.cardName;
+        }
+    }
+
+    private string GetCharacterDisplayName(CardData cardData)
+    {
+        string name = cardData.characterStats != null
+            ? cardData.characterStats.characterName
+            : cardData.cardName;
+
+        if (string.IsNullOrWhiteSpace(name))
+            return "캐릭터 카드";
+
+        string lowerName = name.ToLowerInvariant();
+
+        if (lowerName.Contains("mage"))
+            return "마법사";
+
+        if (lowerName.Contains("paladin"))
+            return "팔라딘";
+
+        if (lowerName.Contains("berserker"))
+            return "버서커";
+
+        if (lowerName.Contains("bard"))
+            return "바드";
+
+        return name;
+    }
+
+    private string GetBuffDisplayName(CardData cardData)
+    {
+        string cardName = cardData.cardName != null
+            ? cardData.cardName.ToLowerInvariant()
+            : "";
+
+        switch (cardData.cardID)
+        {
+            case 1:
+                return "운동";
+
+            case 2:
+                return "기도";
+
+            case 3:
+                return "커피";
+
+            case 4:
+                return "결의";
+
+            case 5:
+                return "수리";
+
+            case 6:
+                return "철갑";
+
+            case 7:
+                return "아침";
+
+            case 8:
+                return "달리기";
+        }
+
+        if (cardName.Contains("exercise"))
+            return "운동";
+
+        if (cardName.Contains("prayer"))
+            return "기도";
+
+        if (cardName.Contains("coffee"))
+            return "커피";
+
+        if (cardName.Contains("determination"))
+            return "결의";
+
+        if (cardName.Contains("repair"))
+            return "수리";
+
+        if (cardName.Contains("armor"))
+            return "철갑";
+
+        if (
+            cardName.Contains("morning") ||
+            cardName.Contains("moring")
+        )
+        {
+            return "아침";
+        }
+
+        if (cardName.Contains("running"))
+            return "달리기";
+
+        return string.IsNullOrWhiteSpace(cardData.cardName)
+            ? "버프 카드"
+            : cardData.cardName;
+    }
+
+    private string GetTrapDisplayName(TrapID trapID)
+    {
+        switch (trapID)
+        {
+            case TrapID.Fracture:
+                return "골절";
+
+            case TrapID.HeavyStep:
+                return "무거운 발걸음";
+
+            case TrapID.ThornArmor:
+                return "가시 갑옷";
+
+            case TrapID.Coward:
+                return "겁쟁이";
+
+            case TrapID.NoViolence:
+                return "폭력 금지";
+
+            case TrapID.LastResistance:
+                return "최후의 저항";
+
+            case TrapID.LackOfFocus:
+                return "집중력 부족";
+
+            case TrapID.PositionSwap:
+                return "위치 교환";
+
+            case TrapID.Anxiety:
+                return "불안";
+
+            case TrapID.Whatever:
+                return "아무거나";
+
+            case TrapID.NaturalDisaster:
+                return "자연재해";
+
+            case TrapID.FairWorld:
+                return "공평한 세상";
+
+            default:
+                return "함정 카드";
+        }
+    }
+
+    private string GetMapDisplayName(CardData cardData)
+    {
+        string sceneName = cardData.mapSceneName;
+
+        if (string.IsNullOrWhiteSpace(sceneName))
+            sceneName = cardData.cardName;
+
+        if (string.IsNullOrWhiteSpace(sceneName))
+            return "맵 카드";
+
+        string lowerName = sceneName.ToLowerInvariant();
+
+        if (lowerName.Contains("forest"))
+            return "숲";
+
+        if (lowerName.Contains("dungeon"))
+            return "던전";
+
+        if (lowerName.Contains("desert"))
+            return "사막";
+
+        if (lowerName.Contains("snow") || lowerName.Contains("ice"))
+            return "설원";
+
+        return sceneName;
     }
 
     private string BuildCharacterDescription(CardData cardData)

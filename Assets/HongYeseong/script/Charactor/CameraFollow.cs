@@ -105,7 +105,6 @@ public class CameraFollow : MonoBehaviour
                 if (pc.isOwned)
                 {
                     target = pc.transform;
-                    Debug.Log($"[CameraFollow] Mirror 로컬 플레이어 추적: {pc.name}");
                     return;
                 }
             }
@@ -113,7 +112,6 @@ public class CameraFollow : MonoBehaviour
             {
                 // 싱글: 첫 번째 PlayerController
                 target = pc.transform;
-                Debug.Log($"[CameraFollow] 싱글 플레이어 추적: {pc.name}");
                 return;
             }
         }
@@ -125,6 +123,5 @@ public class CameraFollow : MonoBehaviour
     public void SetTarget(Transform t)
     {
         target = t;
-        Debug.Log($"[CameraFollow] 타겟 강제 설정: {t?.name}");
     }
 }

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: CharacterStats_Berserker
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Berserker
-  health: 0
-  stamina: 0
-  power: 0
-  defense: 0
+  characterId: 2
+  health: 90
+  stamina: 40
+  power: 90
+  defense: 30
   intelligence: 0
