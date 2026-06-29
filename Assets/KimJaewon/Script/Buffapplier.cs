@@ -18,6 +18,8 @@ public static class BuffApplier
             return;
         }
 
+        int appliedCount = 0;
+
         foreach (var slot in buffSlots)
         {
             if (slot == null || slot.currentCard == null) continue;
@@ -34,11 +36,18 @@ public static class BuffApplier
             }
 
             targetStats.ApplyBuff(effect);
+            appliedCount++;
 
             Debug.Log(
-                $"[BuffApplier] '{slot.currentCard.data.cardName}' 적용: {targetStats}"
+                $"[CARD TEST][BUFF] 적용됨: {slot.currentCard.data.cardName} " +
+                $"(HP {effect.healthMod:+0;-0;0}, STM {effect.staminaMod:+0;-0;0}, " +
+                $"PWR {effect.powerMod:+0;-0;0}, DEF {effect.defenseMod:+0;-0;0}, " +
+                $"INT {effect.intelligenceMod:+0;-0;0}) => 최종 {targetStats}"
             );
         }
+
+        if (appliedCount == 0)
+            Debug.Log("[CARD TEST][BUFF] 배치된 버프 카드가 없습니다.");
     }
 
     /// <summary>
