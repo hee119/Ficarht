@@ -14,15 +14,79 @@ public class GameNetworkManager : NetworkManager
     // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
     private string _pendingMapScene = "";
 
+    // ─────────────────────────────────────────────
+    // characterPrefabs가 Inspector에서 비어있으면
+    // spawnPrefabs 이름으로 자동 매핑 (0=Paladin, 1=Bard, 2=Berserker, 3=Mage)
+    // ─────────────────────────────────────────────
+    public override void Awake()
+    {
+        base.Awake();
+        AutoPopulateCharacterPrefabs();
+    }
+
+    private void AutoPopulateCharacterPrefabs()
+    {
+        bool needsPopulate = characterPrefabs == null || characterPrefabs.Length == 0;
+        if (!needsPopulate)
+        {
+            foreach (var p in characterPrefabs)
+                if (p == null) { needsPopulate = true; break; }
+        }
+        if (!needsPopulate) return;
+
+        // characterId 기준 이름 매핑
+        var nameToId = new Dictionary<string, int>
+        {
+            { "paladin",   0 },
+            { "bard",      1 },
+            { "berserker", 2 },
+            { "mage",      3 }
+        };
+
+        characterPrefabs = new GameObject[4];
+        foreach (var prefab in spawnPrefabs)
+        {
+            if (prefab == null) continue;
+            string lname = prefab.name.ToLower();
+            foreach (var kv in nameToId)
+            {
+                if (lname.Contains(kv.Key))
+                {
+                    characterPrefabs[kv.Value] = prefab;
+                    break;
+                }
+            }
+        }
+        Debug.Log($"[GameNetworkManager] characterPrefabs 자동 설정: " +
+                  $"0={characterPrefabs[0]?.name}, 1={characterPrefabs[1]?.name}, " +
+                  $"2={characterPrefabs[2]?.name}, 3={characterPrefabs[3]?.name}");
+    }
+
+    // ─────────────────────────────────────────────
+    // OnServerAddPlayer
+    // - DontDestroyOnLoad: 씬 전환 시 playerPrefab 보존 → conn.identity 유지
+    //   → 카드맵에서 선택한 selectedCharacterId가 전투씬까지 살아있음
+    // - conn.identity != null 가드: DontDestroyOnLoad 덕분에 씬 재진입 시
+    //   Mirror가 다시 호출해도 playerPrefab 중복 생성 방지
+    // ─────────────────────────────────────────────
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
+        // 이미 player 오브젝트가 있으면 중복 생성 방지 (씬 전환 후 재호출 방어)
+        if (conn.identity != null)
+        {
+            Debug.Log($"[Server] conn {conn.connectionId} 이미 플레이어 있음 — OnServerAddPlayer 스킵");
+            NetworkServer.SetClientReady(conn);
+            return;
+        }
+
         Debug.Log("🔥 OnServerAddPlayer 호출됨");
 
         GameObject player = Instantiate(playerPrefab);
+        // 씬 전환 후에도 playerPrefab이 살아있어야 selectedCharacterId 등 데이터 보존
+        DontDestroyOnLoad(player);
         NetworkServer.AddPlayerForConnection(conn, player);
 
         // 두 번째 플레이어 접속 시 Host 클라이언트 UI 업데이트
-        // (GameNetworkManager는 NetworkBehaviour가 아니므로 직접 호출)
         if (NetworkServer.connections.Count >= 2)
             RoomNetworkManager.Instance?.OnSecondPlayerConnected();
     }
