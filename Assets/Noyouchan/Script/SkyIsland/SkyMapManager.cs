@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using System.Collections;
 
 public class SkyMapManager : MonoBehaviour
 {
@@ -9,57 +10,124 @@ public class SkyMapManager : MonoBehaviour
     [Tooltip("낙사 시 입히는 데미지")]
     public float fallDamage = 50f;
 
+    private Transform player;
     private CharaStat stat;
     private Rigidbody rb;
-    private NetworkIdentity networkIdentity;
-    private bool isFalling = false;
+    private PlayerRespawner respawner;
     private Vector3 spawnPosition;
-
-    private void Awake()
-    {
-        stat            = GetComponent<CharaStat>();
-        rb              = GetComponent<Rigidbody>();
-        networkIdentity = GetComponent<NetworkIdentity>();
-
-        if (stat == null) Debug.LogError($"{name} : CharaStat이 NULL입니다.");
-        if (rb   == null) Debug.LogError($"{name} : Rigidbody가 NULL입니다.");
-    }
-
-    private void Start()
-    {
-        spawnPosition = transform.position;
-        Debug.Log($"{name} 스폰 위치 저장 : {spawnPosition}");
-    }
+    private bool spawnFound = false;
+    private bool ready = false;
+    private bool isFalling = false;
+    private float searchLogTimer = 0f;
 
     private void Update()
     {
-        if (stat == null || isFalling) return;
+        if (!ready)
+        {
+            TryFindPlayer();
+            return;
+        }
 
-        // 자신의 클라이언트만 체크
-        if (networkIdentity != null && !networkIdentity.isOwned) return;
+        if (isFalling || player == null) return;
 
-        if (transform.position.y <= deathY)
+        if (player.position.y <= deathY)
             StartCoroutine(FallProcess());
     }
 
-    private System.Collections.IEnumerator FallProcess()
+    private void TryFindPlayer()
+    {
+        Transform found = null;
+
+        if (NetworkClient.localPlayer != null)
+            found = NetworkClient.localPlayer.transform;
+
+        if (found == null)
+        {
+            foreach (var ni in FindObjectsOfType<NetworkIdentity>())
+            {
+                if (ni.isLocalPlayer) { found = ni.transform; break; }
+            }
+        }
+
+        if (found == null)
+        {
+            var chara = FindObjectOfType<CharaStat>();
+            if (chara != null) found = chara.transform;
+        }
+
+        if (found == null)
+        {
+            searchLogTimer += Time.deltaTime;
+            if (searchLogTimer >= 3f)
+            {
+                searchLogTimer = 0f;
+                Debug.LogWarning("[SkyMap] 플레이어를 찾지 못했습니다. CharaStat이 씬에 있는지 확인하세요.");
+            }
+            return;
+        }
+
+        player    = found;
+        stat      = found.GetComponent<CharaStat>();
+        rb        = found.GetComponent<Rigidbody>();
+        respawner = found.GetComponent<PlayerRespawner>();
+
+        if (stat == null) Debug.LogError("[SkyMap] CharaStat 없음");
+
+        string mySpawnID = NetworkServer.active ? "spawn_P1" : "spawn_P2";
+        foreach (var sp in FindObjectsOfType<SpawnPoint>())
+        {
+            if (sp.spawnID == mySpawnID)
+            {
+                spawnPosition = sp.transform.position;
+                spawnFound = true;
+                break;
+            }
+        }
+
+        if (!spawnFound)
+            Debug.LogError($"[SkyMap] SpawnPoint '{mySpawnID}' 없음");
+
+        ready = true;
+    }
+
+    private IEnumerator FallProcess()
     {
         isFalling = true;
 
-        // 1. 데미지
-        stat.isShield = false;
-        stat.Hit(fallDamage);
+        if (stat != null)
+        {
+            stat.isShield = false;
+            stat.Hit(fallDamage);
+        }
 
-        // 2. 속도 초기화
-        if (rb != null)
-            rb.linearVelocity = Vector3.zero;
+        if (spawnFound)
+        {
+            if (respawner != null && NetworkClient.active)
+            {
+                respawner.CmdTeleportTo(spawnPosition);
+            }
+            else
+            {
+                var cc = player.GetComponent<CharacterController>();
+                if (cc != null) cc.enabled = false;
 
-        // 3. 스폰 위치로 이동
-        // NetworkTransform이 위치 동기화를 자동으로 처리
-        transform.position = spawnPosition;
+                if (rb != null)
+                {
+                    rb.isKinematic = true;
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.position = spawnPosition;
+                }
+                player.position = spawnPosition;
 
-        yield return null;
+                yield return new WaitForFixedUpdate();
 
+                if (rb != null) rb.isKinematic = false;
+                if (cc != null) cc.enabled = true;
+            }
+        }
+
+        yield return new WaitForSeconds(0.5f);
         isFalling = false;
     }
 }

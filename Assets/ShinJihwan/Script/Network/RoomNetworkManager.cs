@@ -77,15 +77,20 @@ public class RoomNetworkManager : MonoBehaviour
     public void ShowRoomCode(string code)
     {
         currentRoomCode = code;
+        StartCoroutine(ShowRoomCodeDelayed(code));
+    }
 
-        if (hostIdText != null)
-            hostIdText.UpdateText("Host id : " + code);
-
+    private IEnumerator ShowRoomCodeDelayed(string code)
+    {
         // 커넥티드 패널 열기
         if (connectedPanel != null)
             connectedPanel.SetActive(true);
 
-        // Player1 (본인) 표시
+        // M3D가 패널 활성화 후 렌더링 준비하도록 1프레임 대기
+        yield return null;
+
+        if (hostIdText != null)
+            hostIdText.UpdateText("Host id : " + code);
         if (player1Text != null)
             player1Text.UpdateText("■ Player1");
         if (player2Text != null)
@@ -139,16 +144,7 @@ public class RoomNetworkManager : MonoBehaviour
         if (pn != null)
         {
             pn.CmdJoinRoom(code);
-
-            // 커넥티드 패널 열기
-            if (connectedPanel != null)
-                connectedPanel.SetActive(true);
-
-            if (hostIdText != null)
-                hostIdText.UpdateText("Host id : " + code);
-            if (player2Text != null)
-                player2Text.UpdateText("■ Player2");
-
+            StartCoroutine(ShowClientJoinedUI(code));
             Debug.Log($"[RoomNetworkManager] 코드 [{code}] 방 참가");
         }
         else
@@ -163,9 +159,38 @@ public class RoomNetworkManager : MonoBehaviour
     // ─────────────────────────────────────────────
     public void OnSecondPlayerConnected()
     {
+        StartCoroutine(OnSecondPlayerConnectedDelayed());
+    }
+
+    private IEnumerator ShowClientJoinedUI(string code)
+    {
+        if (connectedPanel != null)
+            connectedPanel.SetActive(true);
+
+        yield return null; // M3D 렌더링 대기
+
+        if (hostIdText != null)
+            hostIdText.UpdateText("Host id : " + code);
+        if (player1Text != null)
+            player1Text.UpdateText("■ Player1");
         if (player2Text != null)
             player2Text.UpdateText("■ Player2");
-        Debug.Log("[RoomNetworkManager] Player2 접속 확인");
+    }
+
+    private IEnumerator OnSecondPlayerConnectedDelayed()
+    {
+        // 패널이 닫혀있으면 열기
+        if (connectedPanel != null && !connectedPanel.activeSelf)
+            connectedPanel.SetActive(true);
+
+        yield return null; // M3D 렌더링 대기
+
+        if (player1Text != null)
+            player1Text.UpdateText("■ Player1");
+        if (player2Text != null)
+            player2Text.UpdateText("■ Player2");
+
+        Debug.Log("[RoomNetworkManager] Player2 접속 UI 갱신");
     }
 
     // ─────────────────────────────────────────────
