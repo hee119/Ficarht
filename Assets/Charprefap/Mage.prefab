@@ -72795,18 +72795,17 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playerInput: {fileID: 0}
+  playerInput: {fileID: 5401181409459923562}
   walkSpeed: 3
   runSpeed: 6
   isAttacking: 0
-  castRadius: 0.3
-  groundCheckDistance: 0.4
-  groundCheckThreshold: 0.1
   maxSlopeAngle: 200
+  SLOPE_RAY_DISTANCE: 2
   slopeCheck: {fileID: 0}
   mouseSensitivity: 100
   jumpForce: 5
   groundCheck: {fileID: 8770291187789035442}
+  groundCheckDistance: 0.4
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
