@@ -72774,7 +72774,7 @@ MonoBehaviour:
   jumpForce: 12
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   gravity: -20
   rollSpeed: 8
   rollDuration: 1
