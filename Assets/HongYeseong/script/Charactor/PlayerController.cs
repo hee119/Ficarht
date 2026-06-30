@@ -70,8 +70,13 @@ public class PlayerController : NetworkBehaviour
     {
         if (characterStats != null)
         {
+            // CharaStat.Awake()가 SO를 읽지 못해 speed=0인 경우 재초기화
+            if (characterStats.speed == 0f)
+                characterStats.InitializeStats();
+
             walkSpeed = characterStats.speed;
             runSpeed = characterStats.runSpeed;
+            Debug.Log($"[PlayerController] {name} walkSpeed={walkSpeed}, runSpeed={runSpeed}");
         }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -452,6 +457,10 @@ public class PlayerController : NetworkBehaviour
 
         if (characterStats == null)
             return;
+
+        // CharaStat.Awake()가 SO를 읽지 못해 speed=0인 경우 재초기화
+        if (characterStats.speed == 0f)
+            characterStats.InitializeStats();
 
         walkSpeed = characterStats.speed;
         runSpeed = characterStats.runSpeed;
