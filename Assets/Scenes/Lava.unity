@@ -8590,7 +8590,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3957449231736784550, guid: 68243357fbb346e46a770486bb4b4124, type: 3}
       propertyPath: m_Convex
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8585636519396908232, guid: 68243357fbb346e46a770486bb4b4124, type: 3}
       propertyPath: m_LocalScale.x
