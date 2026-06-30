@@ -9,7 +9,6 @@ public class CharaStat : MonoBehaviour
 {
     public CharacterStats characterStats;
 
-    private Rigidbody charactorRb;
     public Slider healthBar;
     public Slider staminaBar;
     public UnityEngine.InputSystem.PlayerInput playerInput;
@@ -78,7 +77,9 @@ public class CharaStat : MonoBehaviour
 
     void Awake()
     {
-        charactorRb = GetComponent<Rigidbody>();
+        if (characterStats == null)
+            Debug.LogError($"{name} : characterStats가 NULL입니다.");
+
         playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
         playerController = GetComponent<PlayerController>();
 
@@ -95,9 +96,6 @@ public class CharaStat : MonoBehaviour
 
         if (animator == null)
             Debug.LogError($"{name} : Animator가 없습니다.");
-
-        if (charactorRb == null)
-            Debug.LogError($"{name} : Rigidbody가 없습니다.");
 
         if (playerInput == null)
             Debug.LogError($"{name} : PlayerInput이 없습니다.");
