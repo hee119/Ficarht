@@ -60,7 +60,13 @@ public class RoomNetworkManager : MonoBehaviour
 
     private IEnumerator RequestCreateRoomDelayed()
     {
-        yield return new WaitForSeconds(0.5f);
+        // localPlayer가 스폰될 때까지 최대 5초 대기 (빌드/에디터 환경 차이 대응)
+        float waited = 0f;
+        while (GetLocalPlayerNetwork() == null && waited < 5f)
+        {
+            yield return new WaitForSeconds(0.1f);
+            waited += 0.1f;
+        }
 
         PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn == null)
@@ -102,6 +108,9 @@ public class RoomNetworkManager : MonoBehaviour
     // ─────────────────────────────────────────────
     // 방 참가 (Join 버튼 → MenuController.JoinRoom 에서 호출)
     // ─────────────────────────────────────────────
+    // 조인 진행 중 여부 (OnClientDisconnect에서 구분용)
+    private bool _isJoining = false;
+
     public void OnJoinRoom()
     {
         string code = "";
@@ -111,16 +120,25 @@ public class RoomNetworkManager : MonoBehaviour
         if (string.IsNullOrEmpty(code))
         {
             Debug.LogWarning("[RoomNetworkManager] 방 코드를 입력하세요");
+            OnJoinFailed();
             return;
         }
 
-        // 같은 LAN: 코드 = IP 마지막 부분 or 그냥 localhost (테스트용)
-        // 실제 배포시 코드 → IP 매핑 서버 필요
-        // 현재는 localhost로 연결 후 코드 검증
+        _isJoining = true;
         NetworkManager.singleton.networkAddress = "localhost";
         NetworkManager.singleton.StartClient();
 
         StartCoroutine(JoinRoomAfterConnect(code));
+    }
+
+    /// <summary>GameNetworkManager.OnClientDisconnect에서 호출 — 조인 중이었으면 UI 복구.</summary>
+    public void OnDisconnected()
+    {
+        if (_isJoining)
+        {
+            Debug.Log("[RoomNetworkManager] 조인 중 연결 끊김 → UI 복구");
+            OnJoinFailed();
+        }
     }
 
     private IEnumerator JoinRoomAfterConnect(string code)
@@ -134,32 +152,45 @@ public class RoomNetworkManager : MonoBehaviour
 
         if (!NetworkClient.isConnected)
         {
-            Debug.LogWarning("[RoomNetworkManager] 연결 실패");
+            Debug.LogWarning("[RoomNetworkManager] 연결 실패 (서버 없음 또는 잘못된 코드)");
+            NetworkManager.singleton.StopClient();
+            OnJoinFailed(); // 커넥티드 패널 숨기고 UI_Host 복구
             yield break;
         }
 
-        yield return new WaitForSeconds(0.3f); // PlayerNetwork 스폰 대기
+        // PlayerNetwork가 스폰될 때까지 최대 5초 대기 (빌드 환경 대응)
+        PlayerNetwork pn = null;
+        float spawnWait = 0f;
+        while (pn == null && spawnWait < 5f)
+        {
+            pn = GetLocalPlayerNetwork();
+            if (pn == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+                spawnWait += 0.2f;
+            }
+        }
 
-        PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn != null)
         {
             pn.CmdJoinRoom(code);
-            StartCoroutine(ShowClientJoinedUI(code));
-            Debug.Log($"[RoomNetworkManager] 코드 [{code}] 방 참가");
+            Debug.Log($"[RoomNetworkManager] 코드 [{code}] 방 참가 요청 (대기: {spawnWait:F1}s)");
         }
         else
         {
-            Debug.LogWarning("[RoomNetworkManager] PlayerNetwork 없음 - 참가 실패");
+            Debug.LogWarning("[RoomNetworkManager] PlayerNetwork 5초 내 스폰 실패 - 연결 차단");
+            NetworkManager.singleton.StopClient();
+            OnJoinFailed();
         }
     }
 
     // ─────────────────────────────────────────────
-    // 두 번째 플레이어 접속 감지 → Player2 UI 업데이트 (Host측)
-    // GameNetworkManager.OnServerAddPlayer 에서 호출
+    // 방 참가 성공 (PlayerNetwork.TargetJoinSuccess에서 호출)
     // ─────────────────────────────────────────────
-    public void OnSecondPlayerConnected()
+    public void OnJoinSuccess(string code)
     {
-        StartCoroutine(OnSecondPlayerConnectedDelayed());
+        _isJoining = false;
+        StartCoroutine(ShowClientJoinedUI(code));
     }
 
     private IEnumerator ShowClientJoinedUI(string code)
@@ -175,6 +206,42 @@ public class RoomNetworkManager : MonoBehaviour
             player1Text.UpdateText("■ Player1");
         if (player2Text != null)
             player2Text.UpdateText("■ Player2");
+    }
+
+    // ─────────────────────────────────────────────
+    // 방 참가 실패 (PlayerNetwork.TargetJoinFailed에서 호출)
+    // ─────────────────────────────────────────────
+    public void OnJoinFailed()
+    {
+        _isJoining = false;
+        Debug.LogWarning("[RoomNetworkManager] 방 코드가 올바르지 않습니다.");
+
+        // 커넥티드 패널 숨기기
+        if (connectedPanel != null)
+            connectedPanel.SetActive(false);
+
+        // Next_UI()가 UI_Host를 비활성화했으므로 inactive 포함 탐색으로 복구
+        GameObject hostUI = FindInactiveByName("__________UI_Host__________");
+        if (hostUI != null)
+            hostUI.SetActive(true);
+    }
+
+    // 비활성 오브젝트를 포함해 씬 전체에서 이름으로 탐색
+    private static GameObject FindInactiveByName(string name)
+    {
+        foreach (GameObject go in Resources.FindObjectsOfTypeAll<GameObject>())
+            if (go.name == name && go.scene.isLoaded)
+                return go;
+        return null;
+    }
+
+    // ─────────────────────────────────────────────
+    // 두 번째 플레이어 접속 감지 → Player2 UI 업데이트 (Host측)
+    // GameNetworkManager.OnServerAddPlayer 에서 호출
+    // ─────────────────────────────────────────────
+    public void OnSecondPlayerConnected()
+    {
+        StartCoroutine(OnSecondPlayerConnectedDelayed());
     }
 
     private IEnumerator OnSecondPlayerConnectedDelayed()
@@ -220,8 +287,15 @@ public class RoomNetworkManager : MonoBehaviour
     // ─────────────────────────────────────────────
     private PlayerNetwork GetLocalPlayerNetwork()
     {
-        if (NetworkClient.localPlayer == null) return null;
-        return NetworkClient.localPlayer.GetComponent<PlayerNetwork>();
+        // 1순위: NetworkClient.localPlayer
+        if (NetworkClient.localPlayer != null)
+            return NetworkClient.localPlayer.GetComponent<PlayerNetwork>();
+
+        // 2순위: 씬에서 isOwned인 PlayerNetwork 탐색 (빌드 환경 폴백)
+        foreach (var pn in FindObjectsOfType<PlayerNetwork>(true))
+            if (pn.isOwned) return pn;
+
+        return null;
     }
 
     private string GetLocalIP()
