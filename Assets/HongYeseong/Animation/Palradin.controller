@@ -1035,35 +1035,14 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -1731763419197614471}
     m_Position: {x: 251.33722, y: 409.01624, z: 0}
-<<<<<<< HEAD
-<<<<<<< HEAD
   - serializedVersion: 1
-<<<<<<< HEAD
     m_State: {fileID: -4801360708568496854}
     m_Position: {x: 300, y: -70, z: 0}
-=======
-    m_State: {fileID: 8286185923161302968}
-    m_Position: {x: 566.4103, y: 270.20044, z: 0}
->>>>>>> 8a59b98c6d10d58346cb1d86e7868769912197d5
-=======
->>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
-=======
->>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 3984669704478418136}
   - {fileID: -2579648603970863033}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   - {fileID: 881476716278810062}
-=======
-  - {fileID: -1462211629844001230}
->>>>>>> 8a59b98c6d10d58346cb1d86e7868769912197d5
-=======
->>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
-=======
->>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []

@@ -59,6 +59,17 @@ public class PlayerNetwork : NetworkBehaviour
         Debug.Log($"[Server] 방 참가: {code}");
     }
 
+    /// <summary>
+    /// 서버 → 모든 클라이언트: Player2가 접속했음을 알림.
+    /// GameNetworkManager.OnServerAddPlayer에서 호출.
+    /// </summary>
+    [ClientRpc]
+    public void RpcNotifyPlayer2Joined()
+    {
+        RoomNetworkManager.Instance?.OnSecondPlayerConnected();
+        Debug.Log("[Client] Player2 접속 RPC 수신");
+    }
+
     [TargetRpc]
     void TargetReceiveCode(NetworkConnection target, string code)
     {
