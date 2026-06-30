@@ -542,6 +542,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5213498806455119984, guid: 0186165c7862b8442947ca7c23d3f38a, type: 3}
+      propertyPath: sceneId
+      value: 3262757550
+      objectReference: {fileID: 0}
     - target: {fileID: 3797345589745887382, guid: 0186165c7862b8442947ca7c23d3f38a, type: 3}
       propertyPath: m_Name
       value: Paladin

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Mage
   characterId: 3
-  health: 50
-  stamina: 50
-  power: 20
-  defense: 30
-  intelligence: 100
+  health: 25
+  stamina: 75
+  power: 25
+  defense: 25
+  intelligence: 90
