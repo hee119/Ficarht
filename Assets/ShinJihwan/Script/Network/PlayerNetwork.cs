@@ -39,6 +39,9 @@ public class PlayerNetwork : NetworkBehaviour
     [SyncVar] public string selectedMapScene = "";
     public GameObject currentCharacter;
 
+    // 서버에서 보관하는 활성 방 코드 (Host가 방 만들 때 저장)
+    private static string _activeRoomCode = "";
+
     [Command]
     public void CmdCreateRoom()
     {
@@ -48,6 +51,7 @@ public class PlayerNetwork : NetworkBehaviour
         for (int i = 0; i < 6; i++)
             code += chars[UnityEngine.Random.Range(0, chars.Length)];
 
+        _activeRoomCode = code; // 서버에 코드 저장 (참가 검증용)
         Debug.Log($"[Server] 방 코드 생성: {code}");
         TargetReceiveCode(connectionToClient, code);
     }
@@ -55,8 +59,41 @@ public class PlayerNetwork : NetworkBehaviour
     [Command]
     public void CmdJoinRoom(string code)
     {
-        // 코드 검증 생략 (localhost 연결 자체가 인증)
-        Debug.Log($"[Server] 방 참가: {code}");
+        // 서버에서 코드 검증
+        if (string.IsNullOrEmpty(_activeRoomCode) || code != _activeRoomCode)
+        {
+            Debug.LogWarning($"[Server] 잘못된 방 코드: '{code}' (실제 코드: '{_activeRoomCode}')");
+                // 즉시 서버에서 연결 차단 → 클라이언트의 OnClientDisconnect → OnDisconnected → OnJoinFailed
+            connectionToClient.Disconnect();
+            return;
+        }
+
+        Debug.Log($"[Server] 방 참가 성공: {code}");
+        // 검증 완료 처리 (타임아웃 차단 해제)
+        (NetworkManager.singleton as GameNetworkManager)?.AuthorizeConnection(connectionToClient.connectionId);
+        TargetJoinSuccess(connectionToClient, code);
+        // 코드 검증 통과 후에만 Player2 접속 UI 표시
+        RpcNotifyPlayer2Joined();
+    }
+
+    private System.Collections.IEnumerator DelayedDisconnect(NetworkConnectionToClient conn)
+    {
+        yield return new WaitForSeconds(0.2f); // TargetRpc 전송 대기
+        if (conn != null) conn.Disconnect();
+    }
+
+    [TargetRpc]
+    void TargetJoinSuccess(NetworkConnection target, string code)
+    {
+        Debug.Log($"[Client] 방 참가 성공: {code}");
+        RoomNetworkManager.Instance?.OnJoinSuccess(code);
+    }
+
+    [TargetRpc]
+    void TargetJoinFailed(NetworkConnection target)
+    {
+        Debug.LogWarning("[Client] 방 코드가 올바르지 않습니다.");
+        RoomNetworkManager.Instance?.OnJoinFailed();
     }
 
     /// <summary>
