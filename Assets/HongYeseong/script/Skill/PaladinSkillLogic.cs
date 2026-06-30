@@ -54,31 +54,26 @@ public class PaladinSkillLogic : MonoBehaviour
         {
             case SkillType.PaladinDefenseBuff:
                 playerStat.playerController.isAttacking  = true;
-                playerStat.playerController.isUsingSkill = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinDivineProtection:
                 playerStat.playerController.isAttacking  = true;
-                playerStat.playerController.isUsingSkill = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinHolySword:
                 playerStat.playerController.isAttacking  = true;
-                playerStat.playerController.isUsingSkill = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinShield:
                 playerStat.playerController.isAttacking  = true;
-                playerStat.playerController.isUsingSkill = true;
                 playerStat.ApplyShield(prefabInfo.defense, prefabInfo.duration, gameObject);
                 break;
 
             case SkillType.PaladinHandOfGod:
                 playerStat.playerController.isAttacking  = true;
-                playerStat.playerController.isUsingSkill = true;
                 targetStat.Slowdown(prefabInfo.duration, prefabInfo.speed);
                 break;
         }

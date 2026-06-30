@@ -35,7 +35,6 @@ public class PlayerController : NetworkBehaviour
     private float   currentSpeed;
     private bool    isRunning;
     public  bool    isAttacking;
-    public  bool    isUsingSkill;    // 스킬 사용 중 — 이동 + 점프 모두 차단
     private Vector3 velocity;        // Y축에 중력/점프 누적
     private bool    isGrounded;      // FixedUpdate에서 갱신 — OnJump에서 참조
     private bool    isJumping;       // 점프 직후 ground reset 방지용
@@ -108,17 +107,15 @@ public class PlayerController : NetworkBehaviour
         if (characterStats != null && characterStats.stamina <= 0)
             isRunning = false;
 
-        bool blockMove = isAttacking || isUsingSkill;
-
         PlayerNetwork pn = GetPlayerNetwork();
-        if (pn != null && !pn.CanMove()) blockMove = true;
+        bool canMove = !isAttacking && (pn == null || pn.CanMove());
 
-        currentSpeed = (!blockMove && moveInput.magnitude > 0.01f)
+        currentSpeed = (canMove && moveInput.magnitude > 0.01f)
             ? (isRunning ? runSpeed : walkSpeed) * GetEffectiveSpeedMultiplier(pn)
             : 0f;
 
-        animator.SetFloat("MoveX", blockMove ? 0f : moveInput.x);
-        animator.SetFloat("MoveY", blockMove ? 0f : moveInput.z);
+        animator.SetFloat("MoveX", canMove ? moveInput.x : 0f);
+        animator.SetFloat("MoveY", canMove ? moveInput.z : 0f);
         animator.SetFloat("Speed", currentSpeed);
     }
 
@@ -130,15 +127,13 @@ public class PlayerController : NetworkBehaviour
         if (cc == null || !cc.enabled) return;
         if (!IsLocallyControlled || isRoll) return;
 
-        bool blockMove = isAttacking || isUsingSkill;
-
         PlayerNetwork pn = GetPlayerNetwork();
-        if (pn != null && !pn.CanMove()) blockMove = true;
+        bool canMove = !isAttacking && (pn == null || pn.CanMove());
 
-        Vector3 moveDir = blockMove ? Vector3.zero : CalcMoveDir();
+        Vector3 moveDir = canMove ? CalcMoveDir() : Vector3.zero;
 
         // 이동 방향으로 회전
-        if (!blockMove && moveDir.magnitude > 0.01f)
+        if (canMove && moveDir.magnitude > 0.01f)
         {
             Quaternion target = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.fixedDeltaTime * 10f);
@@ -228,8 +223,7 @@ public class PlayerController : NetworkBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         // isGrounded는 FixedUpdate에서 갱신된 캐시값 — Update 타이밍의 cc.isGrounded보다 안정적
-        // 스킬 중에는 점프 불가, 평타 중에는 점프 가능
-        if (!IsLocallyControlled || !context.started || !isGrounded || isJumping || isUsingSkill) return;
+        if (!IsLocallyControlled || !context.started || !isGrounded || isJumping || isAttacking) return;
 
         isJumping    = true;
         velocity.y   = jumpForce;
@@ -260,7 +254,6 @@ public class PlayerController : NetworkBehaviour
             PlayerNetwork local = GetComponent<PlayerNetwork>();
             local?.ServerRequestAttack();
             Trap_Card.Instance?.NotifyAttack(local);
-            StartCoroutine(AttackAnimation());
         }
     }
 
@@ -336,19 +329,8 @@ public class PlayerController : NetworkBehaviour
         PlayerNetwork pn = GetPlayerNetwork();
         pn?.ServerRequestAttack();
         Trap_Card.Instance?.NotifyAttack(pn);
-        RpcPlayAttackAnimation();
     }
-
-    [ClientRpc] void RpcPlayAttackAnimation() => StartCoroutine(AttackAnimation());
-
-    IEnumerator AttackAnimation()
-    {
-        isAttacking = true;
-        animator?.SetTrigger("Attack");
-        yield return new WaitForSeconds(1f);
-        isAttacking = false;
-    }
-
+    
     private PlayerNetwork GetPlayerNetwork()
     {
         PlayerNetwork self = GetComponent<PlayerNetwork>();
