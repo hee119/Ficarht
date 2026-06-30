@@ -30,6 +30,7 @@ public class PlayerNetwork : NetworkBehaviour
     private List<SkillID> registeredSkills = new List<SkillID>();
 
     private List<TrapID> registeredTraps = new List<TrapID>();
+    public readonly SyncList<int> syncedTrapIds = new SyncList<int>();
 
     // ─────────────────────────────────────────────
     // 방 생성 / 참가 (기존 코드 유지)
@@ -168,10 +169,7 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void ApplyStatsToCharacterComponents(float hp, float stm, float pwr, float def, float intel)
     {
-        CharaStat charaStat = GetComponent<CharaStat>();
-
-        if (charaStat == null && currentCharacter != null)
-            charaStat = currentCharacter.GetComponent<CharaStat>();
+        CharaStat charaStat = GetCharaStatTarget();
 
         if (charaStat == null)
             return;
@@ -197,6 +195,33 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         GetComponent<PlayerController>()?.RefreshSpeed();
+    }
+
+    private CharaStat GetCharaStatTarget()
+    {
+        CharaStat charaStat = GetComponent<CharaStat>();
+
+        if (charaStat == null && currentCharacter != null)
+            charaStat = currentCharacter.GetComponent<CharaStat>();
+
+        return charaStat;
+    }
+
+    private void ApplyHealthToCharacterComponents(float value)
+    {
+        CharaStat charaStat = GetCharaStatTarget();
+
+        if (charaStat == null)
+            return;
+
+        charaStat.maxHealth = Mathf.Max(maxHealth, 1f);
+        charaStat.health = Mathf.Clamp(value, 0f, charaStat.maxHealth);
+
+        if (charaStat.healthBar != null)
+        {
+            charaStat.healthBar.maxValue = charaStat.maxHealth;
+            charaStat.healthBar.value = charaStat.health;
+        }
     }
 
     [Server]
@@ -230,6 +255,7 @@ public class PlayerNetwork : NetworkBehaviour
     private void SetRegisteredTraps(int[] trapInts)
     {
         registeredTraps.Clear();
+        syncedTrapIds.Clear();
 
         if (trapInts == null)
             return;
@@ -242,11 +268,26 @@ public class PlayerNetwork : NetworkBehaviour
                 continue;
 
             registeredTraps.Add(trapId);
+            syncedTrapIds.Add(trapInt);
         }
     }
 
     public List<TrapID> GetRegisteredTraps()
     {
+        if (registeredTraps.Count == 0 && syncedTrapIds.Count > 0)
+        {
+            List<TrapID> syncedTraps = new List<TrapID>();
+
+            foreach (int trapInt in syncedTrapIds)
+            {
+                TrapID trapId = (TrapID)trapInt;
+                if (trapId != TrapID.None)
+                    syncedTraps.Add(trapId);
+            }
+
+            return syncedTraps;
+        }
+
         return new List<TrapID>(registeredTraps);
     }
 
@@ -267,7 +308,13 @@ public class PlayerNetwork : NetworkBehaviour
         selectedCharacterId = source.selectedCharacterId;
         selectedMapScene = source.selectedMapScene;
         registeredSkills = new List<SkillID>(source.registeredSkills);
-        registeredTraps = new List<TrapID>(source.registeredTraps);
+
+        List<TrapID> sourceTraps = source.GetRegisteredTraps();
+        int[] trapInts = new int[sourceTraps.Count];
+        for (int i = 0; i < sourceTraps.Count; i++)
+            trapInts[i] = (int)sourceTraps[i];
+
+        SetRegisteredTraps(trapInts);
     }
 
     // ─────────────────────────────────────────────
@@ -305,6 +352,7 @@ public class PlayerNetwork : NetworkBehaviour
     private void ApplyDamageValue(float damage)
     {
         health = Mathf.Max(0f, health - damage);
+        ApplyHealthToCharacterComponents(health);
 
         RpcOnDamageEffect(damage);
 
@@ -450,7 +498,7 @@ public class PlayerNetwork : NetworkBehaviour
     void OnHealthChanged(float oldVal, float newVal)
     {
         Debug.Log($"[Client] 체력 변경: {oldVal:F1} → {newVal:F1}");
-        // HpBarUI는 Update에서 자동 갱신 (SyncVar 변경 후 다음 프레임 반영)
+        ApplyHealthToCharacterComponents(newVal);
     }
 
     void OnStateChanged(PlayerStateType oldState, PlayerStateType newState)
