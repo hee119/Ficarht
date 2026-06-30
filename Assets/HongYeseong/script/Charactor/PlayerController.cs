@@ -25,8 +25,17 @@ public class PlayerController : NetworkBehaviour
     private bool isRunning;
     public bool isAttacking;
     
-    public float fallThresholdY = -10f;
+    [Header("Slope")]
+    public float maxSlopeAngle = 45f;
+    public float maxClimbHeight = 0.5f;
+    public float SLOPE_RAY_DISTANCE = 2f;
+    public float slopeStickyForce = 80f;
+    private RaycastHit slopeHit;
 
+    [Header("Step Climbing")]
+    public float stepCheckDistance = 0.5f;
+    public float stepCheckRadius = 0.3f;
+    
     // Mirror 없는 싱글 테스트에서도 입력 처리
     private bool IsLocallyControlled => isOwned || !NetworkClient.active;
 
@@ -150,6 +159,25 @@ public class PlayerController : NetworkBehaviour
             Vector3.down * groundCheckDistance,
             IsGrounded() ? Color.green : Color.red
         );
+        
+        // IsGrounded 레이 (초록=땅, 빨강=공중)
+        Debug.DrawRay(groundCheck.position, Vector3.down * groundCheckDistance,
+            IsGrounded() ? Color.green : Color.red);
+
+// IsOnSlope 레이 (파랑=경사, 흰색=평지)
+        Debug.DrawRay(transform.position, Vector3.down * SLOPE_RAY_DISTANCE,
+            IsOnSlope() ? Color.blue : Color.white);
+
+// 다음 프레임 위치 레이 (노랑=각도 체크)
+        if (moveInput.magnitude > 0.01f && Camera.main != null)
+        {
+            Vector3 cf = Camera.main.transform.forward; cf.y = 0; cf.Normalize();
+            Vector3 cr = Camera.main.transform.right;   cr.y = 0; cr.Normalize();
+            Vector3 debugDir = (cf * moveInput.z + cr * moveInput.x).normalized;
+            Vector3 nextPos = transform.position + debugDir * currentSpeed * Time.fixedDeltaTime;
+            Debug.DrawLine(transform.position, nextPos, Color.cyan);         // 이동 방향
+            Debug.DrawRay(nextPos, Vector3.down * SLOPE_RAY_DISTANCE, Color.yellow); // 다음 위치 지형 체크
+        }
     }
 
     void FixedUpdate()
@@ -176,26 +204,50 @@ public class PlayerController : NetworkBehaviour
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * 10f);
         }
-        
-        if (transform.position.y < fallThresholdY && !isRunning && currentSpeed > 0)
+
+        // 계단 오르기
+        if (IsGrounded() && moveDir.magnitude > 0.01f)
+            TryStepClimb(moveDir);
+
+        bool isOnSlope = IsOnSlope();
+        bool grounded = IsGrounded();
+
+        if (grounded && isOnSlope)
         {
+            // 경사면: 중력 항상 비활성화 (정지 시 미끄럼 방지)
+            rb.useGravity = false;
+
+            if (moveInput.magnitude > 0.01f)
+            {
+                if (CanMoveToSlope(moveDir))
+                {
+                    // 경사 방향으로 이동 + 경사 법선 반대 방향으로 밀착
+                    rb.linearVelocity = AdjustDirectionToSlope(moveDir) * currentSpeed;
+                    rb.AddForce(-slopeHit.normal * slopeStickyForce, ForceMode.Force);
+                }
+                else
+                {
+                    // 진입 불가 경사 (너무 가파름) → 정지
+                    rb.linearVelocity = Vector3.zero;
+                }
+            }
+            else
+            {
+                // 경사면 정지 시 완전 정지 (미끄럼 방지)
+                rb.linearVelocity = Vector3.zero;
+            }
+        }
+        else
+        {
+            rb.useGravity = true;
+            // 접지 중이면 경사 이동에서 넘어온 양의 Y 속도를 차단 (공중 부유 방지)
+            float yVel = grounded ? Mathf.Min(rb.linearVelocity.y, 0f) : rb.linearVelocity.y;
             rb.linearVelocity = new Vector3(
-                rb.linearVelocity.x,
-                walkSpeed,
-                rb.linearVelocity.z
+                moveDir.x * currentSpeed,
+                yVel,
+                moveDir.z * currentSpeed
             );
         }
-        else if (transform.position.y < fallThresholdY && isRunning && currentSpeed > 0)
-        {
-            rb.linearVelocity = new Vector3(
-                rb.linearVelocity.x,
-                runSpeed,
-                rb.linearVelocity.z
-            );
-        }
-        Vector3 velocity = moveDir * currentSpeed;
-        velocity.y = rb.linearVelocity.y;
-        rb.linearVelocity = velocity;
     }
 
     // ─────────────────────────────────────────────
@@ -452,5 +504,62 @@ public class PlayerController : NetworkBehaviour
         return identity != null
             ? identity.GetComponent<PlayerNetwork>()
             : null;
+    }
+    
+    private void TryStepClimb(Vector3 moveDir)
+    {
+        float skinWidth = 0.05f;
+        Vector3 footPos = groundCheck.position;
+
+        // 구체로 발 높이 앞 장애물 감지 (넓은 판정)
+        if (!Physics.SphereCast(footPos + Vector3.up * skinWidth, stepCheckRadius, moveDir, out RaycastHit lowerHit, stepCheckDistance))
+            return;
+
+        // maxClimbHeight 위에서 앞쪽 공간 확인 (오를 수 있는지)
+        if (Physics.SphereCast(new Ray(footPos + Vector3.up * (maxClimbHeight + skinWidth), moveDir), stepCheckRadius, stepCheckDistance))
+            return;
+
+        // 계단 윗면 실제 높이 탐색
+        Vector3 topOrigin = lowerHit.point + moveDir * 0.05f + Vector3.up * (maxClimbHeight + skinWidth);
+        if (!Physics.Raycast(topOrigin, Vector3.down, out RaycastHit topHit, maxClimbHeight + 0.1f))
+            return;
+
+        float climbAmount = topHit.point.y - footPos.y;
+        if (climbAmount <= 0f || climbAmount > maxClimbHeight) return;
+
+        rb.position += Vector3.up * climbAmount;
+    }
+
+    private bool IsOnSlope()
+    {
+        // groundCheck 기준으로 레이캐스트 (발 위치에서 더 정확한 감지)
+        Ray ray = new Ray(groundCheck.position, Vector3.down);
+        if (Physics.Raycast(ray, out slopeHit, SLOPE_RAY_DISTANCE, groundLayer))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle != 0f && angle < maxSlopeAngle;
+        }
+        return false;
+    }
+
+    private Vector3 AdjustDirectionToSlope(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+
+    private bool CanMoveToSlope(Vector3 moveDir)
+    {
+        Vector3 origin = groundCheck.position + moveDir.normalized * 0.3f;
+
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, SLOPE_RAY_DISTANCE, groundLayer))
+        {
+            float heightDiff = hit.point.y - groundCheck.position.y;
+
+            Debug.DrawRay(origin, Vector3.down * SLOPE_RAY_DISTANCE, Color.yellow);
+
+            return heightDiff <= maxClimbHeight;
+        }
+
+        return false;
     }
 }
