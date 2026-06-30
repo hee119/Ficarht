@@ -47,16 +47,28 @@ public class NetworkCardBridge : NetworkBehaviour
         _phaseActive = true;
 
         Debug.Log("[Server] 카드 페이즈 시작");
-        RpcStartCards();
+
+        // 플레이어마다 다른 랜덤 시드 전달 → 같은 카드가 나오는 문제 방지
+        foreach (var conn in NetworkServer.connections.Values)
+        {
+            NetworkCardBridge bridge = conn.identity?.GetComponent<NetworkCardBridge>();
+            if (bridge == null) continue;
+
+            int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            bool drawMap = (conn == NetworkServer.localConnection); // 호스트만 맵 카드
+            bridge.TargetStartCards(conn, seed, drawMap);
+        }
+
         StartCoroutine(ServerCardTimer());
     }
 
-    [ClientRpc]
-    void RpcStartCards()
+    [TargetRpc]
+    void TargetStartCards(NetworkConnection target, int seed, bool drawMapCard)
     {
-        Debug.Log("[Client] 카드 드로우 시작");
-        // Host(NetworkServer.active=true)만 맵 카드 드로우
-        CardSystemManager.Instance?.SetDrawMapCard(NetworkServer.active);
+        Debug.Log($"[Client] 카드 드로우 시작 (seed={seed}, mapCard={drawMapCard})");
+        // 플레이어별 고유 시드로 초기화 → 서로 다른 카드 드로우 보장
+        UnityEngine.Random.InitState(seed);
+        CardSystemManager.Instance?.SetDrawMapCard(drawMapCard);
         CardSystemManager.Instance?.StartGameExternal();
     }
 
