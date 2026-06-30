@@ -101,12 +101,21 @@ public class StartButtonSceneLoader : MonoBehaviour
 
     private IEnumerator SinglePlayerSceneLoad(string targetScene)
     {
-        MapCardDisplayUI.Instance?.ShowMapCard(targetScene);
+        CardSystemManager.Instance?.PushInputBlock();
 
-        float wait = MapCardDisplayUI.Instance != null
-            ? MapCardDisplayUI.Instance.displayDuration
-            : 3f;
-        yield return new WaitForSecondsRealtime(wait);
+        try
+        {
+            MapCardDisplayUI.Instance?.ShowMapCard(targetScene);
+
+            float wait = MapCardDisplayUI.Instance != null
+                ? MapCardDisplayUI.Instance.displayDuration
+                : 3f;
+            yield return new WaitForSecondsRealtime(wait);
+        }
+        finally
+        {
+            CardSystemManager.Instance?.PopInputBlock();
+        }
 
         // 선택한 캐릭터 정보 저장 (BattleSceneInitializer에서 싱글플레이 스폰에 사용)
         string charName = CardSystemManager.Instance != null

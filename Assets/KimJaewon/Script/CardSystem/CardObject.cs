@@ -149,6 +149,12 @@ public class CardObject : MonoBehaviour
             Time.deltaTime * moveSpeed
         );
 
+        if (IsCardInputBlocked())
+        {
+            CancelInputState();
+            return;
+        }
+
         UpdateHoverState();
 
         if (isPlaced)
@@ -170,6 +176,44 @@ public class CardObject : MonoBehaviour
         )
         {
             StopDrag();
+        }
+    }
+
+    private bool IsCardInputBlocked()
+    {
+        return CardSystemManager.Instance != null &&
+            CardSystemManager.Instance.IsInputBlocked;
+    }
+
+    private void CancelInputState()
+    {
+        isMouseDown = false;
+
+        mouseDownTimer = 0f;
+
+        if (isDragging)
+        {
+            isDragging = false;
+
+            if (draggingCard == this)
+                draggingCard = null;
+
+            SlotGuideManager.Instance?.HideAllGuides();
+
+            targetPosition = GetRestPosition();
+
+            targetRotation = GetRestRotation();
+
+            targetScale = GetRestScale();
+
+            RestoreRenderOrder();
+        }
+
+        if (currentHoveredCard == this)
+        {
+            currentHoveredCard = null;
+            CardTooltipUI.Instance?.Hide();
+            RestoreRenderOrder();
         }
     }
 
@@ -450,6 +494,7 @@ public class CardObject : MonoBehaviour
         if (
             CardSystemManager.Instance == null ||
             !CardSystemManager.Instance.IsTurnActive ||
+            CardSystemManager.Instance.IsInputBlocked ||
             Mouse.current == null ||
             Camera.main == null ||
             !Mouse.current.leftButton.wasPressedThisFrame
@@ -511,6 +556,13 @@ public class CardObject : MonoBehaviour
         lastHoverUpdateFrame = Time.frameCount;
 
         if (draggingCard != null)
+        {
+            SetHoveredCard(null);
+            return;
+        }
+
+        if (CardSystemManager.Instance != null &&
+            CardSystemManager.Instance.IsInputBlocked)
         {
             SetHoveredCard(null);
             return;
@@ -674,7 +726,8 @@ public class CardObject : MonoBehaviour
     {
         if (
             CardSystemManager.Instance == null ||
-            !CardSystemManager.Instance.IsTurnActive
+            !CardSystemManager.Instance.IsTurnActive ||
+            CardSystemManager.Instance.IsInputBlocked
         )
         {
             return;
@@ -833,13 +886,23 @@ public class CardObject : MonoBehaviour
 
             if (!placed)
             {
+                ShowNoSlotSpaceMessage();
                 ReturnToOrigin();
             }
 
             return;
         }
 
+        ShowNoSlotSpaceMessage();
+
         ReturnToOrigin();
+    }
+
+    private void ShowNoSlotSpaceMessage()
+    {
+        CardSystemManager.Instance?.ShowSelectionMessage(
+            "카드를 넣을 공간이 없습니다."
+        );
     }
 
     // -------------------------------------------------------
