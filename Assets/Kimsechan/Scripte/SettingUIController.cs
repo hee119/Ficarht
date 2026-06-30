@@ -28,6 +28,10 @@ public class SettingUIController : MonoBehaviour
     public AudioSource[] bgmSources;
     public AudioSource[] sfxSources;
 
+    [Header("열기/닫기")]
+    public KeyCode toggleKey = KeyCode.Escape;
+    public bool startHidden = true;
+
     private readonly ResolutionOption[] resolutionOptions =
     {
         new ResolutionOption(1280, 720),
@@ -49,8 +53,13 @@ public class SettingUIController : MonoBehaviour
     private Label windowModeValueLabel;
     private Label resolutionValueLabel;
     private Label fpsValueLabel;
+    private VisualElement generalSection;
+    private VisualElement soundSection;
+    private Button generalTabButton;
+    private Button soundTabButton;
     private int resolutionIndex = 2;
     private int fpsIndex = 1;
+    private bool isOpen;
 
     private void Awake()
     {
@@ -59,6 +68,17 @@ public class SettingUIController : MonoBehaviour
         BindEvents();
         RefreshAllLabels();
         ApplySettings();
+
+        if (startHidden)
+            HideSetting(false);
+        else
+            ShowSetting();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(toggleKey))
+            ToggleSetting();
     }
 
     private void BindElements()
@@ -76,6 +96,10 @@ public class SettingUIController : MonoBehaviour
         windowModeValueLabel = root.Q<Label>("window-mode-value");
         resolutionValueLabel = root.Q<Label>("resolution-value");
         fpsValueLabel = root.Q<Label>("fps-value");
+        generalSection = root.Q<VisualElement>("general-section");
+        soundSection = root.Q<VisualElement>("sound-section");
+        generalTabButton = root.Q<Button>("general-tab-button");
+        soundTabButton = root.Q<Button>("sound-tab-button");
     }
 
     private void BindEvents()
@@ -99,6 +123,12 @@ public class SettingUIController : MonoBehaviour
         Button applyButton = root.Q<Button>("setting-apply-button");
         Button closeButton = root.Q<Button>("setting-close-button");
 
+        if (generalTabButton != null)
+            generalTabButton.clicked += () => ShowCategory(true);
+
+        if (soundTabButton != null)
+            soundTabButton.clicked += () => ShowCategory(false);
+
         if (resolutionPrevButton != null)
             resolutionPrevButton.clicked += () => ChangeResolution(-1);
 
@@ -116,6 +146,39 @@ public class SettingUIController : MonoBehaviour
 
         if (closeButton != null)
             closeButton.clicked += CloseSetting;
+
+        ShowCategory(true);
+    }
+
+    private void ToggleSetting()
+    {
+        if (isOpen)
+            HideSetting(true);
+        else
+            ShowSetting();
+    }
+
+    private void ShowSetting()
+    {
+        if (root == null)
+            return;
+
+        isOpen = true;
+        root.style.display = DisplayStyle.Flex;
+        root.BringToFront();
+        LoadSettings();
+        RefreshAllLabels();
+    }
+
+    private void HideSetting(bool applyBeforeClose)
+    {
+        if (applyBeforeClose)
+            ApplySettings();
+
+        isOpen = false;
+
+        if (root != null)
+            root.style.display = DisplayStyle.None;
     }
 
     private void LoadSettings()
@@ -162,6 +225,7 @@ public class SettingUIController : MonoBehaviour
         RefreshSoundLabels();
         ApplySoundSettings();
         SaveSoundSettings();
+        PlayerPrefs.Save();
     }
 
     private void ChangeResolution(int direction)
@@ -196,6 +260,32 @@ public class SettingUIController : MonoBehaviour
         ApplyScreenSettings();
         SaveSettings();
         RefreshAllLabels();
+    }
+
+    private void ShowCategory(bool showGeneral)
+    {
+        if (generalSection != null)
+            generalSection.style.display = showGeneral ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (soundSection != null)
+            soundSection.style.display = showGeneral ? DisplayStyle.None : DisplayStyle.Flex;
+
+        SetTabSelected(generalTabButton, showGeneral);
+        SetTabSelected(soundTabButton, !showGeneral);
+    }
+
+    private void SetTabSelected(Button button, bool selected)
+    {
+        if (button == null)
+            return;
+
+        button.style.backgroundColor = selected
+            ? new StyleColor(new Color(1f, 0.878f, 0.518f, 1f))
+            : new StyleColor(new Color(0.31f, 0.325f, 0.357f, 1f));
+
+        button.style.color = selected
+            ? new StyleColor(new Color(0.176f, 0.133f, 0.086f, 1f))
+            : new StyleColor(new Color(0.933f, 0.933f, 0.91f, 1f));
     }
 
     private void ApplySoundSettings()
@@ -353,7 +443,6 @@ public class SettingUIController : MonoBehaviour
 
     private void CloseSetting()
     {
-        if (root != null)
-            root.style.display = DisplayStyle.None;
+        HideSetting(true);
     }
 }
