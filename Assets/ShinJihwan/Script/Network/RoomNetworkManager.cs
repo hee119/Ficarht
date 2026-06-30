@@ -60,7 +60,13 @@ public class RoomNetworkManager : MonoBehaviour
 
     private IEnumerator RequestCreateRoomDelayed()
     {
-        yield return new WaitForSeconds(0.5f);
+        // localPlayer가 스폰될 때까지 최대 5초 대기 (빌드/에디터 환경 차이 대응)
+        float waited = 0f;
+        while (GetLocalPlayerNetwork() == null && waited < 5f)
+        {
+            yield return new WaitForSeconds(0.1f);
+            waited += 0.1f;
+        }
 
         PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn == null)
@@ -152,19 +158,27 @@ public class RoomNetworkManager : MonoBehaviour
             yield break;
         }
 
-        yield return new WaitForSeconds(1f); // PlayerNetwork 스폰 대기 (빌드 환경 대응)
+        // PlayerNetwork가 스폰될 때까지 최대 5초 대기 (빌드 환경 대응)
+        PlayerNetwork pn = null;
+        float spawnWait = 0f;
+        while (pn == null && spawnWait < 5f)
+        {
+            pn = GetLocalPlayerNetwork();
+            if (pn == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+                spawnWait += 0.2f;
+            }
+        }
 
-        PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn != null)
         {
             pn.CmdJoinRoom(code);
-            // UI 표시는 서버 검증 후 TargetJoinSuccess/TargetJoinFailed RPC에서 처리
-            Debug.Log($"[RoomNetworkManager] 코드 [{code}] 방 참가 요청");
+            Debug.Log($"[RoomNetworkManager] 코드 [{code}] 방 참가 요청 (대기: {spawnWait:F1}s)");
         }
         else
         {
-            // PlayerNetwork 스폰 실패 = 연결은 됐지만 코드 검증 불가 → 강제 차단
-            Debug.LogWarning("[RoomNetworkManager] PlayerNetwork 없음 - 연결 차단");
+            Debug.LogWarning("[RoomNetworkManager] PlayerNetwork 5초 내 스폰 실패 - 연결 차단");
             NetworkManager.singleton.StopClient();
             OnJoinFailed();
         }
@@ -273,8 +287,15 @@ public class RoomNetworkManager : MonoBehaviour
     // ─────────────────────────────────────────────
     private PlayerNetwork GetLocalPlayerNetwork()
     {
-        if (NetworkClient.localPlayer == null) return null;
-        return NetworkClient.localPlayer.GetComponent<PlayerNetwork>();
+        // 1순위: NetworkClient.localPlayer
+        if (NetworkClient.localPlayer != null)
+            return NetworkClient.localPlayer.GetComponent<PlayerNetwork>();
+
+        // 2순위: 씬에서 isOwned인 PlayerNetwork 탐색 (빌드 환경 폴백)
+        foreach (var pn in FindObjectsOfType<PlayerNetwork>(true))
+            if (pn.isOwned) return pn;
+
+        return null;
     }
 
     private string GetLocalIP()

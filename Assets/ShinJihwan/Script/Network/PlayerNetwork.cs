@@ -62,7 +62,9 @@ public class PlayerNetwork : NetworkBehaviour
     {
         Debug.Log($"[Server] CmdJoinRoom 수신: 입력='{code}', 서버코드='{_activeRoomCode}'");
         // 서버에서 코드 검증
-        if (string.IsNullOrEmpty(_activeRoomCode) || code != _activeRoomCode)
+        // _activeRoomCode가 비어있으면 CmdCreateRoom이 아직 실행 안 된 것 → 일단 허용
+        bool codeValid = string.IsNullOrEmpty(_activeRoomCode) || code == _activeRoomCode;
+        if (!codeValid)
         {
             Debug.LogWarning($"[Server] 잘못된 방 코드: '{code}' (실제 코드: '{_activeRoomCode}')");
             // 즉시 서버에서 연결 차단 → 클라이언트의 OnClientDisconnect → OnDisconnected → OnJoinFailed
