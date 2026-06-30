@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 using Mirror;
 using TinyGiantStudio.Text;
 using UnityEngine;
@@ -156,8 +157,12 @@ public class RoomNetworkManager : MonoBehaviour
         if (!NetworkClient.isConnected)
         {
             Debug.LogWarning("[RoomNetworkManager] 연결 실패 (서버 없음 또는 잘못된 코드)");
-            NetworkManager.singleton.StopClient();
-            OnJoinFailed(); // 커넥티드 패널 숨기고 UI_Host 복구
+            // _isJoining이 false면 OnDisconnected에서 이미 처리됨 → 중복 방지
+            if (_isJoining)
+            {
+                NetworkManager.singleton.StopClient();
+                OnJoinFailed();
+            }
             yield break;
         }
 
@@ -305,11 +310,26 @@ public class RoomNetworkManager : MonoBehaviour
     {
         try
         {
-            string localIP = "127.0.0.1";
+            // 실제 LAN IP (192.168.x.x 또는 10.x.x.x) 우선 반환
+            // — 172.16.x.x는 Docker/VPN 가상 인터페이스일 수 있어 다른 기기에서 접속 불가
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (ni.OperationalStatus != OperationalStatus.Up) continue;
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
+
+                foreach (UnicastIPAddressInformation addr in ni.GetIPProperties().UnicastAddresses)
+                {
+                    if (addr.Address.AddressFamily != AddressFamily.InterNetwork) continue;
+                    string ip = addr.Address.ToString();
+                    if (ip.StartsWith("192.168.") || ip.StartsWith("10."))
+                        return ip;
+                }
+            }
+
+            // 폴백: UDP 소켓으로 외부 IP 감지
             using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
             socket.Connect("8.8.8.8", 65530);
-            localIP = ((IPEndPoint)socket.LocalEndPoint).Address.ToString();
-            return localIP;
+            return ((IPEndPoint)socket.LocalEndPoint).Address.ToString();
         }
         catch
         {
