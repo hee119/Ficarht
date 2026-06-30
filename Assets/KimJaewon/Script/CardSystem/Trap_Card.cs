@@ -186,6 +186,7 @@ public class Trap_Card : MonoBehaviour
         }
 
         StartCooldown(trapId);
+        InGameUIController.Instance?.PlayTrapUsed(actor);
         Debug.Log($"[CARD TEST][TRAP] 발동 완료: {trapId}");
         return true;
     }

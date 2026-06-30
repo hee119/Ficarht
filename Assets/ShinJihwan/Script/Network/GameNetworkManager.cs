@@ -114,9 +114,13 @@ public class GameNetworkManager : NetworkManager
         DontDestroyOnLoad(player);
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        // 두 번째 플레이어 접속 시 Host 클라이언트 UI 업데이트
+        // 두 번째 플레이어 접속 시 모든 클라이언트에 RPC로 알림
         if (NetworkServer.connections.Count >= 2)
-            RoomNetworkManager.Instance?.OnSecondPlayerConnected();
+        {
+            // 새로 접속한 플레이어의 PlayerNetwork를 통해 전체 브로드캐스트
+            PlayerNetwork newPn = player.GetComponent<PlayerNetwork>();
+            newPn?.RpcNotifyPlayer2Joined();
+        }
     }
 
 
