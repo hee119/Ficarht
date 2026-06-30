@@ -377,7 +377,6 @@ public class PlayerController : NetworkBehaviour
         Trap_Card.Instance?.NotifyAttack(pn);
         RpcPlayAttackAnimation();
     }
-    
 
     [ClientRpc]
     void RpcPlayAttackAnimation()

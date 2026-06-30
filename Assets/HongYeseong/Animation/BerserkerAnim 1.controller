@@ -388,12 +388,6 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Die
-    m_Type: 9
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -446,7 +440,13 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+--- !u!1102 &571026274209498492
+=======
 --- !u!1102 &370600644634419553
+>>>>>>> 8a59b98c6d10d58346cb1d86e7868769912197d5
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -472,6 +472,10 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+=======
+>>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
+=======
+>>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
 --- !u!1101 &776402338350497851
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -730,14 +734,35 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 6702972578872614637}
     m_Position: {x: 192.4025, y: 459.2415, z: 0}
+<<<<<<< HEAD
+<<<<<<< HEAD
   - serializedVersion: 1
+<<<<<<< HEAD
+    m_State: {fileID: 571026274209498492}
+    m_Position: {x: 469.48047, y: 343.99884, z: 0}
+=======
     m_State: {fileID: 370600644634419553}
     m_Position: {x: 601.0732, y: 474.2859, z: 0}
+>>>>>>> 8a59b98c6d10d58346cb1d86e7868769912197d5
+=======
+>>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
+=======
+>>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 7077873817336397464}
   - {fileID: 2832148478769951080}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+  - {fileID: 6732121733432679475}
+=======
   - {fileID: 7776571596821825129}
+>>>>>>> 8a59b98c6d10d58346cb1d86e7868769912197d5
+=======
+>>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
+=======
+>>>>>>> parent of 8a59b98c (Merge pull request #22 from hee119/main)
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
@@ -772,6 +797,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &6732121733432679475
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Die
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 571026274209498492}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &7077873817336397464
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -873,31 +923,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &7776571596821825129
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Die
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 370600644634419553}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.25
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!1107 &8722696751171457693
 AnimatorStateMachine:
   serializedVersion: 6
