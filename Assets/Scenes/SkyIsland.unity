@@ -1855,7 +1855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ea0768df8ae4a689ab0c9767d0c8ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
-  spawnID: spawn_P1
+  spawnID: spawn_P2
 --- !u!4 &452761073
 Transform:
   m_ObjectHideFlags: 0
@@ -3116,6 +3116,10 @@ MonoBehaviour:
   pitchAngle: 50
   smoothSpeed: 8
   mouseSensitivity: 0.2
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  wallOffset: 0.3
   searchInterval: 0.5
 --- !u!1 &720742621 stripped
 GameObject:
@@ -5439,7 +5443,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1dfe9992ea2b478aa99fb88d865c809, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkyMapManager
-  deathY: 0
+  deathY: -100
+  fallDamage: 50
 --- !u!4 &1361987339
 Transform:
   m_ObjectHideFlags: 0
