@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,6 +155,8 @@
       <workItem from="1782650760432" duration="4403000" />
       <workItem from="1782720181142" duration="2188000" />
       <workItem from="1782724646151" duration="935000" />
+      <workItem from="1782745334137" duration="704000" />
+      <workItem from="1782806371971" duration="2075000" />
     </task>
     <servers />
   </component>
