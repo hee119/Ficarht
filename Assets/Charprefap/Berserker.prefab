@@ -30476,7 +30476,10 @@ MonoBehaviour:
   playerInput: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
-  jumpForce: 5
+  jumpForce: 12
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
   gravity: -20
   rollSpeed: 8
   rollDuration: 1

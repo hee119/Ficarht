@@ -5,47 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/Clear.uxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/Clear.uxml.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/InGameUI.uxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/InGameUI.uxml.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/Scripte/InGameUIController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/Scripte/InGameUIController.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/Setting.uxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Kimsechan/Setting.uxml.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Settings/PlayMode/NewPlayModeScenario.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Bard.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Bard.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/CharAnimAsset/Mage/AnimatorControllers/MageAnim.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/CharAnimAsset/Mage/AnimatorControllers/MageAnim.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/CharaScripterbleObject/BardStats.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/ScripterbleObject/CharaScripterbleObject/BardStats.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CharaStat.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/CharaStat.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/AnimManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Trap_Card.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/KimJaewon/Script/CardSystem/Trap_Card.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Kimsechan/CardMap_MainDesplay.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Kimsechan/CardMap_MainDesplay.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Authenticators/Mirror.Authenticators.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Authenticators/Mirror.Authenticators.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Components/Mirror.Components.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Components/Mirror.Components.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Editor/Mirror.Editor.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Editor/Mirror.Editor.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Editor/Weaver/Unity.Mirror.CodeGen.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Editor/Weaver/Unity.Mirror.CodeGen.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Examples/Mirror.Examples.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Examples/Mirror.Examples.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Transports/Encryption/Editor/EncryptionTransportEditor.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Transports/Encryption/Editor/EncryptionTransportEditor.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Transports/KCP/kcp2k/KCP.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Transports/KCP/kcp2k/KCP.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Mirror/Transports/Mirror.Transports.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Mirror/Transports/Mirror.Transports.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/Script/SkyIsland/SkyMapManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/Script/SkyIsland/SkyMapManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunInfo.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunInfo.json.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/PlayMode.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunSettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/PerformanceTestRunSettings.json.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/PlayMode/NewPlayModeScenario.asset.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Script/NextUI_Animation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Script/NextUI_Animation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/GameNetworkManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/GameNetworkManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/MenuController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/MenuController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/PlayerNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/PlayerNetwork.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/RoomNetworkManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ShinJihwan/Script/Network/RoomNetworkManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/BerserkerSkillLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/BerserkerSkillLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/MageSkillLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/MageSkillLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/PaladinSkillLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/PaladinSkillLogic.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,8 +170,7 @@
       <workItem from="1782720181142" duration="2188000" />
       <workItem from="1782724646151" duration="935000" />
       <workItem from="1782745334137" duration="704000" />
-      <workItem from="1782806371971" duration="4540000" />
-      <workItem from="1782817450424" duration="23000" />
+      <workItem from="1782806371971" duration="9149000" />
     </task>
     <servers />
   </component>
