@@ -18,7 +18,8 @@ public class PlayerController : NetworkBehaviour
 
     // ─── Jump / Gravity ───────────────────────────────────────────────────────
     [Header("Jump")]
-    public float jumpForce = 5f;
+    public float     jumpForce   = 5f;
+    public LayerMask groundLayer;        // 바닥 레이어 (보조 지면 판정용)
 
     [Header("Gravity")]
     public float gravity = -20f;
@@ -135,7 +136,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         // 접지 시 Y속도 초기화 (살짝 아래로 유지해야 cc.isGrounded 안정적)
-        if (cc.isGrounded && velocity.y < 0f)
+        if (IsGrounded() && velocity.y < 0f)
             velocity.y = -2f;
 
         // 중력 누적
@@ -160,9 +161,15 @@ public class PlayerController : NetworkBehaviour
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Ground Check  (외부 스크립트 호환용)
+    // Ground Check
     // ─────────────────────────────────────────────────────────────────────────
-    public bool IsGrounded() => cc.isGrounded;
+    public bool IsGrounded()
+    {
+        if (cc.isGrounded) return true;
+        // cc.isGrounded 가 Update/FixedUpdate 타이밍 차이로 튈 때를 대비한 보조 판정
+        Vector3 sphereCenter = transform.position + Vector3.down * (cc.height * 0.5f - cc.radius);
+        return Physics.CheckSphere(sphereCenter, cc.radius + 0.05f, groundLayer);
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // Input Callbacks
@@ -196,7 +203,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled || !context.started || !cc.isGrounded) return;
+        if (!IsLocallyControlled || !context.started || !IsGrounded()) return;
 
         velocity.y = jumpForce;
 
