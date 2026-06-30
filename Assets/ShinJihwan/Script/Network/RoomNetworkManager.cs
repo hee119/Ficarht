@@ -60,7 +60,7 @@ public class RoomNetworkManager : MonoBehaviour
 
     private IEnumerator RequestCreateRoomDelayed()
     {
-        // localPlayer가 스폰될 때까지 최대 5초 대기 (빌드/에디터 환경 차이 대응)
+        // localPlayer가 스폰될 때까지 최대 5초 대기
         float waited = 0f;
         while (GetLocalPlayerNetwork() == null && waited < 5f)
         {
@@ -75,8 +75,10 @@ public class RoomNetworkManager : MonoBehaviour
             yield break;
         }
 
-        pn.CmdCreateRoom();
-        Debug.Log("[RoomNetworkManager] 방 코드 생성 요청");
+        // 호스트의 LAN IP를 방 코드로 사용 (다른 기기에서 접속 가능하도록)
+        string hostIP = GetLocalIP();
+        pn.CmdCreateRoom(hostIP);
+        Debug.Log($"[RoomNetworkManager] 방 코드(IP) 생성 요청: {hostIP}");
     }
 
     // PlayerNetwork.TargetReceiveCode → LobbyManager3D.ShowMyCode에서 여기로도 연결
@@ -115,7 +117,7 @@ public class RoomNetworkManager : MonoBehaviour
     {
         string code = "";
         if (codeInputField != null)
-            code = codeInputField.Text?.Trim() ?? "";
+            code = codeInputField.Text?.Trim().ToUpper() ?? "";
 
         if (string.IsNullOrEmpty(code))
         {
@@ -125,7 +127,8 @@ public class RoomNetworkManager : MonoBehaviour
         }
 
         _isJoining = true;
-        NetworkManager.singleton.networkAddress = "localhost";
+        // 입력한 코드를 호스트 IP 주소로 사용 (같은 기기면 localhost, 다른 기기면 LAN IP)
+        NetworkManager.singleton.networkAddress = code;
         NetworkManager.singleton.StartClient();
 
         StartCoroutine(JoinRoomAfterConnect(code));

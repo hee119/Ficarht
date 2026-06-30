@@ -137,7 +137,7 @@ public class MenuController : MonoBehaviour
         // 코드 미입력 검증
         string code = "";
         if (m3dInputField != null)
-            code = m3dInputField.Text?.Trim() ?? "";
+            code = m3dInputField.Text?.Trim().ToUpper() ?? "";
 
         if (string.IsNullOrEmpty(code))
         {

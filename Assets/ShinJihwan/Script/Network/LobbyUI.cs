@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -69,7 +71,7 @@ public class LobbyUI : MonoBehaviour
         PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn != null)
         {
-            pn.CmdCreateRoom();
+            pn.CmdCreateRoom(GetLocalIP());
         }
         else
         {
@@ -158,5 +160,16 @@ public class LobbyUI : MonoBehaviour
         if (statusText != null)
             statusText.text = msg;
         Debug.Log($"[LobbyUI] {msg}");
+    }
+
+    private string GetLocalIP()
+    {
+        try
+        {
+            using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+            socket.Connect("8.8.8.8", 65530);
+            return ((IPEndPoint)socket.LocalEndPoint).Address.ToString();
+        }
+        catch { return "127.0.0.1"; }
     }
 }

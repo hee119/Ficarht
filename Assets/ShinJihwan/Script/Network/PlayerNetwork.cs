@@ -44,22 +44,18 @@ public class PlayerNetwork : NetworkBehaviour
     private static string _activeRoomCode = "";
 
     [Command]
-    public void CmdCreateRoom()
+    public void CmdCreateRoom(string hostIP)
     {
-        // RoomManager 없이 직접 코드 생성
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        string code = "";
-        for (int i = 0; i < 6; i++)
-            code += chars[UnityEngine.Random.Range(0, chars.Length)];
-
-        _activeRoomCode = code; // 서버에 코드 저장 (참가 검증용)
-        Debug.Log($"[Server] 방 코드 생성: {code}");
-        TargetReceiveCode(connectionToClient, code);
+        // 호스트 IP 자체를 방 코드로 사용
+        _activeRoomCode = hostIP;
+        Debug.Log($"[Server] 방 코드(IP) 저장: {hostIP}");
+        TargetReceiveCode(connectionToClient, hostIP);
     }
 
     [Command]
     public void CmdJoinRoom(string code)
     {
+        code = code?.Trim() ?? "";
         Debug.Log($"[Server] CmdJoinRoom 수신: 입력='{code}', 서버코드='{_activeRoomCode}'");
         // 서버에서 코드 검증
         // _activeRoomCode가 비어있으면 CmdCreateRoom이 아직 실행 안 된 것 → 일단 허용
