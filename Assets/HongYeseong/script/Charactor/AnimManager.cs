@@ -140,6 +140,5 @@ public class AnimManager : MonoBehaviour
     {
         isTriggerPlaying = false;
         playerController.isAttacking  = false;
-        playerController.isUsingSkill = false;
     }
 }

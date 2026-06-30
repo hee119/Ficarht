@@ -50,13 +50,11 @@ public class BerserkerSkillLogic : MonoBehaviour
         {
             case SkillType.BerserkerAttackBuff:
                 playerStat.playerController.isAttacking  = true;
-                playerStat.playerController.isUsingSkill = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.BerserkerAttackAndSpeedBuff:
                 playerStat.playerController.isAttacking  = true;
-                playerStat.playerController.isUsingSkill = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
         }
@@ -80,7 +78,6 @@ public class BerserkerSkillLogic : MonoBehaviour
 
                 case SkillType.BerserkerBloodyAxeChopping:
                     playerStat.playerController.isAttacking  = true;
-                    playerStat.playerController.isUsingSkill = true;
                     targetStat.Hit(prefabInfo.power);
                     break;
             }
