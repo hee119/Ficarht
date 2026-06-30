@@ -3,80 +3,72 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using Mirror;
 
-/// <summary>
-/// Mirror 멀티플레이 PlayerController.
-///
-/// isLocalPlayer → isOwned 로 변경.
-/// isOwned || !NetworkClient.active → Mirror 없는 싱글 테스트에서도 조작 가능.
-/// </summary>
 public class PlayerController : NetworkBehaviour
 {
-    private Rigidbody rb;
-    private Animator animator;
+    // ─── Components ───────────────────────────────────────────────────────────
+    private CharacterController cc;
+    private Animator  animator;
     private CharaStat characterStats;
-    public UnityEngine.InputSystem.PlayerInput playerInput;
+    public  UnityEngine.InputSystem.PlayerInput playerInput;
 
+    // ─── Speed ────────────────────────────────────────────────────────────────
     [Header("Speed")]
     public float walkSpeed = 3f;
-    public float runSpeed = 6f;
+    public float runSpeed  = 6f;
 
-    private Vector3 moveInput;
-    private float currentSpeed;
-    private bool isRunning;
-    public bool isAttacking;
-    
-    [Header("Slope")]
-    public float maxSlopeAngle = 45f;
-    public float SLOPE_RAY_DISTANCE = 2f;
-    private RaycastHit slopeHit;
-    
-    [SerializeField] private Transform slopeCheck;
-    // Mirror 없는 싱글 테스트에서도 입력 처리
-    private bool IsLocallyControlled => isOwned || !NetworkClient.active;
-
-    public float mouseSensitivity = 100f;
-
-    private float mouseInputX = 0;
-    private float mouseInputY = 0;
-
+    // ─── Jump / Gravity ───────────────────────────────────────────────────────
     [Header("Jump")]
-    public float jumpForce = 5f;
+    public float     jumpForce   = 5f;
+    public LayerMask groundLayer;        // 바닥 레이어 (보조 지면 판정용)
 
-    [Header("Ground Check")]
-    public Transform groundCheck;
-    public float groundCheckDistance = 0.4f;
-    public LayerMask groundLayer;
+    [Header("Gravity")]
+    public float gravity = -20f;
 
-    public bool isRoll = false;
+    // ─── Roll ─────────────────────────────────────────────────────────────────
+    [Header("Roll")]
+    public float rollSpeed    = 8f;
+    public float rollDuration = 1f;
+    public bool  isRoll       = false;
 
-    [SyncVar]
-    private uint ownerPlayerNetId;
+    // ─── Runtime State ────────────────────────────────────────────────────────
+    private Vector3 moveInput;
+    private float   currentSpeed;
+    private bool    isRunning;
+    public  bool    isAttacking;
+    private Vector3 velocity;        // Y축에 중력/점프 누적
 
     private Coroutine speedMultiplierRoutine;
-    private float speedMultiplier = 1f;
-    
-    public float rollSpeed = 8f;
-    public float rollDuration = 1f;
+    private float     speedMultiplier = 1f;
 
+    [SyncVar] private uint ownerPlayerNetId;
+
+    private bool IsLocallyControlled => isOwned || !NetworkClient.active;
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ─────────────────────────────────────────────────────────────────────────
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+        cc             = GetComponent<CharacterController>();
+        animator       = GetComponent<Animator>();
         characterStats = GetComponent<CharaStat>();
-        playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
+        playerInput    = GetComponent<UnityEngine.InputSystem.PlayerInput>();
     }
 
     void Start()
     {
         if (characterStats != null)
         {
+            // CharaStat.Awake()가 SO를 읽지 못해 speed=0인 경우 재초기화
+            if (characterStats.speed == 0f)
+                characterStats.InitializeStats();
+
             walkSpeed = characterStats.speed;
-            runSpeed = characterStats.runSpeed;
+            runSpeed  = characterStats.runSpeed;
         }
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.visible   = false;
 
-        // 싱글플레이: 스폰 즉시 카메라에 자신을 등록
         if (!NetworkClient.active)
             RegisterCamera();
     }
@@ -87,51 +79,30 @@ public class PlayerController : NetworkBehaviour
         ownerPlayerNetId = owner != null ? owner.netId : 0;
     }
 
-    // ─────────────────────────────────────────────
-    // Mirror: 소유권 없는 클라이언트는 스크립트 비활성화
-    // ─────────────────────────────────────────────
     public override void OnStartClient()
     {
         base.OnStartClient();
-        if (!isOwned)
-        {
-            this.enabled = false;
-            return;
-        }
-        // 멀티플레이: 내 캐릭터 스폰 즉시 카메라에 등록
+        if (!isOwned) { this.enabled = false; return; }
         RegisterCamera();
     }
 
     private void RegisterCamera()
     {
-        CameraFollow camFollow = Camera.main?.GetComponent<CameraFollow>();
-        if (camFollow != null)
-        {
-            camFollow.SetTarget(transform);
-            Debug.Log($"[PlayerController] 카메라 타겟 등록: {name}");
-        }
+        CameraFollow cam = Camera.main?.GetComponent<CameraFollow>();
+        if (cam != null)
+            cam.SetTarget(transform);
         else
-        {
-            Debug.LogWarning("[PlayerController] CameraFollow 없음 — 카메라가 Main Camera 태그인지 확인");
-        }
+            Debug.LogWarning("[PlayerController] CameraFollow 없음 — Main Camera 태그 확인");
     }
 
-    // ─────────────────────────────────────────────
-    // Update / FixedUpdate
-    // ─────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // Update
+    // ─────────────────────────────────────────────────────────────────────────
     void Update()
     {
-        if (isAttacking)
-        {
-            playerInput.enabled = false;
-        }
-        else
-        {
-            playerInput.enabled = true;
-        }
-        
-        if (!IsLocallyControlled) return;
-        if(isRoll) return;
+        playerInput.enabled = !isAttacking;
+
+        if (!IsLocallyControlled || isRoll) return;
 
         PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
@@ -140,134 +111,78 @@ public class PlayerController : NetworkBehaviour
             isRunning = false;
 
         currentSpeed = moveInput.magnitude > 0.01f
-            ? (isRunning ? runSpeed : walkSpeed)
-                * GetEffectiveSpeedMultiplier(pn)
+            ? (isRunning ? runSpeed : walkSpeed) * GetEffectiveSpeedMultiplier(pn)
             : 0f;
 
         animator.SetFloat("MoveX", moveInput.x);
         animator.SetFloat("MoveY", moveInput.z);
         animator.SetFloat("Speed", currentSpeed);
-
-        // Ground Check 레이 보기
-        Debug.DrawRay(
-            groundCheck.position,
-            Vector3.down * groundCheckDistance,
-            IsGrounded() ? Color.green : Color.red
-        );
-        
-        // IsGrounded 레이 (초록=땅, 빨강=공중)
-        Debug.DrawRay(groundCheck.position, Vector3.down * groundCheckDistance,
-            IsGrounded() ? Color.green : Color.red);
-        
-
-// 다음 프레임 위치 레이 (노랑=각도 체크)
-        if (moveInput.magnitude > 0.01f && Camera.main != null)
-        {
-            Vector3 cf = Camera.main.transform.forward; cf.y = 0; cf.Normalize();
-            Vector3 cr = Camera.main.transform.right;   cr.y = 0; cr.Normalize();
-            Vector3 debugDir = (cf * moveInput.z + cr * moveInput.x).normalized;
-            Vector3 nextPos = transform.position + debugDir * currentSpeed * Time.fixedDeltaTime;
-            Debug.DrawLine(transform.position, nextPos, Color.cyan);         // 이동 방향
-            Debug.DrawRay(nextPos, Vector3.down * SLOPE_RAY_DISTANCE, Color.yellow); // 다음 위치 지형 체크
-        }
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // FixedUpdate
+    // ─────────────────────────────────────────────────────────────────────────
     void FixedUpdate()
     {
-        if (!IsLocallyControlled) return;
-        if (isAttacking || isRoll) return;
+        if (cc == null || !cc.enabled) return;
+        if (!IsLocallyControlled || isAttacking || isRoll) return;
 
         PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanMove()) return;
 
-        // 카메라 기준 이동 방향 계산
-        Vector3 moveDir = Vector3.zero;
-        Camera cam = Camera.main;
-        if (cam != null && moveInput.magnitude > 0.01f)
-        {
-            Vector3 camForward = cam.transform.forward; camForward.y = 0f; camForward.Normalize();
-            Vector3 camRight   = cam.transform.right;   camRight.y   = 0f; camRight.Normalize();
-            moveDir = (camForward * moveInput.z + camRight * moveInput.x).normalized;
-        }
+        Vector3 moveDir = CalcMoveDir();
 
-        // 이동 방향으로 플레이어 회전
+        // 이동 방향으로 회전
         if (moveDir.magnitude > 0.01f)
         {
-            Quaternion targetRot = Quaternion.LookRotation(moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * 10f);
+            Quaternion target = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.fixedDeltaTime * 10f);
         }
 
-        bool grounded = IsGrounded();
-        
-        // [수정] 발밑이 경사면이거나, 혹은 내가 '갈 곳'이 경사면일 때 모두 체크하도록 변경
-        // CanMoveToSlope에서 slopeHit 정보를 갱신하도록 함수를 연결해주는 것이 좋습니다.
-        bool isOnSlope = CheckSlope(moveDir); 
+        // 접지 시 Y속도 초기화 (살짝 아래로 유지해야 cc.isGrounded 안정적)
+        if (IsGrounded() && velocity.y < 0f)
+            velocity.y = -2f;
 
-        // 키보드 입력이 있는지 확인
-        bool hasInput = moveInput.magnitude > 0.01f;
+        // 중력 누적
+        velocity.y += gravity * Time.fixedDeltaTime;
 
-        if (grounded && isOnSlope)
-        {
-            if (hasInput)
-            {
-                // 이동 중일 때는 경사면에 맞게 벡터를 꺾어서 이동
-                rb.useGravity = false;
-                rb.linearVelocity = AdjustDirectionToSlope(moveDir) * currentSpeed;
-            }
-            else
-            {
-                // [꿀팁] 경사면에서 멈췄을 때 미끄러짐 방지 (속도를 완전히 0으로 잡고 중력 끄기)
-                rb.useGravity = false;
-                rb.linearVelocity = new Vector3(0f, 0f, 0f);
-            }
-        }
-        else
-        {
-            // 평지 or 공중
-            rb.useGravity = true;
-            rb.linearVelocity = new Vector3(
-                moveDir.x * currentSpeed,
-                rb.linearVelocity.y,  // 점프/낙하 Y값 유지
-                moveDir.z * currentSpeed
-            );
-        }
+        // 이동 적용 (수평 이동 + 중력)
+        Vector3 move = moveDir * currentSpeed + Vector3.up * velocity.y;
+        cc.Move(move * Time.fixedDeltaTime);
     }
 
-    // [기존 IsOnSlope와 CanMoveToSlope를 하나로 통합한 깔끔한 지형 체크 함수]
-    private bool CheckSlope(Vector3 moveDir)
+    // ─────────────────────────────────────────────────────────────────────────
+    // Movement Helper
+    // ─────────────────────────────────────────────────────────────────────────
+    private Vector3 CalcMoveDir()
     {
-        // 1. 우선 순위: 내가 이동할 앞방향 체크 (Look-Ahead)
-        // 입력이 있을 때는 앞쪽을 먼저 레이캐스트 쳐서 부드럽게 진입하게 함
-        Vector3 origin = slopeCheck.position + moveDir.normalized * 0.3f;
-        if (moveDir.magnitude > 0.01f && Physics.Raycast(origin, Vector3.down, out slopeHit, SLOPE_RAY_DISTANCE, groundLayer))
-        {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            if (angle > 0.1f && angle <= maxSlopeAngle) return true;
-        }
+        if (moveInput.magnitude <= 0.01f || Camera.main == null)
+            return Vector3.zero;
 
-        // 2. 입력이 없거나 앞쪽에 걸리는 게 없다면 현재 발밑 체크
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, SLOPE_RAY_DISTANCE, groundLayer))
-        {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            if (angle > 0.1f && angle <= maxSlopeAngle) return true;
-        }
-
-        return false;
+        Vector3 fwd = Camera.main.transform.forward; fwd.y = 0f; fwd.Normalize();
+        Vector3 rgt = Camera.main.transform.right;   rgt.y = 0f; rgt.Normalize();
+        return (fwd * moveInput.z + rgt * moveInput.x).normalized;
     }
 
-    // ─────────────────────────────────────────────
-    // Input 콜백 (PlayerInput → Invoke Unity Events)
-    // ─────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // Ground Check
+    // ─────────────────────────────────────────────────────────────────────────
+    public bool IsGrounded()
+    {
+        if (cc.isGrounded) return true;
+        // cc.isGrounded 가 Update/FixedUpdate 타이밍 차이로 튈 때를 대비한 보조 판정
+        Vector3 sphereCenter = transform.position + Vector3.down * (cc.height * 0.5f - cc.radius);
+        return Physics.CheckSphere(sphereCenter, cc.radius + 0.05f, groundLayer);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Input Callbacks
+    // ─────────────────────────────────────────────────────────────────────────
     public void OnMove(InputAction.CallbackContext context)
     {
         if (!IsLocallyControlled) return;
-        Vector2 input = context.ReadValue<Vector2>();
-
-        moveInput = new Vector3(
-            input.x,
-            0f,
-            input.y
-        ).normalized;
+        Vector2 v = context.ReadValue<Vector2>();
+        moveInput = new Vector3(v.x, 0f, v.y).normalized;
     }
 
     public void OnRun(InputAction.CallbackContext context)
@@ -277,144 +192,59 @@ public class PlayerController : NetworkBehaviour
         if (context.started)
         {
             isRunning = true;
-
             if (characterStats != null)
                 characterStats.staminaDrainCoroutine = StartCoroutine(characterStats.StaminaDrain());
-
-            if (NetworkClient.active && isOwned)
-                CmdNotifyRunStarted();
-            else if (!NetworkClient.active)
-                Trap_Card.Instance?.NotifyRunStarted(GetPlayerNetwork());
+            if (NetworkClient.active && isOwned) CmdNotifyRunStarted();
+            else if (!NetworkClient.active) Trap_Card.Instance?.NotifyRunStarted(GetPlayerNetwork());
         }
-
-        if (context.canceled)
+        else if (context.canceled)
         {
             isRunning = false;
-
-            if (characterStats != null && characterStats.staminaDrainCoroutine != null)
+            if (characterStats?.staminaDrainCoroutine != null)
                 StopCoroutine(characterStats.staminaDrainCoroutine);
         }
     }
 
-    // =========================
-    // JUMP INPUT
-    // =========================
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled) return;
-        if (!context.started) return;
+        if (!IsLocallyControlled || !context.started || !IsGrounded()) return;
 
-        bool grounded = IsGrounded();
+        velocity.y = jumpForce;
 
-        if (grounded)
-        {
-            rb.AddForce(
-                Vector3.up * jumpForce,
-                ForceMode.Impulse
-            );
-
-            if (NetworkClient.active && isOwned)
-                CmdNotifyJump();
-            else if (!NetworkClient.active)
-                Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
-        }
+        if (NetworkClient.active && isOwned) CmdNotifyJump();
+        else if (!NetworkClient.active) Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
     }
 
-    // =========================
-    // MOUSE LOOK → 카메라 회전 (플레이어 회전 없음)
-    // =========================
     public void OnMouseLook(InputAction.CallbackContext context)
     {
         if (!IsLocallyControlled) return;
-        Vector2 mouseInput = context.ReadValue<Vector2>();
-
-        // 카메라에 마우스 델타 전달
-        CameraFollow camFollow = Camera.main?.GetComponent<CameraFollow>();
-        camFollow?.AddYawDelta(mouseInput.x);
+        Camera.main?.GetComponent<CameraFollow>()?.AddYawDelta(context.ReadValue<Vector2>().x);
     }
 
-    // =========================
-    // ATTACK INPUT
-    // =========================
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled) return;
-        if (!context.started || isAttacking) return;
+        if (!IsLocallyControlled || !context.started || isAttacking) return;
 
         PlayerNetwork pn = GetPlayerNetwork();
         if (pn != null && !pn.CanAttack()) return;
 
         if (NetworkClient.active)
         {
-            // 멀티: Command로 서버에 전달
             CmdRequestAttack();
         }
         else
         {
-            // 싱글: 직접 호출
-            PlayerNetwork localNetwork = GetComponent<PlayerNetwork>();
-            localNetwork?.ServerRequestAttack();
-            Trap_Card.Instance?.NotifyAttack(localNetwork);
+            PlayerNetwork local = GetComponent<PlayerNetwork>();
+            local?.ServerRequestAttack();
+            Trap_Card.Instance?.NotifyAttack(local);
             StartCoroutine(AttackAnimation());
         }
     }
 
-    // ─────────────────────────────────────────────
-    // Network
-    // ─────────────────────────────────────────────
-    [Command]
-    void CmdNotifyJump()
-    {
-        Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
-    }
-
-    [Command]
-    void CmdNotifyRunStarted()
-    {
-        Trap_Card.Instance?.NotifyRunStarted(GetPlayerNetwork());
-    }
-
-    [Command]
-    void CmdRequestAttack()
-    {
-        PlayerNetwork pn = GetPlayerNetwork();
-        pn?.ServerRequestAttack();
-        Trap_Card.Instance?.NotifyAttack(pn);
-        RpcPlayAttackAnimation();
-    }
-    
-
-    [ClientRpc]
-    void RpcPlayAttackAnimation()
-    {
-        StartCoroutine(AttackAnimation());
-    }
-
-    IEnumerator AttackAnimation()
-    {
-        isAttacking = true;
-        if (animator != null)
-            animator.SetTrigger("Attack");
-        yield return new WaitForSeconds(1f);
-        isAttacking = false;
-    }
-
-    public bool IsGrounded()
-    {
-        bool isGrounded = Physics.Raycast(
-            groundCheck.position,
-            Vector3.down,
-            groundCheckDistance,
-            groundLayer
-        );
-
-        return isGrounded;
-    }
-
-    public void Roll()
-    {
-        StartCoroutine(IERoll());
-    }
+    // ─────────────────────────────────────────────────────────────────────────
+    // Roll
+    // ─────────────────────────────────────────────────────────────────────────
+    public void Roll() => StartCoroutine(IERoll());
 
     public IEnumerator IERoll()
     {
@@ -425,46 +255,35 @@ public class PlayerController : NetworkBehaviour
             : transform.forward;
 
         float elapsed = 0f;
-
         while (elapsed < rollDuration)
         {
             elapsed += Time.deltaTime;
 
-            // Y축 속도는 유지해서 점프/낙하가 자연스럽게 되도록
-            rb.linearVelocity = new Vector3(
-                dir.x * rollSpeed,
-                rb.linearVelocity.y,
-                dir.z * rollSpeed
-            );
+            if (cc.isGrounded && velocity.y < 0f) velocity.y = -2f;
+            velocity.y += gravity * Time.deltaTime;
 
+            cc.Move((dir * rollSpeed + Vector3.up * velocity.y) * Time.fixedDeltaTime);
             yield return new WaitForFixedUpdate();
         }
 
-        // 구르기 종료
-        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
         isRoll = false;
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Speed Utilities
+    // ─────────────────────────────────────────────────────────────────────────
     public void RefreshSpeed()
     {
-        if (characterStats == null)
-            characterStats = GetComponent<CharaStat>();
-
-        if (characterStats == null)
-            return;
-
+        characterStats ??= GetComponent<CharaStat>();
+        if (characterStats == null) return;
         walkSpeed = characterStats.speed;
-        runSpeed = characterStats.runSpeed;
+        runSpeed  = characterStats.runSpeed;
     }
 
     public void ApplyTemporarySpeedMultiplier(float multiplier, float duration)
     {
-        if (speedMultiplierRoutine != null)
-            StopCoroutine(speedMultiplierRoutine);
-
-        speedMultiplierRoutine = StartCoroutine(
-            SpeedMultiplierRoutine(multiplier, duration)
-        );
+        if (speedMultiplierRoutine != null) StopCoroutine(speedMultiplierRoutine);
+        speedMultiplierRoutine = StartCoroutine(SpeedMultiplierRoutine(multiplier, duration));
     }
 
     private IEnumerator SpeedMultiplierRoutine(float multiplier, float duration)
@@ -475,45 +294,50 @@ public class PlayerController : NetworkBehaviour
         speedMultiplierRoutine = null;
     }
 
-    private float GetEffectiveSpeedMultiplier(PlayerNetwork playerNetwork)
+    private float GetEffectiveSpeedMultiplier(PlayerNetwork pn)
     {
-        if (speedMultiplier < 0.99f)
-            return speedMultiplier;
-
-        if (playerNetwork != null && playerNetwork.currentState == PlayerStateType.Slow)
-            return 0.5f;
-
+        if (speedMultiplier < 0.99f) return speedMultiplier;
+        if (pn != null && pn.currentState == PlayerStateType.Slow) return 0.5f;
         return 1f;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Network
+    // ─────────────────────────────────────────────────────────────────────────
+    [Command] void CmdNotifyJump()       => Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
+    [Command] void CmdNotifyRunStarted() => Trap_Card.Instance?.NotifyRunStarted(GetPlayerNetwork());
+
+    [Command]
+    void CmdRequestAttack()
+    {
+        PlayerNetwork pn = GetPlayerNetwork();
+        pn?.ServerRequestAttack();
+        Trap_Card.Instance?.NotifyAttack(pn);
+        RpcPlayAttackAnimation();
+    }
+
+    [ClientRpc] void RpcPlayAttackAnimation() => StartCoroutine(AttackAnimation());
+
+    IEnumerator AttackAnimation()
+    {
+        isAttacking = true;
+        animator?.SetTrigger("Attack");
+        yield return new WaitForSeconds(1f);
+        isAttacking = false;
     }
 
     private PlayerNetwork GetPlayerNetwork()
     {
-        PlayerNetwork selfNetwork = GetComponent<PlayerNetwork>();
+        PlayerNetwork self = GetComponent<PlayerNetwork>();
+        if (self != null) return self;
+        if (ownerPlayerNetId == 0) return null;
 
-        if (selfNetwork != null)
-            return selfNetwork;
-
-        if (ownerPlayerNetId == 0)
-            return null;
-
-        NetworkIdentity identity = null;
-
+        NetworkIdentity id = null;
         if (NetworkServer.active)
-        {
-            NetworkServer.spawned.TryGetValue(ownerPlayerNetId, out identity);
-        }
+            NetworkServer.spawned.TryGetValue(ownerPlayerNetId, out id);
         else if (NetworkClient.active)
-        {
-            NetworkClient.spawned.TryGetValue(ownerPlayerNetId, out identity);
-        }
+            NetworkClient.spawned.TryGetValue(ownerPlayerNetId, out id);
 
-        return identity != null
-            ? identity.GetComponent<PlayerNetwork>()
-            : null;
-    }
-
-    private Vector3 AdjustDirectionToSlope(Vector3 direction)
-    {
-        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+        return id?.GetComponent<PlayerNetwork>();
     }
 }

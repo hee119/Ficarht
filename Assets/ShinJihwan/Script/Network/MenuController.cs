@@ -23,6 +23,9 @@ public class MenuController : MonoBehaviour
     [Tooltip("__________UI_Host__________ 오브젝트 드래그")]
     public GameObject hostUIPanel;
 
+    [Tooltip("__________UI_Basic__________ 오브젝트 드래그 (Leave 후 돌아올 초기 패널)")]
+    public GameObject basicUIPanel;
+
     [Header("M3D Input Field (IP/코드 입력창)")]
     [Tooltip("씬의 Input Field (M3D) 오브젝트 드래그")]
     public TinyGiantStudio.Text.InputField m3dInputField;
@@ -30,12 +33,8 @@ public class MenuController : MonoBehaviour
     [Header("카드 씬 이름")]
     public string cardSceneName = "CardMap";
 
-    private bool _isLeaving = false;
-
     private void Awake()
     {
-        // DontDestroyOnLoad 오브젝트는 씬 리로드 후에도 살아있으므로
-        // 씬 로드 이벤트로 _isLeaving 초기화
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -46,8 +45,49 @@ public class MenuController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        _isLeaving = false;
         Debug.Log("[MenuController] 씬 로드 완료 - 상태 초기화");
+    }
+
+    // M3D InputField가 포커스 된 채 비활성화되면
+    // RaycastSelector가 Focus(false) coroutine을 시도해 에러가 발생한다.
+    // 패널 전환 전에 명시적으로 포커스를 해제해 이를 방지한다.
+    private void SafeUnfocusInputField()
+    {
+        if (m3dInputField != null && m3dInputField.gameObject.activeInHierarchy)
+            m3dInputField.Focus(false);
+    }
+
+    // 로비 UI를 초기 상태(Basic 패널)로 되돌린다.
+    // Inspector 연결이 없어도 이름으로 자동 탐색.
+    // ※ GameObject.Find는 비활성 오브젝트를 못 찾으므로 FindIncludingInactive 사용.
+    private void ResetToBasicUI()
+    {
+        // Host 패널 숨기기
+        GameObject host = hostUIPanel != null
+            ? hostUIPanel
+            : FindIncludingInactive("__________UI_Host__________");
+        if (host != null) host.SetActive(false);
+
+        // Basic 패널 보이기
+        GameObject basic = basicUIPanel != null
+            ? basicUIPanel
+            : FindIncludingInactive("__________UI_Basic__________");
+        if (basic != null)
+        {
+            basic.SetActive(true);
+            basicUIPanel = basic; // 다음 호출을 위해 캐시
+        }
+        else
+            Debug.LogWarning("[MenuController] UI_Basic 패널을 찾을 수 없습니다. Inspector에서 basicUIPanel을 연결하세요.");
+    }
+
+    // 비활성 오브젝트를 포함해 씬에서 이름으로 GameObject를 찾는다.
+    private static GameObject FindIncludingInactive(string name)
+    {
+        foreach (GameObject go in Resources.FindObjectsOfTypeAll<GameObject>())
+            if (go.name == name && go.scene.isLoaded)
+                return go;
+        return null;
     }
 
     // ─────────────────────────────────────────────
@@ -70,6 +110,9 @@ public class MenuController : MonoBehaviour
             return;
         }
 
+        // 패널 전환 전 InputField 포커스 해제 (M3D coroutine 에러 방지)
+        SafeUnfocusInputField();
+
         NetworkManager.singleton.StartHost();
         Debug.Log("[MenuController] Host 시작 (방 만들기)");
 
@@ -88,6 +131,8 @@ public class MenuController : MonoBehaviour
             Debug.Log("[MenuController] 이미 연결 중");
             return;
         }
+
+        SafeUnfocusInputField();
 
         // 코드 미입력 검증
         string code = "";
@@ -132,20 +177,16 @@ public class MenuController : MonoBehaviour
     // ─────────────────────────────────────────────
     public void LeaveRoom()
     {
-        if (_isLeaving)
-        {
-            Debug.Log("[MenuController] 이미 나가는 중");
-            return;
-        }
+        SafeUnfocusInputField();
 
         if (!NetworkServer.active && !NetworkClient.isConnected)
         {
             Debug.Log("[MenuController] 연결 상태가 아님 → UI만 리셋");
             RoomNetworkManager.Instance?.ResetUI();
+            ResetToBasicUI();
             return;
         }
 
-        _isLeaving = true;
         Debug.Log("[MenuController] 방 나가기");
 
         if (NetworkServer.active && NetworkClient.isConnected)
@@ -154,6 +195,10 @@ public class MenuController : MonoBehaviour
             NetworkManager.singleton.StopClient();
 
         RoomNetworkManager.Instance?.ResetUI();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        ResetToBasicUI();
+        // ⚠️ SceneManager.LoadScene() 제거:
+        //    씬 리로드 시 복제 NetworkManager가 생성되고 즉시 파괴되는데,
+        //    씬 안의 버튼들이 파괴된 MenuController를 레퍼런스해
+        //    다음 CreateRoom() 호출이 무시되는 버그가 발생한다.
     }
 }

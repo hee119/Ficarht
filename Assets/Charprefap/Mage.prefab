@@ -72520,12 +72520,12 @@ GameObject:
   - component: {fileID: 4535564247733381106}
   - component: {fileID: 301387960709234891}
   - component: {fileID: 106215429037078612}
-  - component: {fileID: 3118751517807769287}
   - component: {fileID: 5401181409459923562}
   - component: {fileID: 4957868932271202956}
   - component: {fileID: 5381683265668426095}
   - component: {fileID: 2731289624372044923}
   - component: {fileID: 6901572479294296042}
+  - component: {fileID: -94125727514289}
   m_Layer: 0
   m_Name: Mage
   m_TagString: Player
@@ -72643,33 +72643,6 @@ MonoBehaviour:
   - ctrl
   charactorType: 0
   playerController: {fileID: 0}
---- !u!54 &3118751517807769287
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2230640250319075831}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
 --- !u!114 &5401181409459923562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72798,21 +72771,12 @@ MonoBehaviour:
   playerInput: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
-  isAttacking: 0
-  castRadius: 0.3
-  groundCheckDistance: 0.4
-  groundCheckThreshold: 0.1
-  maxSlopeAngle: 200
-  slopeCheck: {fileID: 0}
-  mouseSensitivity: 100
   jumpForce: 5
-  groundCheck: {fileID: 8770291187789035442}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  isRoll: 0
+  gravity: -20
   rollSpeed: 8
   rollDuration: 1
+  isRoll: 0
+  isAttacking: 0
 --- !u!114 &5381683265668426095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72894,6 +72858,31 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!143 &-94125727514289
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230640250319075831}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 1
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &2233223906761100503
 GameObject:
   m_ObjectHideFlags: 0

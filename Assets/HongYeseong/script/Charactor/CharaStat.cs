@@ -9,7 +9,6 @@ public class CharaStat : MonoBehaviour
 {
     public CharacterStats characterStats;
 
-    private Rigidbody charactorRb;
     public Slider healthBar;
     public Slider staminaBar;
     public UnityEngine.InputSystem.PlayerInput playerInput;
@@ -81,34 +80,48 @@ public class CharaStat : MonoBehaviour
         if (characterStats == null)
             Debug.LogError($"{name} : characterStats가 NULL입니다.");
 
-        charactorRb = GetComponent<Rigidbody>();
         playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
         playerController = GetComponent<PlayerController>();
-        
+
         if (iceObject != null)
             iceObject.SetActive(false);
-        
+
         if (faintingObject != null)
             faintingObject.SetActive(false);
-        
+
         if (fireObject != null)
             fireObject.SetActive(false);
-        
+
         animator = GetComponent<Animator>();
 
         if (animator == null)
             Debug.LogError($"{name} : Animator가 없습니다.");
-        
-        
-
-        if (charactorRb == null)
-            Debug.LogError($"{name} : Rigidbody가 없습니다.");
 
         if (playerInput == null)
-            Debug.LogError($"{name} : PlayerController가 없습니다.");
+            Debug.LogError($"{name} : PlayerInput이 없습니다.");
 
         if (healthBar == null)
-            Debug.LogError($"{name} : healthBar가 NULL입니다.");
+            Debug.LogWarning($"{name} : healthBar가 NULL입니다.");
+
+        if (characterStats != null)
+            InitializeStats();
+        else
+            Debug.LogWarning($"{name} : characterStats가 NULL — SpawnCharacters에서 런타임 할당 예정");
+
+        CacheRenderers();
+    }
+
+    /// <summary>
+    /// ScriptableObject에서 스탯을 읽어 필드에 적용.
+    /// Awake 이후 런타임에도 호출 가능 (GameNetworkManager.SpawnCharacters에서 호출됨).
+    /// </summary>
+    public void InitializeStats()
+    {
+        if (characterStats == null)
+        {
+            Debug.LogError($"{name} : InitializeStats 호출됐지만 characterStats가 NULL");
+            return;
+        }
 
         maxHealth = characterStats.health;
         health = characterStats.health;
@@ -126,15 +139,16 @@ public class CharaStat : MonoBehaviour
         if (healthBar != null)
         {
             healthBar.maxValue = characterStats.health;
+            healthBar.value = health;
         }
-        
+
         if (staminaBar != null)
         {
             staminaBar.maxValue = characterStats.stamina;
+            staminaBar.value = stamina;
         }
-        
-        CacheRenderers();
 
+        Debug.Log($"[CharaStat] {name} 스탯 초기화 완료: HP={health}, speed={speed}, runSpeed={runSpeed}");
     }
     
     private void OnEnable()

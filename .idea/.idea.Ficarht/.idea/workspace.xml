@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/BerserkerAnim 1.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/Animation/Palradin.controller" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +52,6 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@02433b2481ab/InputSystem/Utilities/DelegateHelpers.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@52e65280e89e/Runtime/UGUI/EventSystem/InputModules/BaseInput.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -160,13 +153,14 @@
       <workItem from="1782650760432" duration="4403000" />
       <workItem from="1782720181142" duration="2188000" />
       <workItem from="1782724646151" duration="935000" />
+      <workItem from="1782745334137" duration="704000" />
+      <workItem from="1782806371971" duration="4540000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
   <component name="UnityProjectDiscoverer">
     <option name="hasUnityReference" value="true" />
