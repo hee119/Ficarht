@@ -6,17 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ficarht/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/New Terrain 1.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/New Terrain 1.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/New Terrain.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/New Terrain.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.01_LP.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.01_LP.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.03_HP.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/FinottiGames/LowPoly Trees Game-Ready Free-Asset/Prefabs/StandardTree.03_HP.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/Script/Lava/LavaMapManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/Script/Lava/LavaMapManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/UI/NewUXMLTemplate.uxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/UI/NewUXMLTemplate.uxml.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Desert.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Desert.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Dungeon.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Dungeon.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Forest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Forest.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lava.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Noyouchan/Script/SkyIsland/SkyMapManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Noyouchan/Script/SkyIsland/SkyMapManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkyIsland.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SnowMountain.unity" afterDir="false" />
     </list>
@@ -171,7 +161,7 @@
       <workItem from="1782627936246" duration="5000" />
       <workItem from="1782650760432" duration="4403000" />
       <workItem from="1782720181142" duration="2188000" />
-      <workItem from="1782724646151" duration="935000" />
+      <workItem from="1782724646151" duration="2570000" />
     </task>
     <servers />
   </component>
