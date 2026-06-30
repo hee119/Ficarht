@@ -18,7 +18,7 @@ public class PlayerController : NetworkBehaviour
 
     // ─── Jump / Gravity ───────────────────────────────────────────────────────
     [Header("Jump")]
-    public float     jumpForce   = 5f;
+    public float     jumpForce   = 8f;
     public LayerMask groundLayer;        // 바닥 레이어 (보조 지면 판정용)
 
     [Header("Gravity")]
@@ -35,7 +35,10 @@ public class PlayerController : NetworkBehaviour
     private float   currentSpeed;
     private bool    isRunning;
     public  bool    isAttacking;
+    public  bool    isUsingSkill;    // 스킬 사용 중 — 이동 + 점프 모두 차단
     private Vector3 velocity;        // Y축에 중력/점프 누적
+    private bool    isGrounded;      // FixedUpdate에서 갱신 — OnJump에서 참조
+    private bool    isJumping;       // 점프 직후 ground reset 방지용
 
     private Coroutine speedMultiplierRoutine;
     private float     speedMultiplier = 1f;
@@ -100,22 +103,22 @@ public class PlayerController : NetworkBehaviour
     // ─────────────────────────────────────────────────────────────────────────
     void Update()
     {
-        playerInput.enabled = !isAttacking;
-
         if (!IsLocallyControlled || isRoll) return;
-
-        PlayerNetwork pn = GetPlayerNetwork();
-        if (pn != null && !pn.CanMove()) return;
 
         if (characterStats != null && characterStats.stamina <= 0)
             isRunning = false;
 
-        currentSpeed = moveInput.magnitude > 0.01f
+        bool blockMove = isAttacking || isUsingSkill;
+
+        PlayerNetwork pn = GetPlayerNetwork();
+        if (pn != null && !pn.CanMove()) blockMove = true;
+
+        currentSpeed = (!blockMove && moveInput.magnitude > 0.01f)
             ? (isRunning ? runSpeed : walkSpeed) * GetEffectiveSpeedMultiplier(pn)
             : 0f;
 
-        animator.SetFloat("MoveX", moveInput.x);
-        animator.SetFloat("MoveY", moveInput.z);
+        animator.SetFloat("MoveX", blockMove ? 0f : moveInput.x);
+        animator.SetFloat("MoveY", blockMove ? 0f : moveInput.z);
         animator.SetFloat("Speed", currentSpeed);
     }
 
@@ -125,28 +128,45 @@ public class PlayerController : NetworkBehaviour
     void FixedUpdate()
     {
         if (cc == null || !cc.enabled) return;
-        if (!IsLocallyControlled || isAttacking || isRoll) return;
+        if (!IsLocallyControlled || isRoll) return;
+
+        bool blockMove = isAttacking || isUsingSkill;
 
         PlayerNetwork pn = GetPlayerNetwork();
-        if (pn != null && !pn.CanMove()) return;
+        if (pn != null && !pn.CanMove()) blockMove = true;
 
-        Vector3 moveDir = CalcMoveDir();
+        Vector3 moveDir = blockMove ? Vector3.zero : CalcMoveDir();
 
         // 이동 방향으로 회전
-        if (moveDir.magnitude > 0.01f)
+        if (!blockMove && moveDir.magnitude > 0.01f)
         {
             Quaternion target = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.fixedDeltaTime * 10f);
         }
 
-        // 접지 시 Y속도 초기화 (살짝 아래로 유지해야 cc.isGrounded 안정적)
-        if (IsGrounded() && velocity.y < 0f)
-            velocity.y = -2f;
+        // 접지 판정 (OnJump에서도 이 값을 참조)
+        isGrounded = IsGrounded();
+
+        if (isGrounded)
+        {
+            // 점프 중이 아닐 때만 Y속도 초기화 (점프 직후 덮어쓰기 방지)
+            if (!isJumping && velocity.y < 0f)
+                velocity.y = -2f;
+
+            // 실제로 공중에 떴다가 착지한 경우 플래그 해제
+            if (isJumping && velocity.y <= 0f)
+                isJumping = false;
+        }
+        else
+        {
+            // 공중에 있으면 플래그 해제
+            isJumping = false;
+        }
 
         // 중력 누적
         velocity.y += gravity * Time.fixedDeltaTime;
 
-        // 이동 적용 (수평 이동 + 중력)
+        // 이동 적용 (수평 이동 + 중력/점프)
         Vector3 move = moveDir * currentSpeed + Vector3.up * velocity.y;
         cc.Move(move * Time.fixedDeltaTime);
     }
@@ -207,9 +227,12 @@ public class PlayerController : NetworkBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled || !context.started || !IsGrounded()) return;
+        // isGrounded는 FixedUpdate에서 갱신된 캐시값 — Update 타이밍의 cc.isGrounded보다 안정적
+        // 스킬 중에는 점프 불가, 평타 중에는 점프 가능
+        if (!IsLocallyControlled || !context.started || !isGrounded || isJumping || isUsingSkill) return;
 
-        velocity.y = jumpForce;
+        isJumping    = true;
+        velocity.y   = jumpForce;
 
         if (NetworkClient.active && isOwned) CmdNotifyJump();
         else if (!NetworkClient.active) Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
@@ -250,9 +273,9 @@ public class PlayerController : NetworkBehaviour
     {
         isRoll = true;
 
-        Vector3 dir = moveInput != Vector3.zero
-            ? transform.TransformDirection(moveInput).normalized
-            : transform.forward;
+        // CalcMoveDir()로 카메라 기준 방향 계산 — 없으면 현재 전방
+        Vector3 calcDir = CalcMoveDir();
+        Vector3 dir = calcDir.magnitude > 0.01f ? calcDir : transform.forward;
 
         float elapsed = 0f;
         while (elapsed < rollDuration)
