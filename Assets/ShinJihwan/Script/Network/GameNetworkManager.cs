@@ -16,7 +16,7 @@ public class GameNetworkManager : NetworkManager
     // 검증 완료된 연결
     private HashSet<int> _authorizedConnections = new HashSet<int>();
     // 코드 검증 타임아웃 (초)
-    private const float ValidationTimeout = 0.5f; // 빠른 차단
+    private const float ValidationTimeout = 5f; // 빌드 환경 대응 (CmdJoinRoom 도착 대기)
 
     // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
     private string _pendingMapScene = "";

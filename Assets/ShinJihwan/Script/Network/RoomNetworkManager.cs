@@ -152,7 +152,7 @@ public class RoomNetworkManager : MonoBehaviour
             yield break;
         }
 
-        yield return new WaitForSeconds(0.3f); // PlayerNetwork 스폰 대기
+        yield return new WaitForSeconds(1f); // PlayerNetwork 스폰 대기 (빌드 환경 대응)
 
         PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn != null)

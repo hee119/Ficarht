@@ -60,11 +60,12 @@ public class PlayerNetwork : NetworkBehaviour
     [Command]
     public void CmdJoinRoom(string code)
     {
+        Debug.Log($"[Server] CmdJoinRoom 수신: 입력='{code}', 서버코드='{_activeRoomCode}'");
         // 서버에서 코드 검증
         if (string.IsNullOrEmpty(_activeRoomCode) || code != _activeRoomCode)
         {
             Debug.LogWarning($"[Server] 잘못된 방 코드: '{code}' (실제 코드: '{_activeRoomCode}')");
-                // 즉시 서버에서 연결 차단 → 클라이언트의 OnClientDisconnect → OnDisconnected → OnJoinFailed
+            // 즉시 서버에서 연결 차단 → 클라이언트의 OnClientDisconnect → OnDisconnected → OnJoinFailed
             connectionToClient.Disconnect();
             return;
         }
