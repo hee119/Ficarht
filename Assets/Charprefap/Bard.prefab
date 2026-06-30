@@ -253458,7 +253458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6431646673aab403cbbad467eafdacb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharaStat
-  characterStats: {fileID: 0}
+  characterStats: {fileID: 11400000, guid: a5e96a957ed864a9286773eb6d1dfe99, type: 2}
   healthBar: {fileID: 0}
   staminaBar: {fileID: 0}
   playerInput: {fileID: 0}
