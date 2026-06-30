@@ -28,6 +28,14 @@ public class NetworkCardBridge : NetworkBehaviour
         Debug.Log("[NetworkCardBridge] 로컬 브릿지 준비");
     }
 
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        // 서버 종료/씬 전환 시 static 상태 리셋 → 재접속 후 카드팩 클릭 정상 동작
+        _phaseActive = false;
+        Debug.Log("[NetworkCardBridge] _phaseActive 리셋 (서버 종료)");
+    }
+
     // ─────────────────────────────────────────────
     // 카드 페이즈 시작 (CardBox 클릭 시 호출)
     // ─────────────────────────────────────────────

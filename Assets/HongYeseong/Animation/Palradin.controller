@@ -511,6 +511,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-1462211629844001230
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Die
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 8286185923161302968}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1102 &-1457438866959174812
 AnimatorState:
   serializedVersion: 6
@@ -1042,13 +1067,22 @@ AnimatorStateMachine:
     m_State: {fileID: -1731763419197614471}
     m_Position: {x: 251.33722, y: 409.01624, z: 0}
   - serializedVersion: 1
+<<<<<<< HEAD
     m_State: {fileID: -4801360708568496854}
     m_Position: {x: 300, y: -70, z: 0}
+=======
+    m_State: {fileID: 8286185923161302968}
+    m_Position: {x: 566.4103, y: 270.20044, z: 0}
+>>>>>>> 8a59b98c6d10d58346cb1d86e7868769912197d5
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 3984669704478418136}
   - {fileID: -2579648603970863033}
+<<<<<<< HEAD
   - {fileID: 881476716278810062}
+=======
+  - {fileID: -1462211629844001230}
+>>>>>>> 8a59b98c6d10d58346cb1d86e7868769912197d5
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
@@ -1078,6 +1112,32 @@ AnimatorState:
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: -4072318687198982917}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &8286185923161302968
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Falling Back Death
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -203655887218126122, guid: f11b9c02575524bd198838f45ead834d, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
