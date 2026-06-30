@@ -692,11 +692,79 @@ public class CardSystemManager : MonoBehaviour
     // 네트워크 전용 메서드
     // -------------------------------------------------------
 
-    /// <summary>서버 RpcStartCards()에서 호출 - 네트워크 시작 신호</summary>
+    /// <summary>서버 RpcStartCards()에서 호출 - 네트워크 시작 신호 (싱글플레이어 폴백)</summary>
     public void StartGameExternal()
     {
         if (isTurnActive) return;
         StartGame();
+    }
+
+    /// <summary>
+    /// 멀티플레이어 전용: 서버가 셔플한 덱 인덱스 배열로 카드를 뽑는다.
+    /// 플레이어마다 다른 인덱스를 받아 겹치지 않는 카드 보장.
+    /// </summary>
+    public void StartGameWithIndices(int[] charIndices, int[] buffIndices, int[] trapIndices)
+    {
+        if (isTurnActive) return;
+
+        ClearAll();
+
+        DrawCardsAtIndices(characterDeck, charIndices, characterDrawPositions);
+        DrawCardsAtIndices(buffDeck,       buffIndices, buffDrawPositions);
+        DrawCardsAtIndices(trapDeck,       trapIndices, trapDrawPositions);
+
+        // 맵 카드: Host만 (_drawMapCard = true)
+        _selectedMapCardData = null;
+        if (_drawMapCard && mapDeck != null && mapDeck.Count > 0)
+        {
+            var validMaps = mapDeck.FindAll(c => c != null);
+            if (validMaps.Count > 0)
+            {
+                _selectedMapCardData = validMaps[Random.Range(0, validMaps.Count)];
+                Debug.Log($"[CardSystem] 맵 카드 선택: {_selectedMapCardData.cardName}");
+            }
+        }
+
+        HandLayoutManager.Instance?.ArrangeHand(playerHand);
+        CardRevealSystem.Instance?.HideOpponentCards();
+
+        turnTimer = turnDuration;
+        isTurnActive = true;
+    }
+
+    /// <summary>지정된 덱 인덱스 배열에 해당하는 카드만 뽑아 손패에 추가.</summary>
+    private void DrawCardsAtIndices(List<CardData> deck, int[] indices, List<Transform> positions)
+    {
+        if (deck == null || deck.Count == 0 || indices == null || indices.Length == 0) return;
+        if (positions == null || positions.Count == 0)
+        {
+            Debug.LogWarning("[CardSystem] DrawCardsAtIndices: 드로우 포지션 없음");
+            return;
+        }
+
+        for (int i = 0; i < indices.Length; i++)
+        {
+            int idx = indices[i];
+            if (idx < 0 || idx >= deck.Count || deck[idx] == null) continue;
+
+            CardData data = deck[idx];
+            Transform spawnTf = positions[i % positions.Count];
+
+            if (data.cardPrefab == null)
+            {
+                Debug.LogError($"[프리팹 누락] {data.cardName}");
+                continue;
+            }
+
+            GameObject go = Instantiate(data.cardPrefab, spawnTf.position, spawnTf.rotation);
+            CardObject card = go.GetComponent<CardObject>();
+            if (card == null) { Destroy(go); continue; }
+
+            card.SetVisible(false);
+            card.Setup(data);
+            playerHand.Add(card);
+            drawOrder.Add(card);
+        }
     }
 
     /// <summary>멀티: NetworkCardBridge.RpcStartCards()에서 Host 여부 전달</summary>

@@ -48,28 +48,63 @@ public class NetworkCardBridge : NetworkBehaviour
 
         Debug.Log("[Server] 카드 페이즈 시작");
 
-        // 플레이어마다 다른 랜덤 시드 전달 → 같은 카드가 나오는 문제 방지
+        CardSystemManager csm = CardSystemManager.Instance;
+        if (csm == null) { Debug.LogError("[Server] CardSystemManager 없음"); return; }
+
+        // 덱 전체를 한 번 셔플 → P1이 앞 N장, P2가 그 다음 N장
+        int[] charOrder = ShuffleIndices(csm.characterDeck.Count);
+        int[] buffOrder = ShuffleIndices(csm.buffDeck.Count);
+        int[] trapOrder = ShuffleIndices(csm.trapDeck.Count);
+
+        int playerIdx = 0;
         foreach (var conn in NetworkServer.connections.Values)
         {
             NetworkCardBridge bridge = conn.identity?.GetComponent<NetworkCardBridge>();
             if (bridge == null) continue;
 
-            int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-            bool drawMap = (conn == NetworkServer.localConnection); // 호스트만 맵 카드
-            bridge.TargetStartCards(conn, seed, drawMap);
+            bool drawMap = (conn == NetworkServer.localConnection);
+
+            int[] myChar = SliceIndices(charOrder, playerIdx * csm.drawCharacterCards, csm.drawCharacterCards);
+            int[] myBuff = SliceIndices(buffOrder, playerIdx * csm.drawBuffCards,      csm.drawBuffCards);
+            int[] myTrap = SliceIndices(trapOrder, playerIdx * csm.drawTrapCards,      csm.drawTrapCards);
+
+            bridge.TargetStartCards(conn, myChar, myBuff, myTrap, drawMap);
+
+            Debug.Log($"[Server] P{playerIdx + 1} 카드 인덱스 — char:{string.Join(",", myChar)} buff:{string.Join(",", myBuff)} trap:{string.Join(",", myTrap)}");
+            playerIdx++;
         }
 
         StartCoroutine(ServerCardTimer());
     }
 
-    [TargetRpc]
-    void TargetStartCards(NetworkConnection target, int seed, bool drawMapCard)
+    // 0~count-1 배열을 Fisher-Yates로 셔플
+    private static int[] ShuffleIndices(int count)
     {
-        Debug.Log($"[Client] 카드 드로우 시작 (seed={seed}, mapCard={drawMapCard})");
-        // 플레이어별 고유 시드로 초기화 → 서로 다른 카드 드로우 보장
-        UnityEngine.Random.InitState(seed);
+        int[] idx = new int[count];
+        for (int i = 0; i < count; i++) idx[i] = i;
+        for (int i = count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (idx[i], idx[j]) = (idx[j], idx[i]);
+        }
+        return idx;
+    }
+
+    // 배열에서 start 위치부터 len개 잘라 반환 (부족하면 앞에서 재사용)
+    private static int[] SliceIndices(int[] src, int start, int len)
+    {
+        int[] result = new int[len];
+        for (int i = 0; i < len; i++)
+            result[i] = src.Length > 0 ? src[(start + i) % src.Length] : 0;
+        return result;
+    }
+
+    [TargetRpc]
+    void TargetStartCards(NetworkConnection target, int[] charIdx, int[] buffIdx, int[] trapIdx, bool drawMapCard)
+    {
+        Debug.Log($"[Client] 카드 드로우 시작 — char:{charIdx.Length}장 buff:{buffIdx.Length}장 trap:{trapIdx.Length}장");
         CardSystemManager.Instance?.SetDrawMapCard(drawMapCard);
-        CardSystemManager.Instance?.StartGameExternal();
+        CardSystemManager.Instance?.StartGameWithIndices(charIdx, buffIdx, trapIdx);
     }
 
     // ─────────────────────────────────────────────
