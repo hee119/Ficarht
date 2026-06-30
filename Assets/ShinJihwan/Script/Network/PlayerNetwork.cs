@@ -73,8 +73,6 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         Debug.Log($"[Server] 방 참가 성공: {code}");
-        // 검증 완료 처리 (타임아웃 차단 해제)
-        (NetworkManager.singleton as GameNetworkManager)?.AuthorizeConnection(connectionToClient.connectionId);
         TargetJoinSuccess(connectionToClient, code);
         // 코드 검증 통과 후에만 Player2 접속 UI 표시
         RpcNotifyPlayer2Joined();

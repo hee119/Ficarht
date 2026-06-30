@@ -11,12 +11,6 @@ public class GameNetworkManager : NetworkManager
     // 카드 선택 완료 플레이어 추적
     private HashSet<NetworkConnectionToClient> cardReadyPlayers = new HashSet<NetworkConnectionToClient>();
 
-    // 코드 검증 대기 중인 연결 (connectionId 기준)
-    private HashSet<int> _pendingValidation = new HashSet<int>();
-    // 검증 완료된 연결
-    private HashSet<int> _authorizedConnections = new HashSet<int>();
-    // 코드 검증 타임아웃 (초)
-    private const float ValidationTimeout = 5f; // 빌드 환경 대응 (CmdJoinRoom 도착 대기)
 
     // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
     private string _pendingMapScene = "";
@@ -107,38 +101,13 @@ public class GameNetworkManager : NetworkManager
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
         base.OnServerConnect(conn);
-        // 호스트 자신의 연결(connId=0)은 검증 불필요
-        if (conn.connectionId == 0) return;
-
-        Debug.Log($"[Server] 클라이언트 연결: {conn.connectionId} — 코드 검증 대기");
-        _pendingValidation.Add(conn.connectionId);
-        StartCoroutine(KickIfNotValidated(conn));
-    }
-
-    private System.Collections.IEnumerator KickIfNotValidated(NetworkConnectionToClient conn)
-    {
-        yield return new WaitForSeconds(ValidationTimeout);
-        if (_pendingValidation.Contains(conn.connectionId))
-        {
-            Debug.LogWarning($"[Server] 코드 미검증 연결 차단: {conn.connectionId}");
-            _pendingValidation.Remove(conn.connectionId);
-            conn.Disconnect();
-        }
-    }
-
-    /// <summary>CmdJoinRoom 성공 시 PlayerNetwork에서 호출 — 검증 완료 처리.</summary>
-    public void AuthorizeConnection(int connId)
-    {
-        _pendingValidation.Remove(connId);
-        _authorizedConnections.Add(connId);
-        Debug.Log($"[Server] 연결 검증 완료: {connId}");
+        Debug.Log($"[Server] 클라이언트 연결: connId={conn.connectionId}");
     }
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
-        _pendingValidation.Remove(conn.connectionId);
-        _authorizedConnections.Remove(conn.connectionId);
         base.OnServerDisconnect(conn);
+        Debug.Log($"[Server] 클라이언트 연결 해제: connId={conn.connectionId}");
     }
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
