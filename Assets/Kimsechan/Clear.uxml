@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:VisualElement name="clear-root" style="flex-grow: 1; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.45);">
+        <ui:VisualElement name="victory-panel" style="width: 620px; max-width: 80%; min-height: 220px; align-items: center; justify-content: center; background-color: rgba(255, 248, 220, 0.94); border-left-width: 5px; border-right-width: 5px; border-top-width: 5px; border-bottom-width: 5px; border-left-color: rgb(83, 58, 32); border-right-color: rgb(83, 58, 32); border-top-color: rgb(83, 58, 32); border-bottom-color: rgb(83, 58, 32); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+            <ui:Label name="victory-title" text="승리하셨습니다!" style="font-size: 52px; -unity-font-style: bold; color: rgb(55, 35, 15); -unity-text-align: middle-center; white-space: normal;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

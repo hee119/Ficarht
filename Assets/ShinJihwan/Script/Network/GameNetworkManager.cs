@@ -14,14 +14,20 @@ public class GameNetworkManager : NetworkManager
     // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
     private string _pendingMapScene = "";
 
+    // characterPrefabs[i]의 CharaStat.characterStats를 캐싱.
+    // Awake에서 prefab에서 읽고, SpawnCharacters에서 인스턴스에 보장 적용.
+    private CharacterStats[] _cachedCharaStats = new CharacterStats[4];
+
     // ─────────────────────────────────────────────
     // characterPrefabs가 Inspector에서 비어있으면
     // spawnPrefabs 이름으로 자동 매핑 (0=Paladin, 1=Bard, 2=Berserker, 3=Mage)
+    // + 각 prefab에서 CharacterStats SO를 캐싱
     // ─────────────────────────────────────────────
     public override void Awake()
     {
         base.Awake();
         AutoPopulateCharacterPrefabs();
+        CacheCharacterStats();
     }
 
     private void AutoPopulateCharacterPrefabs()
@@ -62,6 +68,28 @@ public class GameNetworkManager : NetworkManager
                   $"2={characterPrefabs[2]?.name}, 3={characterPrefabs[3]?.name}");
     }
 
+    // 각 characterPrefab의 CharaStat.characterStats SO를 미리 캐싱.
+    // 런타임 spawn 후 참조가 null이어도 여기서 강제 할당 가능.
+    private void CacheCharacterStats()
+    {
+        _cachedCharaStats = new CharacterStats[4];
+        if (characterPrefabs == null) return;
+        for (int i = 0; i < characterPrefabs.Length && i < 4; i++)
+        {
+            if (characterPrefabs[i] == null) continue;
+            CharaStat cs = characterPrefabs[i].GetComponent<CharaStat>();
+            if (cs != null && cs.characterStats != null)
+            {
+                _cachedCharaStats[i] = cs.characterStats;
+                Debug.Log($"[GameNetworkManager] _cachedCharaStats[{i}] = {cs.characterStats.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"[GameNetworkManager] characterPrefabs[{i}] ({characterPrefabs[i].name}) 의 CharaStat.characterStats가 null — Inspector에서 연결 필요");
+            }
+        }
+    }
+
     // ─────────────────────────────────────────────
     // OnServerAddPlayer
     // - DontDestroyOnLoad: 씬 전환 시 playerPrefab 보존 → conn.identity 유지
@@ -86,9 +114,13 @@ public class GameNetworkManager : NetworkManager
         DontDestroyOnLoad(player);
         NetworkServer.AddPlayerForConnection(conn, player);
 
-        // 두 번째 플레이어 접속 시 Host 클라이언트 UI 업데이트
+        // 두 번째 플레이어 접속 시 모든 클라이언트에 RPC로 알림
         if (NetworkServer.connections.Count >= 2)
-            RoomNetworkManager.Instance?.OnSecondPlayerConnected();
+        {
+            // 새로 접속한 플레이어의 PlayerNetwork를 통해 전체 브로드캐스트
+            PlayerNetwork newPn = player.GetComponent<PlayerNetwork>();
+            newPn?.RpcNotifyPlayer2Joined();
+        }
     }
 
 
@@ -170,6 +202,24 @@ public class GameNetworkManager : NetworkManager
                 : fallbackSpawnPositions[spawnIndex % fallbackSpawnPositions.Length];
 
             GameObject character = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+
+            // CharaStat.characterStats가 null이면 캐싱된 SO로 강제 할당 후 초기화.
+            // prefab 참조가 런타임에 유실되는 경우(guid 충돌 등)를 방어한다.
+            CharaStat charaStat = character.GetComponent<CharaStat>();
+            if (charaStat != null)
+            {
+                if (charaStat.characterStats == null && charId < _cachedCharaStats.Length && _cachedCharaStats[charId] != null)
+                {
+                    charaStat.characterStats = _cachedCharaStats[charId];
+                    Debug.Log($"[Server] CharaStat.characterStats 런타임 할당: {charaStat.characterStats.name}");
+                }
+                // prefab에서 이미 읽었거나 방금 할당한 SO로 스탯 재초기화 (speed/runSpeed 보장)
+                charaStat.InitializeStats();
+            }
+            else
+            {
+                Debug.LogError($"[Server] {character.name} 에 CharaStat 컴포넌트 없음!");
+            }
 
             PlayerNetwork characterNet = character.GetComponent<PlayerNetwork>();
 

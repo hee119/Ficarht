@@ -2084,6 +2084,7 @@ MonoBehaviour:
   fallStartY: 10
   duration: 0.7
   ease: 29
+  clickDelay: 0.3
   nextUI: {fileID: 610237087}
 --- !u!4 &153933082 stripped
 Transform:
@@ -4908,7 +4909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 318298
+  GUIID: 119544
 --- !u!1001 &320917272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7917,7 +7918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 318506
+  GUIID: 119708
 --- !u!1001 &505840413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8236,6 +8237,7 @@ MonoBehaviour:
   fallStartY: 10
   duration: 0.7
   ease: 29
+  clickDelay: 0.3
   nextUI: {fileID: 0}
 --- !u!4 &532094851 stripped
 Transform:
@@ -8957,6 +8959,7 @@ MonoBehaviour:
   fallStartY: 10
   duration: 0.7
   ease: 29
+  clickDelay: 0.3
   nextUI: {fileID: 524749522}
 --- !u!4 &621858742 stripped
 Transform:
@@ -10625,7 +10628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 318736
+  GUIID: 119874
 --- !u!4 &758934123
 Transform:
   m_ObjectHideFlags: 0
@@ -18287,7 +18290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 319368
+  GUIID: 120244
 --- !u!4 &1508753359
 Transform:
   m_ObjectHideFlags: 0
@@ -20774,6 +20777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuController
   hostUIPanel: {fileID: 610237087}
+  basicUIPanel: {fileID: 0}
   m3dInputField: {fileID: 555713688}
   cardSceneName: CardMap
 --- !u!1 &1753613791
@@ -21524,7 +21528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 319656
+  GUIID: 120394
 --- !u!4 &1814983582
 Transform:
   m_ObjectHideFlags: 0
@@ -24619,7 +24623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 319936
+  GUIID: 120526
 --- !u!4 &2087518430
 Transform:
   m_ObjectHideFlags: 0
