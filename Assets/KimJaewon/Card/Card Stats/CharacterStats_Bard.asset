@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
   characterName: Bard
   characterId: 1
-  health: 60
-  stamina: 60
-  power: 30
-  defense: 40
-  intelligence: 80
+  health: 75
+  stamina: 90
+  power: 25
+  defense: 25
+  intelligence: 10

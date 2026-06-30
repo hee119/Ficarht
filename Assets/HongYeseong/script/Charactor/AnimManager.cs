@@ -139,6 +139,6 @@ public class AnimManager : MonoBehaviour
     public void SetBool()
     {
         isTriggerPlaying = false;
-        playerController.isAttacking = false;
+        playerController.isAttacking  = false;
     }
 }

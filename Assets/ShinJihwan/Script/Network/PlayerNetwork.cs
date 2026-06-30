@@ -132,10 +132,7 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void ApplyStatsToCharacterComponents(float hp, float stm, float pwr, float def, float intel)
     {
-        CharaStat charaStat = GetComponent<CharaStat>();
-
-        if (charaStat == null && currentCharacter != null)
-            charaStat = currentCharacter.GetComponent<CharaStat>();
+        CharaStat charaStat = GetCharaStatTarget();
 
         if (charaStat == null)
             return;
@@ -161,6 +158,33 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         GetComponent<PlayerController>()?.RefreshSpeed();
+    }
+
+    private CharaStat GetCharaStatTarget()
+    {
+        CharaStat charaStat = GetComponent<CharaStat>();
+
+        if (charaStat == null && currentCharacter != null)
+            charaStat = currentCharacter.GetComponent<CharaStat>();
+
+        return charaStat;
+    }
+
+    private void ApplyHealthToCharacterComponents(float value)
+    {
+        CharaStat charaStat = GetCharaStatTarget();
+
+        if (charaStat == null)
+            return;
+
+        charaStat.maxHealth = Mathf.Max(maxHealth, 1f);
+        charaStat.health = Mathf.Clamp(value, 0f, charaStat.maxHealth);
+
+        if (charaStat.healthBar != null)
+        {
+            charaStat.healthBar.maxValue = charaStat.maxHealth;
+            charaStat.healthBar.value = charaStat.health;
+        }
     }
 
     [Server]
@@ -291,6 +315,7 @@ public class PlayerNetwork : NetworkBehaviour
     private void ApplyDamageValue(float damage)
     {
         health = Mathf.Max(0f, health - damage);
+        ApplyHealthToCharacterComponents(health);
 
         RpcOnDamageEffect(damage);
 
@@ -436,7 +461,7 @@ public class PlayerNetwork : NetworkBehaviour
     void OnHealthChanged(float oldVal, float newVal)
     {
         Debug.Log($"[Client] 체력 변경: {oldVal:F1} → {newVal:F1}");
-        // HpBarUI는 Update에서 자동 갱신 (SyncVar 변경 후 다음 프레임 반영)
+        ApplyHealthToCharacterComponents(newVal);
     }
 
     void OnStateChanged(PlayerStateType oldState, PlayerStateType newState)

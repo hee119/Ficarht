@@ -30389,6 +30389,7 @@ GameObject:
   - component: {fileID: 7060498214873699148}
   - component: {fileID: 7409745627702458228}
   - component: {fileID: -7307367926355436953}
+  - component: {fileID: -6591563974508186924}
   m_Layer: 0
   m_Name: Berserker
   m_TagString: Player
@@ -30475,7 +30476,10 @@ MonoBehaviour:
   playerInput: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
-  jumpForce: 5
+  jumpForce: 12
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
   gravity: -20
   rollSpeed: 8
   rollDuration: 1
@@ -30746,6 +30750,21 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &-6591563974508186924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755554410987823595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c9edc87193f34497b23f4f09f380c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawner
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &758676446763522889
 GameObject:
   m_ObjectHideFlags: 0
