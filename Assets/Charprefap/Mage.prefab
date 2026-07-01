@@ -72773,7 +72773,7 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 6
   jumpForce: 12
-  groundCheck: {fileID: 0}
+  groundCheck: {fileID: 8933089218745784138}
   groundCheckDistance: 0.4
   groundLayer:
     serializedVersion: 2

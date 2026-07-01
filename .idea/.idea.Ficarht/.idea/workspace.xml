@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Charactor/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Berserker.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Mage.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Charprefap/Paladin.prefab" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,7 +157,7 @@
       <workItem from="1782724646151" duration="935000" />
       <workItem from="1782745334137" duration="704000" />
       <workItem from="1782806371971" duration="14666000" />
-      <workItem from="1782892340560" duration="2219000" />
+      <workItem from="1782892340560" duration="2875000" />
     </task>
     <servers />
   </component>
