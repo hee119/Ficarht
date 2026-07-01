@@ -34,15 +34,6 @@ public class PlayerController : NetworkBehaviour
         set
         {
             _isAttacking = value;
-            if (playerInput != null)
-            {
-                playerInput.enabled = !value;
-                Debug.Log($"[PlayerController] isAttacking={value} → playerInput.enabled={playerInput.enabled}");
-            }
-            else
-            {
-                Debug.LogWarning("[PlayerController] playerInput이 NULL입니다.");
-            }
         }
     }
     private Vector3 velocity;        // Y축에 중력/점프 누적
@@ -160,7 +151,16 @@ public class PlayerController : NetworkBehaviour
             PlayerNetwork pn = GetComponent<PlayerNetwork>();
             if (pn != null && !pn.CanMove()) return;
 
-            currentSpeed = moveInput.magnitude > 0.01f
+            bool isMoving = moveInput.magnitude > 0.01f;
+
+            // 달리기 스태미너 소모: 초당 1, 바닥나면 걷기로 전환
+            if (isRunning && isMoving && characterStats != null)
+            {
+                if (!characterStats.UseStamina(1f * Time.deltaTime))
+                    isRunning = false;
+            }
+
+            currentSpeed = isMoving
                 ? (isRunning ? runSpeed : walkSpeed)
                 : 0f;
 

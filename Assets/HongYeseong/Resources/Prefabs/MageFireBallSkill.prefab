@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 2891966460725975586}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 2.64, z: 12}
+  m_LocalPosition: {x: 0, y: 2.64, z: 12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -61,6 +61,7 @@ MonoBehaviour:
   isBuff: 0
   isDebuff: 0
   burnDamage: 0
+  staminaCost: 0
 --- !u!114 &-6859940820944432427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,9 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MageSkillLogic
   skillType: 1
-  target: {fileID: 0}
-  player: {fileID: 0}
-  targetStat: {fileID: 0}
   playerStat: {fileID: 0}
 --- !u!65 &6245015609797344758
 BoxCollider:
