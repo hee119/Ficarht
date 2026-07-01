@@ -6,18 +6,18 @@ using Mirror;
 /// <summary>
 /// Mirror 멀티플레이 PlayerController.
 ///
-/// ■ Rigidbody 또는 CharacterController 자동 감지
 /// ■ 소유(Owned)  : 입력 → 카메라 기준 이동 + 20Hz 서버 전송
-/// ■ 비소유(Non-owned) : SyncVar → SmoothDamp 위치 보간 + 애니메이터 반영
-///   - PlayerInput / CharacterController 비활성화 → 로컬 입력 차단
+/// ■ 비소유(Non-owned) : SyncVar → SmoothDamp 위치 보간
+///
+/// 이동 우선순위: Rigidbody(non-kinematic) → CharacterController → transform.position
 /// </summary>
 public class PlayerController : NetworkBehaviour
 {
     // ── 컴포넌트 참조 ──
-    private Rigidbody         rb;
-    private CharacterController cc;
-    private Animator          animator;
-    private CharaStat         characterStats;
+    private Rigidbody            rb;
+    private CharacterController  cc;
+    private Animator             animator;
+    private CharaStat            characterStats;
 
     [Header("Speed")]
     public float walkSpeed = 3f;
@@ -40,22 +40,20 @@ public class PlayerController : NetworkBehaviour
 
     public bool isRoll = false;
 
-    // CharacterController 전용 중력 누적
+    // CharacterController 중력
     private float _verticalVelocity = 0f;
     private const float Gravity = -20f;
 
-    // ── SyncVar : 서버 → 전체 클라이언트 동기화 ──
+    // ── SyncVar ──
     [SyncVar] private Vector3 _syncPos;
     [SyncVar] private float   _syncRotY;
     [SyncVar] private float   _syncMoveX;
     [SyncVar] private float   _syncMoveY;
     [SyncVar] private float   _syncSpeed;
 
-    // 비소유 클라이언트 보간용
-    private float   _localMoveX;
-    private float   _localMoveY;
-    private float   _localSpeed;
+    private float   _localMoveX, _localMoveY, _localSpeed;
     private Vector3 _posVelocity;  // SmoothDamp용
+    private bool    _syncPosInitialized = false; // OnStartClient에서 초기화 완료 여부
 
     private float       _syncTimer;
     private const float SyncInterval = 0.05f; // 20 Hz
@@ -83,32 +81,31 @@ public class PlayerController : NetworkBehaviour
     }
 
     // ─────────────────────────────────────────────
-    // Mirror 콜백
-    // ─────────────────────────────────────────────
     public override void OnStartClient()
     {
         base.OnStartClient();
 
-        if (!isOwned)
+        if (isOwned)
         {
-            // ① PlayerInput 비활성화 → 로컬 키가 상대 캐릭터에 전달되지 않음
+            // 소유 캐릭터: CharacterController가 있으면 활성화 보장
+            // (rb.isKinematic은 변경하지 않음 — rb와 cc 동시 보유 시 충돌 방지)
+            if (cc != null) cc.enabled = true;
+        }
+        else
+        {
+            // 비소유 캐릭터: 로컬 입력/물리 차단
             var pi = GetComponent<UnityEngine.InputSystem.PlayerInput>();
             if (pi != null) pi.enabled = false;
 
-            // ② Rigidbody kinematic
             if (rb != null) rb.isKinematic = true;
-
-            // ③ CharacterController 비활성화
-            //    → 비활성화해야 transform.position 직접 쓰기가 가능해짐
             if (cc != null) cc.enabled = false;
 
-            // 초기 보간 위치 세팅 (첫 프레임 순간이동 방지)
-            _syncPos  = transform.position;
-            _syncRotY = transform.eulerAngles.y;
+            _syncPos             = transform.position;
+            _syncRotY            = transform.eulerAngles.y;
+            _syncPosInitialized  = true;
         }
     }
 
-    // ─────────────────────────────────────────────
     public void ServerSetOwnerPlayerNetwork(PlayerNetwork owner)
     {
         _ownerPlayerNetwork = owner;
@@ -121,6 +118,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsLocallyControlled)
         {
+            ReadDirectInput();
+
             if (isAttacking || isRoll) return;
 
             PlayerNetwork pn = GetComponent<PlayerNetwork>();
@@ -142,7 +141,6 @@ public class PlayerController : NetworkBehaviour
                     Vector3.down * groundCheckDistance,
                     IsGrounded() ? Color.green : Color.red);
 
-            // 20Hz 서버 동기화
             if (NetworkClient.active)
             {
                 _syncTimer += Time.deltaTime;
@@ -156,9 +154,6 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            // 비소유 클라이언트 : SyncVar → 보간 적용
-
-            // 공격·구르기 중에는 애니메이터 파라미터 덮어쓰지 않음
             if (!isAttacking && !isRoll && animator != null)
             {
                 float t = 15f * Time.deltaTime;
@@ -171,16 +166,17 @@ public class PlayerController : NetworkBehaviour
                 animator.SetFloat("Speed", _localSpeed);
             }
 
-            // 위치 : SmoothDamp (Lerp보다 훨씬 부드럽고 덜덜거리지 않음)
-            transform.position = Vector3.SmoothDamp(
-                transform.position, _syncPos,
-                ref _posVelocity, 0.08f);
+            if (_syncPosInitialized)
+            {
+                transform.position = Vector3.SmoothDamp(
+                    transform.position, _syncPos,
+                    ref _posVelocity, 0.08f);
 
-            // 회전 보간
-            transform.rotation = Quaternion.Lerp(
-                transform.rotation,
-                Quaternion.Euler(0f, _syncRotY, 0f),
-                12f * Time.deltaTime);
+                transform.rotation = Quaternion.Lerp(
+                    transform.rotation,
+                    Quaternion.Euler(0f, _syncRotY, 0f),
+                    12f * Time.deltaTime);
+            }
         }
     }
 
@@ -197,7 +193,6 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 worldMove = GetCameraRelativeMove();
 
-        // 이동 방향으로 캐릭터 자동 회전
         if (worldMove.magnitude > 0.1f)
         {
             transform.rotation = Quaternion.Slerp(
@@ -206,33 +201,85 @@ public class PlayerController : NetworkBehaviour
                 10f * Time.fixedDeltaTime);
         }
 
-        if (rb != null)
+        MoveCharacter(worldMove);
+    }
+
+    /// <summary>
+    /// 이동 처리. Rigidbody(non-kinematic) → CharacterController → transform.position 순으로 시도.
+    /// </summary>
+    private void MoveCharacter(Vector3 worldMove)
+    {
+        // ① Rigidbody (non-kinematic일 때만)
+        if (rb != null && !rb.isKinematic)
         {
-            // ── Rigidbody ──
-            Vector3 velocity = worldMove * currentSpeed;
-            velocity.y = rb.linearVelocity.y;
-            rb.linearVelocity = velocity;
+            Vector3 vel = worldMove * currentSpeed;
+            vel.y = rb.linearVelocity.y;
+            rb.linearVelocity = vel;
+            return;
         }
-        else if (cc != null && cc.enabled)
+
+        // ② CharacterController
+        if (cc != null && cc.enabled)
         {
-            // ── CharacterController ──
-            // 중력 누적
             if (cc.isGrounded) _verticalVelocity = -2f;
             else               _verticalVelocity += Gravity * Time.fixedDeltaTime;
+            // 낙하 속도 제한
+            _verticalVelocity = Mathf.Max(_verticalVelocity, -30f);
 
-            Vector3 velocity = worldMove * currentSpeed;
-            velocity.y = _verticalVelocity;
-            cc.Move(velocity * Time.fixedDeltaTime);
+            Vector3 motion = worldMove * currentSpeed;
+            motion.y = _verticalVelocity;
+            cc.Move(motion * Time.fixedDeltaTime);
+            return;
         }
-        else
+
+        // ③ 폴백: 순수 transform (CharacterController가 없거나 disabled인 경우)
+        transform.position += worldMove * currentSpeed * Time.fixedDeltaTime;
+    }
+
+    // ─────────────────────────────────────────────
+    // 직접 입력 읽기 (PlayerInput 설정 불필요)
+    // ─────────────────────────────────────────────
+    private void ReadDirectInput()
+    {
+        float h = 0f, v = 0f;
+        bool  shift = false;
+        bool  jump  = false;
+
+        // 신규 Input System (우선)
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
         {
-            // ── 폴백 : 순수 transform 이동 ──
-            transform.position += worldMove * currentSpeed * Time.fixedDeltaTime;
+            h     = (keyboard.dKey.isPressed ? 1f : 0f) - (keyboard.aKey.isPressed ? 1f : 0f);
+            v     = (keyboard.wKey.isPressed ? 1f : 0f) - (keyboard.sKey.isPressed ? 1f : 0f);
+            shift = keyboard.leftShiftKey.isPressed;
+            jump  = keyboard.spaceKey.wasPressedThisFrame;
+        }
+
+        // 구형 Input Manager 폴백 (신규에서 입력을 못 읽은 경우)
+        if (Mathf.Abs(h) < 0.01f && Mathf.Abs(v) < 0.01f)
+        {
+            h = Input.GetAxisRaw("Horizontal");
+            v = Input.GetAxisRaw("Vertical");
+            if (!shift) shift = Input.GetKey(KeyCode.LeftShift);
+            if (!jump)  jump  = Input.GetKeyDown(KeyCode.Space);
+        }
+
+        moveInput  = (Mathf.Abs(h) > 0.01f || Mathf.Abs(v) > 0.01f)
+                     ? new Vector3(h, 0f, v).normalized
+                     : Vector3.zero;
+        isRunning  = shift;
+
+        if (jump)
+        {
+            if (rb != null && !rb.isKinematic && IsGrounded())
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            else if (cc != null && cc.enabled && cc.isGrounded)
+                _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * Gravity);
         }
     }
 
     // ─────────────────────────────────────────────
-    // 카메라 기준 이동 방향 변환
+    // 카메라 기준 이동 방향
     // ─────────────────────────────────────────────
     private Vector3 GetCameraRelativeMove()
     {
@@ -241,64 +288,48 @@ public class PlayerController : NetworkBehaviour
         Camera cam = Camera.main;
         if (cam != null)
         {
-            Vector3 fwd = cam.transform.forward; fwd.y = 0f; fwd.Normalize();
-            Vector3 rgt = cam.transform.right;   rgt.y = 0f; rgt.Normalize();
+            Vector3 fwd = cam.transform.forward; fwd.y = 0f;
+            Vector3 rgt = cam.transform.right;   rgt.y = 0f;
+            if (fwd.magnitude > 0.01f) fwd.Normalize(); else fwd = transform.forward;
+            if (rgt.magnitude > 0.01f) rgt.Normalize(); else rgt = transform.right;
             Vector3 dir = fwd * moveInput.z + rgt * moveInput.x;
             if (dir.magnitude > 0.01f) return dir.normalized;
         }
+        // 카메라 없을 때: 캐릭터 로컬 방향 기준
         return transform.TransformDirection(moveInput).normalized;
     }
 
     // ─────────────────────────────────────────────
-    // Command : 위치 + 애니메이션 → 서버 → SyncVar 전파
+    // Command
     // ─────────────────────────────────────────────
     [Command]
     void CmdSyncState(float moveX, float moveY, float speed, Vector3 pos, float rotY)
     {
-        _syncMoveX = moveX;
-        _syncMoveY = moveY;
-        _syncSpeed = speed;
-        _syncPos   = pos;
-        _syncRotY  = rotY;
+        _syncMoveX = moveX; _syncMoveY = moveY; _syncSpeed = speed;
+        _syncPos   = pos;   _syncRotY  = rotY;
     }
 
     // ─────────────────────────────────────────────
-    // Input 콜백
+    // Input 콜백 (PlayerInput Send Messages)
     // ─────────────────────────────────────────────
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled) return;
-        Vector2 input = context.ReadValue<Vector2>();
-        moveInput = new Vector3(input.x, 0f, input.y).normalized;
+        // ReadDirectInput()에서 직접 처리 – 여기서 중복 처리 안 함
     }
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled) return;
-        if (context.started)  isRunning = true;
-        if (context.canceled) isRunning = false;
+        // ReadDirectInput()에서 직접 처리
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled) return;
-        if (!context.started) return;
-
-        if (rb != null)
-        {
-            if (IsGrounded())
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-        else if (cc != null && cc.enabled && cc.isGrounded)
-        {
-            _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * Gravity);
-        }
+        // ReadDirectInput()에서 직접 처리
     }
 
     public void OnMouseLook(InputAction.CallbackContext context)
     {
-        // CameraFollow.LateUpdate()가 Input.GetAxis("Mouse X")를 직접 읽음
-        // 캐릭터는 회전하지 않음
+        // CameraFollow.LateUpdate()가 처리 – 캐릭터 회전 없음
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -317,21 +348,13 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // ─────────────────────────────────────────────
-    // 공격
-    // ─────────────────────────────────────────────
-    [Command]
-    void CmdRequestAttack()
+    [Command] void CmdRequestAttack()
     {
         GetComponent<PlayerNetwork>()?.ServerRequestAttack();
         RpcPlayAttackAnimation();
     }
 
-    [ClientRpc]
-    void RpcPlayAttackAnimation()
-    {
-        StartCoroutine(AttackAnimation());
-    }
+    [ClientRpc] void RpcPlayAttackAnimation() { StartCoroutine(AttackAnimation()); }
 
     IEnumerator AttackAnimation()
     {
@@ -352,29 +375,27 @@ public class PlayerController : NetworkBehaviour
 
         Vector3 rollDir = GetCameraRelativeMove();
         if (rollDir.magnitude < 0.01f) rollDir = transform.forward;
-
         transform.rotation = Quaternion.LookRotation(rollDir);
 
         const float RollSpeed    = 7f;
         const float RollDuration = 0.5f;
         float elapsed = 0f;
 
-        if (rb != null) rb.linearVelocity = Vector3.zero;
+        if (rb != null && !rb.isKinematic) rb.linearVelocity = Vector3.zero;
 
         while (elapsed < RollDuration)
         {
             elapsed += Time.deltaTime;
 
-            if (rb != null)
+            if (rb != null && !rb.isKinematic)
             {
                 rb.linearVelocity = new Vector3(
-                    rollDir.x * RollSpeed,
-                    rb.linearVelocity.y,
-                    rollDir.z * RollSpeed);
+                    rollDir.x * RollSpeed, rb.linearVelocity.y, rollDir.z * RollSpeed);
             }
             else if (cc != null && cc.enabled)
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
+                _verticalVelocity  = Mathf.Max(_verticalVelocity, -30f);
                 Vector3 step = rollDir * RollSpeed;
                 step.y = _verticalVelocity;
                 cc.Move(step * Time.deltaTime);
@@ -390,7 +411,7 @@ public class PlayerController : NetworkBehaviour
             yield return null;
         }
 
-        if (rb != null) rb.linearVelocity = Vector3.zero;
+        if (rb != null && !rb.isKinematic) rb.linearVelocity = Vector3.zero;
         isRoll = false;
     }
 
@@ -419,12 +440,9 @@ public class PlayerController : NetworkBehaviour
 
     private IEnumerator SpeedMultiplierRoutine(float multiplier, float duration)
     {
-        float origWalk = walkSpeed;
-        float origRun  = runSpeed;
-        walkSpeed *= multiplier;
-        runSpeed  *= multiplier;
+        float origWalk = walkSpeed, origRun = runSpeed;
+        walkSpeed *= multiplier; runSpeed *= multiplier;
         yield return new WaitForSeconds(duration);
-        walkSpeed = origWalk;
-        runSpeed  = origRun;
+        walkSpeed = origWalk; runSpeed = origRun;
     }
 }

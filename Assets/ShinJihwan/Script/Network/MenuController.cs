@@ -168,6 +168,11 @@ public class MenuController : MonoBehaviour
             return;
         }
 
+        // M3D InputField가 포커스된 상태에서 씬이 전환되면
+        // 전투씬에서 마우스 클릭 시 비활성 InputField에 Focus(false) coroutine을 시도해 에러 발생
+        // → 씬 전환 전에 반드시 포커스 해제
+        SafeUnfocusInputField();
+
         Debug.Log($"[MenuController] 카드 씬으로 이동: {cardSceneName}");
         NetworkManager.singleton.ServerChangeScene(cardSceneName);
     }
