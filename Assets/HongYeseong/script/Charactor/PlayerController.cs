@@ -339,7 +339,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     // ─────────────────────────────────────────────
-    // Command
+    // Command – 상태 동기화
     // ─────────────────────────────────────────────
     [Command]
     void CmdSyncState(float moveX, float moveY, float speed, Vector3 pos, float rotY)
@@ -347,6 +347,82 @@ public class PlayerController : NetworkBehaviour
         _syncMoveX = moveX; _syncMoveY = moveY; _syncSpeed = speed;
         _syncPos   = pos;   _syncRotY  = rotY;
     }
+
+    // ─────────────────────────────────────────────
+    // 애니메이션 동기화 (AnimManager → 소유자가 호출)
+    // ─────────────────────────────────────────────
+
+    /// <summary>AnimManager.OnKey에서 Trigger 발생 시 호출. 모든 클라이언트에 Trigger 전파.</summary>
+    public void BroadcastAnimTrigger(string triggerName)
+    {
+        if (!isOwned || !NetworkClient.active) return;
+        CmdBroadcastAnimTrigger(triggerName);
+    }
+
+    [Command]
+    void CmdBroadcastAnimTrigger(string triggerName) => RpcAnimTrigger(triggerName);
+
+    [ClientRpc]
+    void RpcAnimTrigger(string triggerName)
+    {
+        if (isOwned) return; // 소유자는 이미 로컬에서 실행함
+        animator?.SetTrigger(triggerName);
+    }
+
+    /// <summary>AnimManager.OnKey에서 Bool 변경 시 호출.</summary>
+    public void BroadcastAnimBool(string paramName, bool value)
+    {
+        if (!isOwned || !NetworkClient.active) return;
+        CmdBroadcastAnimBool(paramName, value);
+    }
+
+    [Command]
+    void CmdBroadcastAnimBool(string paramName, bool value) => RpcAnimBool(paramName, value);
+
+    [ClientRpc]
+    void RpcAnimBool(string paramName, bool value)
+    {
+        if (isOwned) return;
+        animator?.SetBool(paramName, value);
+    }
+
+    // ─────────────────────────────────────────────
+    // 네트워크 데미지 / 상태이상 (스킬 스크립트 → 호출, requiresAuthority=false)
+    // ─────────────────────────────────────────────
+
+    /// <summary>
+    /// 소유자 외 클라이언트에서도 호출 가능 (requiresAuthority = false).
+    /// 서버에서 _ownerPlayerNetwork.TakeDamage를 처리한다.
+    /// </summary>
+    [Command(requiresAuthority = false)]
+    public void CmdNetworkDamage(float damage)
+    {
+        if (_ownerPlayerNetwork != null) _ownerPlayerNetwork.TakeDamage(damage);
+        else GetComponent<CharaStat>()?.Hit(damage); // 오프라인 폴백
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdNetworkFreeze(float duration)
+    {
+        if (_ownerPlayerNetwork != null) _ownerPlayerNetwork.ApplyFreeze(duration);
+        else GetComponent<CharaStat>()?.Freezing(duration);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdNetworkBurn(float duration, float dps)
+    {
+        if (_ownerPlayerNetwork != null) _ownerPlayerNetwork.ApplyBurn(duration, dps);
+        else GetComponent<CharaStat>()?.Burn(duration, dps);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdNetworkSlow(float duration)
+    {
+        if (_ownerPlayerNetwork != null) _ownerPlayerNetwork.ApplySlow(duration);
+        else GetComponent<CharaStat>()?.Slowdown(duration, 0.5f);
+    }
+
+    public PlayerNetwork OwnerPlayerNetwork => _ownerPlayerNetwork;
 
     // ─────────────────────────────────────────────
     // Input 콜백 (PlayerInput Send Messages)

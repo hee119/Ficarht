@@ -60,6 +60,7 @@ public class AnimManager : MonoBehaviour
 
                     isTriggerPlaying = true;
                     animator.SetTrigger(animName);
+                    playerController.BroadcastAnimTrigger(animName); // 상대 클라이언트에 동기화
                     if(animName == "Roll")
                     {
                         playerController.Roll();
@@ -74,13 +75,14 @@ public class AnimManager : MonoBehaviour
                         break;
                     }
                     animator.SetBool(animName, true);
+                    playerController.BroadcastAnimBool(animName, true); // 동기화
                     break;
                 }
-                
+
                 if (animName == "1Hand_Up_Shield_Block_Idle_1")
                 {
                     animator.SetBool(animName, true);
-
+                    playerController.BroadcastAnimBool(animName, true); // 동기화
                     charaStat.isBlocking = true;
                 }
             }
@@ -90,6 +92,7 @@ public class AnimManager : MonoBehaviour
                 if (IsBool(animName))
                 {
                     animator.SetBool(animName, false);
+                    playerController.BroadcastAnimBool(animName, false); // 동기화
                     break;
                 }
                 charaStat.isBlocking = false;
