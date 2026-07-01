@@ -38,7 +38,15 @@ public class PlayerNetwork : NetworkBehaviour
 
     [SyncVar] public int selectedCharacterId = -1;
     [SyncVar] public string selectedMapScene = "";
-    public GameObject currentCharacter;
+
+    // currentCharacter: SyncVar로 클라이언트에 자동 전파
+    // → OnHealthChanged 훅에서 CharaStat.healthBar를 갱신하는 데 필요
+    [SyncVar] private NetworkIdentity _currentCharacterNetId;
+    public GameObject currentCharacter
+    {
+        get => _currentCharacterNetId != null ? _currentCharacterNetId.gameObject : null;
+        set => _currentCharacterNetId = value != null ? value.GetComponent<NetworkIdentity>() : null;
+    }
 
     // 서버에서 보관하는 활성 방 코드 (Host가 방 만들 때 저장)
     private static string _activeRoomCode = "";

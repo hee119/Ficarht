@@ -124,7 +124,23 @@ public class PlayerController : NetworkBehaviour
             if (pi != null) pi.enabled = false;
 
             if (rb != null) rb.isKinematic = true;
-            if (cc != null) cc.enabled = false;
+
+            if (cc != null)
+            {
+                // CC를 비활성화하면 해당 Collider도 사라져서
+                // 스킬 OnTriggerEnter가 이 캐릭터를 감지할 수 없게 됨.
+                // → CC 크기와 동일한 CapsuleCollider를 대신 추가해 Hitbox로 사용한다.
+                if (GetComponent<CapsuleCollider>() == null)
+                {
+                    var hitbox      = gameObject.AddComponent<CapsuleCollider>();
+                    hitbox.center    = cc.center;
+                    hitbox.radius    = cc.radius;
+                    hitbox.height    = cc.height;
+                    hitbox.direction = 1; // Y축 (캐릭터 세로 방향)
+                    hitbox.isTrigger = false;
+                }
+                cc.enabled = false;
+            }
 
             _syncPos             = transform.position;
             _syncRotY            = transform.eulerAngles.y;
