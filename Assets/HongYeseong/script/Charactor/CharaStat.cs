@@ -52,8 +52,10 @@ public class CharaStat : MonoBehaviour
     public float health;
     public float maxStamina;
     public float stamina;
-    public float staminaRegenRate;
+    public float staminaRegenRate = 10f;
+    public float staminaRegenDelay = 3f; // 스킬 사용 후 재생 대기 시간
     public float staminaDrainRate; // 초당 소비량
+    private float _lastStaminaUseTime = -999f;
     [HideInInspector] public Coroutine staminaDrainCoroutine;
     public float power;
     public float defense;
@@ -490,12 +492,12 @@ public class CharaStat : MonoBehaviour
     {
         while (true)
         {
-            if (stamina < maxStamina)
+            if (stamina < maxStamina && Time.time - _lastStaminaUseTime >= staminaRegenDelay)
             {
                 stamina += staminaRegenRate * Time.deltaTime;
                 stamina = Mathf.Min(stamina, maxStamina);
 
-                if (staminaBar != null) 
+                if (staminaBar != null)
                     staminaBar.value = stamina;
             }
 
@@ -539,6 +541,7 @@ public class CharaStat : MonoBehaviour
         stamina -= cost;
         stamina = Mathf.Max(stamina, 0f);
         if (staminaBar != null) staminaBar.value = stamina;
+        _lastStaminaUseTime = Time.time;
         return true;
     }
 
