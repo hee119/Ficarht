@@ -22,36 +22,28 @@ public class PlayerRespawner : NetworkBehaviour
         if (rb != null)
             rb.isKinematic = false;
 
-        // PlayerController는 NetworkTransform 없이 자체 SyncVar(_syncPos/_syncRot)로
-        // 위치를 동기화하므로, 서버 쪽 transform만 바꿔서는 오너 클라이언트나 다른
-        // 클라이언트에게 반영되지 않는다. SyncVar도 함께 갱신해야 함.
-        var pc = GetComponent<PlayerController>();
-        if (pc != null)
-            pc.ServerForceSyncPosition(destination, transform.rotation);
-
-        // 오너 클라이언트 본인에게는 SyncVar 보간이 아니라 직접 텔레포트를 지시해야
-        // CharacterController가 이전 낙하 위치로 되돌리지 않는다.
+        // 오너 클라이언트 본인은 매 프레임 자기 위치를 서버로 보내는 쪽(client-authoritative)
+        // 이라서 서버가 여기서 transform.position만 바꿔도 본인 화면에는 반영되지 않는다.
+        // 직접 텔레포트를 지시해야 낙하 위치로 되돌아가지 않는다.
+        // (오너 위치가 고쳐지면 기존 20Hz 동기화 루프가 자동으로 다른 클라이언트에도 전파한다.)
         TargetTeleport(destination);
     }
 
     [TargetRpc]
     private void TargetTeleport(Vector3 destination)
     {
-        var cc = GetComponent<CharacterController>();
         var rb = GetComponent<Rigidbody>();
-
-        if (cc != null) cc.enabled = false;
 
         if (rb != null)
         {
             rb.isKinematic = true;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            rb.position = destination;
         }
 
         transform.position = destination;
 
         if (rb != null) rb.isKinematic = false;
-        if (cc != null) cc.enabled = true;
     }
 }
