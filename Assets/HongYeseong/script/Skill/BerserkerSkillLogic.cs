@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-public class BerserkerSkillLogic : MonoBehaviour
+public class BerserkerSkillLogic : MonoBehaviour, ISkillLogicBase
 {
     [SerializeField]
     SkillType skillType;
@@ -20,41 +19,43 @@ public class BerserkerSkillLogic : MonoBehaviour
         BerserkerBloodyAxeChopping,
         BerserkerDefaultSlash
     }
-    
-    void Start()
+
+    void Awake()
     {
-        if (prefabInfo == null)
-        {
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
-            return;
-        }
-
-        if (playerStat == null)
-        {
-            Debug.LogError($"{name} : playerStat이 NULL입니다.");
-            return;
-        }
-
-        prefabInfo.power += playerStat.power * (prefabInfo.power / 100f);
+        prefabInfo = GetComponent<PrefabInfo>();
     }
 
-    public void OnEnable()
-    {
-        if (prefabInfo == null)
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+    // OnEnable: playerStat 주입 전이므로 아무것도 실행하지 않음.
+    // 버프 로직은 SetOwner() 에서 실행됩니다.
+    public void OnEnable() { }
 
-        if (playerStat == null)
-            Debug.LogError($"{name} : playerStat이 NULL입니다.");
+    /// <summary>
+    /// CoolTime.UseSkill() 이 풀에서 꺼낸 직후 호출합니다.
+    /// playerStat 주입 + 즉시 발동 스킬 실행.
+    /// </summary>
+    public void SetOwner(CharaStat ownerStat)
+    {
+        playerStat = ownerStat;
+
+        if (prefabInfo == null)
+        {
+            Debug.LogError($"{name}: SetOwner 시 prefabInfo가 NULL (PrefabInfo 컴포넌트 확인)");
+            return;
+        }
+
+        // 파워 스케일링 (풀 재사용 시 누적 방지)
+        prefabInfo.Init();
+        prefabInfo.power += playerStat.power * (prefabInfo.power / 100f);
 
         switch (skillType)
         {
             case SkillType.BerserkerAttackBuff:
-                playerStat.playerController.isAttacking  = true;
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.BerserkerAttackAndSpeedBuff:
-                playerStat.playerController.isAttacking  = true;
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
         }
@@ -62,25 +63,19 @@ public class BerserkerSkillLogic : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (prefabInfo == null)
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+        if (prefabInfo == null || targetStat == null) return;
+        if (other.gameObject != target) return;
 
-        if (targetStat == null)
-            Debug.LogError($"{name} : targetStat이 NULL입니다.");
-
-        if (other.gameObject == target)
+        switch (skillType)
         {
-            switch (skillType)
-            {
-                case SkillType.BerserkerDefaultSlash:
-                    targetStat.Hit(prefabInfo.power);
-                    break;
+            case SkillType.BerserkerDefaultSlash:
+                targetStat.Hit(prefabInfo.power);
+                break;
 
-                case SkillType.BerserkerBloodyAxeChopping:
-                    playerStat.playerController.isAttacking  = true;
-                    targetStat.Hit(prefabInfo.power);
-                    break;
-            }
+            case SkillType.BerserkerBloodyAxeChopping:
+                if (playerStat != null) playerStat.playerController.isAttacking = true;
+                targetStat.Hit(prefabInfo.power);
+                break;
         }
     }
 }
