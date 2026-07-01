@@ -42,8 +42,12 @@ public class BerserkerSkillLogic : MonoBehaviour, ISkillLogicBase
         {
             case SkillType.BerserkerAttackBuff:
             case SkillType.BerserkerAttackAndSpeedBuff:
-                playerStat.playerController.isAttacking = true;
-                playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
+                // isAttacking = true는 AnimManager.HandleKeyStarted에서 이미 세팅됨.
+                // 여기서 중복 세팅하면 비소유 클라이언트에서 AnimManager.SetBool() 리셋 타이밍이
+                // 꼬여 애니메이션이 영구 고정되는 버그 발생 → 제거.
+                // 소유자의 버프 적용만 처리.
+                if (playerStat.playerController.isOwned)
+                    playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
         }
     }
@@ -68,7 +72,6 @@ public class BerserkerSkillLogic : MonoBehaviour, ISkillLogicBase
                 break;
 
             case SkillType.BerserkerBloodyAxeChopping:
-                playerStat.playerController.isAttacking = true;
                 NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
                 break;
         }

@@ -547,4 +547,15 @@ public class CharaStat : MonoBehaviour
         animator.SetTrigger("Die");
         playerInput.enabled = false;
     }
+
+    /// <summary>
+    /// 네트워크 데미지 수신 시 피격 플래시 연출만 실행 (데미지 계산 없이).
+    /// PlayerNetwork.RpcOnDamageEffect에서 호출.
+    /// </summary>
+    public void TriggerHitFlash()
+    {
+        if (hitFlashCoroutine != null)
+            StopCoroutine(hitFlashCoroutine);
+        hitFlashCoroutine = StartCoroutine(HitFlash());
+    }
 }

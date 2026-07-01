@@ -20,7 +20,11 @@ public class BattleSceneInitializer : MonoBehaviour
 
     private IEnumerator Start()
     {
-        if (NetworkServer.active)
+        // 멀티플레이: 서버는 GameNetworkManager.SpawnCharacters가 처리,
+        // 클라이언트는 서버에서 Spawn된 오브젝트를 받으므로 여기서 스폰 금지.
+        // NetworkClient.active 체크를 빠뜨리면 클라이언트 측에서
+        // 싱글플레이 로직이 추가 캐릭터를 로컬 스폰해 3개가 됨.
+        if (NetworkServer.active || NetworkClient.active)
         {
             yield break;
         }

@@ -120,14 +120,22 @@ public class GameNetworkManager : NetworkManager
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        // ① HashSet 기반 중복 방어 (씬 전환 후 Mirror 재호출 포함)
+        // ① 최대 2명 제한 — 이미 2명 스폰됐으면 새 접속 강제 차단
+        if (_lobbyPlayerSpawned.Count >= 2)
+        {
+            Debug.LogWarning($"[Server] 최대 2명 초과 — conn {conn.connectionId} 거부");
+            conn.Disconnect();
+            return;
+        }
+
+        // ② HashSet 기반 중복 방어 (씬 전환 후 Mirror 재호출 포함)
         if (_lobbyPlayerSpawned.Contains(conn.connectionId))
         {
             Debug.Log($"[Server] conn {conn.connectionId} 이미 로비 플레이어 있음 — 스킵");
             NetworkServer.SetClientReady(conn);
             return;
         }
-        // ② Mirror 내부 상태도 이중 확인
+        // ③ Mirror 내부 상태도 이중 확인
         if (conn.identity != null)
         {
             _lobbyPlayerSpawned.Add(conn.connectionId);

@@ -755,7 +755,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ea0768df8ae4a689ab0c9767d0c8ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
-  spawnID: spawn_P1
+  spawnID: spawn_P2
 --- !u!4 &766079773
 Transform:
   m_ObjectHideFlags: 0
