@@ -94,6 +94,9 @@ public class PlayerController : NetworkBehaviour
         animator       = GetComponent<Animator>();
         characterStats = GetComponent<CharaStat>();
         playerInput    = GetComponent<UnityEngine.InputSystem.PlayerInput>();
+
+        if (rb != null && cc != null && cc.enabled)
+            rb.isKinematic = true;
     }
 
     void Start()
