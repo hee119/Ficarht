@@ -1,4 +1,5 @@
 using UnityEngine;
+using Mirror;
 
 public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
 {
@@ -7,9 +8,6 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
 
     PrefabInfo prefabInfo;
 
-    public GameObject target;
-    public GameObject player;
-    public CharaStat targetStat;
     public CharaStat playerStat;
 
     enum SkillType
@@ -25,60 +23,96 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         prefabInfo = GetComponent<PrefabInfo>();
     }
 
-    // OnEnable: playerStat 주입 전이므로 아무것도 실행하지 않음.
-    // 버프 로직은 SetOwner() 에서 실행됩니다.
     public void OnEnable() { }
 
-    /// <summary>
-    /// CoolTime.UseSkill() 이 풀에서 꺼낸 직후 호출합니다.
-    /// playerStat 주입 + 즉시 발동 스킬 실행.
-    /// </summary>
     public void SetOwner(CharaStat ownerStat)
     {
         playerStat = ownerStat;
 
         if (prefabInfo == null)
         {
-            Debug.LogError($"{name}: SetOwner 시 prefabInfo가 NULL (PrefabInfo 컴포넌트 확인)");
+            Debug.LogError($"{name}: SetOwner 시 prefabInfo가 NULL");
             return;
         }
 
-        // 인텔리전스 기반 파워 스케일링 (풀 재사용 시 누적 방지를 위해 PrefabInfo.Init 후 적용)
         prefabInfo.Init();
         prefabInfo.power += playerStat.intelligence * (prefabInfo.power / 100f);
 
         if (skillType == SkillType.buff)
-        {
-            playerStat.playerController.isAttacking = true;
             playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
-        }
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        if (prefabInfo == null || targetStat == null) return;
-        if (other.gameObject != target) return;
+        if (prefabInfo == null || playerStat == null) return;
+
+        // 소유자 클라이언트에서만 데미지 처리
+        // 비소유자 클라이언트에서는 AnimEvent RPC로 재생된 시각 효과만 존재
+        PlayerController ownerPC = playerStat.GetComponent<PlayerController>();
+        if (ownerPC != null && !ownerPC.isOwned && NetworkClient.active) return;
+
+        // 트리거에 닿은 오브젝트에서 동적으로 적 CharaStat 탐색
+        CharaStat hitStat = other.GetComponentInParent<CharaStat>();
+        if (hitStat == null || hitStat == playerStat) return;
+
+        PlayerController targetPC = hitStat.GetComponent<PlayerController>();
 
         switch (skillType)
         {
             case SkillType.ice:
-                if (playerStat != null) playerStat.playerController.isAttacking = true;
+<<<<<<< HEAD
+                playerStat.playerController.isAttacking = true;
+                NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
+                NetworkApplyFreeze(targetPC, hitStat, prefabInfo.duration);
+=======
                 targetStat.Hit(prefabInfo.power);
                 targetStat.Freezing(prefabInfo.duration);
+>>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
             case SkillType.fire:
-                if (playerStat != null) playerStat.playerController.isAttacking = true;
+<<<<<<< HEAD
+                playerStat.playerController.isAttacking = true;
+                NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
+                NetworkApplyBurn(targetPC, hitStat, prefabInfo.duration, prefabInfo.burnDamage);
+=======
                 targetStat.Hit(prefabInfo.power);
                 targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
+>>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
             case SkillType.defaultAttack:
-                targetStat.Hit(prefabInfo.power);
+                NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
         }
+    }
+
+    // ── 네트워크 헬퍼 ──────────────────────────────
+
+    static void NetworkApplyDamage(PlayerController targetPC, CharaStat fallback, float damage)
+    {
+        if (targetPC != null && NetworkClient.active)
+            targetPC.CmdNetworkDamage(damage);
+        else
+            fallback.Hit(damage);
+    }
+
+    static void NetworkApplyFreeze(PlayerController targetPC, CharaStat fallback, float duration)
+    {
+        if (targetPC != null && NetworkClient.active)
+            targetPC.CmdNetworkFreeze(duration);
+        else
+            fallback.Freezing(duration);
+    }
+
+    static void NetworkApplyBurn(PlayerController targetPC, CharaStat fallback, float duration, float dps)
+    {
+        if (targetPC != null && NetworkClient.active)
+            targetPC.CmdNetworkBurn(duration, dps);
+        else
+            fallback.Burn(duration, dps);
     }
 }

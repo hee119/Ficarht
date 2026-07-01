@@ -72610,14 +72610,19 @@ MonoBehaviour:
   skillCoolTimes:
   - animationName: MageBasicSkill
     coolTime: 0
+    staminaCost: 1
   - animationName: MageBigAttack
     coolTime: 5
+    staminaCost: 5
   - animationName: MageStrongAttack
     coolTime: 10
+    staminaCost: 7
   - animationName: MagicCircle
     coolTime: 20
+    staminaCost: 3
   - animationName: Roll
     coolTime: 0
+    staminaCost: 3
 --- !u!114 &106215429037078612
 MonoBehaviour:
   m_ObjectHideFlags: 0

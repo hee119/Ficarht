@@ -527,6 +527,16 @@ public class CharaStat : MonoBehaviour
         }
     }
 
+    public bool UseStamina(float cost)
+    {
+        if (stamina < cost) return false;
+
+        stamina -= cost;
+        stamina = Mathf.Max(stamina, 0f);
+        if (staminaBar != null) staminaBar.value = stamina;
+        return true;
+    }
+
     public void Die()
     {
         animator.SetTrigger("Die");

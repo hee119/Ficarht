@@ -18,8 +18,8 @@ MonoBehaviour:
   power: 75
   defense: 50
   intelligence: 10
-  speed: 10
-  runSpeed: 15
+  speed: 3
+  runSpeed: 6
   projectileSpeed: 0
   cooldown: 0
   duration: 0
