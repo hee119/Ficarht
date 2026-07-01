@@ -260,7 +260,15 @@ public class GameNetworkManager : NetworkManager
 
             PlayerController controller = character.GetComponent<PlayerController>();
 
-            NetworkServer.Spawn(character, conn);
+            // 그냥 Spawn(character, conn)만 하면 캐릭터는 conn이 소유(authority)만 하는
+            // 별개의 오브젝트가 되고, conn.identity(=NetworkClient.localPlayer)는 계속
+            // 로비 PlayerNetwork(TargetEnterBattleMode로 y=-9999에 숨겨진 오브젝트)로 남는다.
+            // → SkyMapManager 등이 NetworkClient.localPlayer/isLocalPlayer로 "내 플레이어"를
+            //   찾으면 숨겨진 로비 오브젝트를 찾게 되어 낙사 리스폰이 실제 캐릭터에 적용되지 않음.
+            // ReplacePlayerForConnection으로 conn에 "이미 등록된 플레이어" 자리를 전투 캐릭터로
+            // 교체해야 NetworkClient.localPlayer/isLocalPlayer가 실제 캐릭터를 가리키게 된다.
+            // KeepActive: 기존 로비 오브젝트는 파괴하지 않고 유지(비활성 권한)한다.
+            NetworkServer.ReplacePlayerForConnection(conn, character, ReplacePlayerOptions.KeepActive);
 
             if (characterNet != null && playerNet != null && characterNet != playerNet)
                 characterNet.CopyBattleSetupFrom(playerNet);
