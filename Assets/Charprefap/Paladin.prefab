@@ -126046,16 +126046,22 @@ MonoBehaviour:
   skillCoolTimes:
   - animationName: 1Hand_Up_Attack_A_3_InPlace
     coolTime: 1
+    staminaCost: 2
   - animationName: HumanM@MagicAttackCall1H01_L
     coolTime: 10
+    staminaCost: 4
   - animationName: 1Hand_Up_Shield_Block_Idle_1 0
     coolTime: 0
+    staminaCost: 1
   - animationName: Sword And Shield Casting (2) 0
     coolTime: 15
+    staminaCost: 6
   - animationName: Sword And Shield Casting (2) 1
     coolTime: 10
+    staminaCost: 5
   - animationName: Roll
     coolTime: 0
+    staminaCost: 0
 --- !u!114 &-4272048392541871725
 MonoBehaviour:
   m_ObjectHideFlags: 0

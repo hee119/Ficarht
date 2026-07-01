@@ -69,6 +69,7 @@ public class PlayerController : NetworkBehaviour
     // CharacterController 중력
     private float _verticalVelocity = 0f;
     private const float Gravity = -20f;
+    private bool  _jumpRequested   = false;
 
     // ── SyncVar ──
     [SyncVar] private Vector3 _syncPos;
@@ -250,8 +251,20 @@ public class PlayerController : NetworkBehaviour
         // ① CharacterController 우선 (CC가 활성화되면 Rigidbody를 무효화함)
         if (cc != null && cc.enabled)
         {
-            if (cc.isGrounded) _verticalVelocity = -2f;
-            else               _verticalVelocity += Gravity * Time.fixedDeltaTime;
+            if (cc.isGrounded)
+            {
+                _verticalVelocity = -2f;
+                if (_jumpRequested)
+                {
+                    _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * Gravity);
+                    _jumpRequested = false;
+                }
+            }
+            else
+            {
+                _jumpRequested = false;
+                _verticalVelocity += Gravity * Time.fixedDeltaTime;
+            }
             _verticalVelocity = Mathf.Max(_verticalVelocity, -30f);
 
             Vector3 motion = worldMove * currentSpeed;
@@ -263,6 +276,11 @@ public class PlayerController : NetworkBehaviour
         // ② Rigidbody (CC 없거나 disabled일 때만, non-kinematic)
         if (rb != null && !rb.isKinematic)
         {
+            if (_jumpRequested && IsGrounded())
+            {
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                _jumpRequested = false;
+            }
             Vector3 vel = worldMove * currentSpeed;
             vel.y = rb.linearVelocity.y;
             rb.linearVelocity = vel;
@@ -309,12 +327,7 @@ public class PlayerController : NetworkBehaviour
         isRunning  = shift;
 
         if (jump)
-        {
-            if (rb != null && !rb.isKinematic && IsGrounded())
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            else if (cc != null && cc.enabled && cc.isGrounded)
-                _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * Gravity);
-        }
+            _jumpRequested = true;
     }
 
     // ─────────────────────────────────────────────

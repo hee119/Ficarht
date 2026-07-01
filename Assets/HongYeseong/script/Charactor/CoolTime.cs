@@ -10,17 +10,18 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
     public List<SkillCoolTime> skillCoolTimes = new();
 
     // runtime data
-    private Dictionary<string, float> coolTimeTable = new();
-    private Dictionary<string, float> lastUseTime = new();
+    private Dictionary<string, float> coolTimeTable    = new();
+    private Dictionary<string, float> staminaCostTable = new();
+    private Dictionary<string, float> lastUseTime      = new();
 
     void Awake()
     {
         charaStat = GetComponent<CharaStat>();
 
-        // 리스트 → 딕셔너리 변환
         foreach (var skill in skillCoolTimes)
         {
-            coolTimeTable[skill.animationName] = skill.coolTime;
+            coolTimeTable[skill.animationName]    = skill.coolTime;
+            staminaCostTable[skill.animationName] = skill.staminaCost;
         }
     }
 
@@ -59,6 +60,15 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
             return;
         }
 
+        if (staminaCostTable.TryGetValue(skillName, out float cost) && cost > 0f)
+        {
+            if (!charaStat.UseStamina(cost))
+            {
+                Debug.Log($"{skillName} : 스태미나 부족 ({charaStat.stamina:F1} / {cost})");
+                return;
+            }
+        }
+
         GameObject skillObj = PoolManager.Instance.GetPrefab(skillName, owner);
         if (skillObj == null)
         {
@@ -73,6 +83,9 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
             return;
         }
 
+        if (charaStat?.playerController != null)
+            charaStat.playerController.isAttacking = true;
+
         skillObj.GetComponent<ISkillLogicBase>()?.SetOwner(charaStat);
     }
 }
@@ -81,5 +94,6 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
 public class SkillCoolTime
 {
     public string animationName;
-    public float coolTime;
+    public float  coolTime;
+    public float  staminaCost;
 }
