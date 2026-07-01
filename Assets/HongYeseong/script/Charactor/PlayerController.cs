@@ -18,6 +18,7 @@ public class PlayerController : NetworkBehaviour
     private CharacterController  cc;
     private Animator             animator;
     private CharaStat            characterStats;
+    public  UnityEngine.InputSystem.PlayerInput playerInput;
 
     [Header("Speed")]
     public float walkSpeed = 3f;
@@ -274,6 +275,8 @@ public class PlayerController : NetworkBehaviour
     // ─────────────────────────────────────────────
     private void ReadDirectInput()
     {
+        if (isAttacking || isRoll) return;
+
         float h = 0f, v = 0f;
         bool  shift = false;
         bool  jump  = false;
