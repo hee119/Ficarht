@@ -23,7 +23,7 @@ public class CameraFollow : MonoBehaviour
     public float smoothSpeed = 8f;
 
     [Header("마우스 감도")]
-    public float mouseSensitivity = 2f;
+    public float mouseSensitivity = 5f;
 
     [Header("벽 충돌 방지")]
     [Tooltip("카메라와 플레이어 사이 장애물 감지 레이어")]
