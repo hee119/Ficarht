@@ -123,24 +123,20 @@ public class PlayerController : NetworkBehaviour
             var pi = GetComponent<UnityEngine.InputSystem.PlayerInput>();
             if (pi != null) pi.enabled = false;
 
-            if (rb != null) rb.isKinematic = true;
+            // ─── 핵심 수정: Kinematic Rigidbody 보장 ─────────────────────────────
+            // Unity 물리 규칙: "Static Trigger(스킬) + Static Collider(캐릭터)" 조합은
+            // OnTriggerEnter 이벤트를 발생시키지 않는다.
+            // 캐릭터 prefab(Paladin/Mage/Berserker)에는 Rigidbody가 없고 BoxCollider만 있는데,
+            // CharacterController를 disable하면 physics body가 사라져 스킬이 캐릭터를 감지 못 함.
+            // → Kinematic Rigidbody를 동적으로 추가하면 "Static Trigger + Kinematic RB Collider"
+            //   조합이 되어 OnTriggerEnter가 정상 발동된다. (Bard는 prefab에 이미 RB가 있음)
+            if (rb == null)
+                rb = gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true;
+            rb.useGravity  = false;
 
             if (cc != null)
-            {
-                // CC를 비활성화하면 해당 Collider도 사라져서
-                // 스킬 OnTriggerEnter가 이 캐릭터를 감지할 수 없게 됨.
-                // → CC 크기와 동일한 CapsuleCollider를 대신 추가해 Hitbox로 사용한다.
-                if (GetComponent<CapsuleCollider>() == null)
-                {
-                    var hitbox      = gameObject.AddComponent<CapsuleCollider>();
-                    hitbox.center    = cc.center;
-                    hitbox.radius    = cc.radius;
-                    hitbox.height    = cc.height;
-                    hitbox.direction = 1; // Y축 (캐릭터 세로 방향)
-                    hitbox.isTrigger = false;
-                }
                 cc.enabled = false;
-            }
 
             _syncPos             = transform.position;
             _syncRotY            = transform.eulerAngles.y;

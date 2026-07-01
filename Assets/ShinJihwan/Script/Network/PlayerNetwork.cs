@@ -222,6 +222,10 @@ public class PlayerNetwork : NetworkBehaviour
         charaStat.maxHealth = Mathf.Max(maxHealth, 1f);
         charaStat.health = Mathf.Clamp(value, 0f, charaStat.maxHealth);
 
+        // healthBar가 Inspector에 연결 안 된 경우 자식에서 자동 탐색
+        if (charaStat.healthBar == null)
+            charaStat.healthBar = charaStat.GetComponentInChildren<UnityEngine.UI.Slider>();
+
         if (charaStat.healthBar != null)
         {
             charaStat.healthBar.maxValue = charaStat.maxHealth;
@@ -530,7 +534,10 @@ public class PlayerNetwork : NetworkBehaviour
     void RpcOnDamageEffect(float damage)
     {
         Debug.Log($"[Client] 데미지 이펙트: {damage:F1}");
-        // TODO: 히트 이펙트, 데미지 텍스트 UI
+
+        // 피격 캐릭터의 흰 플래시 연출
+        CharaStat charaStat = GetCharaStatTarget();
+        charaStat?.TriggerHitFlash();
     }
 
     [ClientRpc]
