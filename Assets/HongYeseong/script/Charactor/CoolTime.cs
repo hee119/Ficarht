@@ -73,36 +73,6 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
             return;
         }
 
-        PaladinSkillLogic paladinSkill = skillObj.GetComponent<PaladinSkillLogic>();
-        if (paladinSkill != null)
-        {
-            paladinSkill.player = gameObject;
-            paladinSkill.playerStat = charaStat;
-            paladinSkill.Activate();
-        }
-
-        MageSkillLogic mageSkill = skillObj.GetComponent<MageSkillLogic>();
-        if (mageSkill != null)
-        {
-            mageSkill.player = gameObject;
-            mageSkill.playerStat = charaStat;
-        }
-        
-        BerserkerSkillLogic berserkerSkill = skillObj.GetComponent<BerserkerSkillLogic>();
-        if (berserkerSkill != null)
-        {
-            berserkerSkill.player = gameObject;
-            berserkerSkill.playerStat = charaStat;
-        }
-        
-
-        prefabInfo.SkillDataUpdate(
-            charaStat.power,
-            charaStat.projectileSpeed,
-            charaStat.cooldown,
-            charaStat.duration);
-
-        // playerStat 주입 + 즉시 발동 버프/효과 실행
         skillObj.GetComponent<ISkillLogicBase>()?.SetOwner(charaStat);
     }
 }

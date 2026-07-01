@@ -92,6 +92,7 @@ public class PlayerController : NetworkBehaviour
         cc             = GetComponent<CharacterController>();
         animator       = GetComponent<Animator>();
         characterStats = GetComponent<CharaStat>();
+        playerInput    = GetComponent<UnityEngine.InputSystem.PlayerInput>();
     }
 
     void Start()
