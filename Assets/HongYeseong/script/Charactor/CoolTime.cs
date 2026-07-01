@@ -73,6 +73,29 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
             return;
         }
 
+        PaladinSkillLogic paladinSkill = skillObj.GetComponent<PaladinSkillLogic>();
+        if (paladinSkill != null)
+        {
+            paladinSkill.player = gameObject;
+            paladinSkill.playerStat = charaStat;
+            paladinSkill.Activate();
+        }
+
+        MageSkillLogic mageSkill = skillObj.GetComponent<MageSkillLogic>();
+        if (mageSkill != null)
+        {
+            mageSkill.player = gameObject;
+            mageSkill.playerStat = charaStat;
+        }
+        
+        BerserkerSkillLogic berserkerSkill = skillObj.GetComponent<BerserkerSkillLogic>();
+        if (berserkerSkill != null)
+        {
+            berserkerSkill.player = gameObject;
+            berserkerSkill.playerStat = charaStat;
+        }
+        
+
         prefabInfo.SkillDataUpdate(
             charaStat.power,
             charaStat.projectileSpeed,

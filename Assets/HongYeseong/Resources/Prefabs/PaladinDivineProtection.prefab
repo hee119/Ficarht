@@ -87,9 +87,6 @@ PrefabInstance:
       addedObject: {fileID: -4952052235158982491}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -6131635625489766219}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
-      insertIndex: -1
       addedObject: {fileID: -6826804811890100877}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
       insertIndex: -1
@@ -144,19 +141,8 @@ MonoBehaviour:
   isBuff: 0
   isDebuff: 0
   burnDamage: 0
+  staminaCost: 0
 --- !u!114 &-4952052235158982491
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1315324474620319471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f8bd09aa4c374a2aacc6c37dcc1a18c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EffectAutoRelease
---- !u!114 &-6131635625489766219
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

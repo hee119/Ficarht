@@ -34,7 +34,24 @@ public class PlayerController : NetworkBehaviour
     private Vector3 moveInput;
     private float   currentSpeed;
     private bool    isRunning;
-    public  bool    isAttacking;
+    private bool _isAttacking;
+    public bool isAttacking
+    {
+        get => _isAttacking;
+        set
+        {
+            _isAttacking = value;
+            if (playerInput != null)
+            {
+                playerInput.enabled = !value;
+                Debug.Log($"[PlayerController] isAttacking={value} → playerInput.enabled={playerInput.enabled}");
+            }
+            else
+            {
+                Debug.LogWarning("[PlayerController] playerInput이 NULL입니다.");
+            }
+        }
+    }
     private Vector3 velocity;        // Y축에 중력/점프 누적
     private bool    isGrounded;      // FixedUpdate에서 갱신 — OnJump에서 참조
     private bool    isJumping;       // 점프 직후 ground reset 방지용

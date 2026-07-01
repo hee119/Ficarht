@@ -23,32 +23,47 @@ public class PaladinSkillLogic : MonoBehaviour
         PaladinShield
     }
     
+    void Awake()
+    {
+        prefabInfo = GetComponent<PrefabInfo>();
+    }
+
     void Start()
     {
         if (prefabInfo == null)
         {
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+            Debug.LogWarning($"{name} : prefabInfo가 NULL입니다.");
             return;
         }
 
         if (playerStat == null)
         {
-            Debug.LogError($"{name} : playerStat이 NULL입니다.");
+            Debug.LogWarning($"{name} : playerStat이 NULL입니다.");
             return;
         }
 
         prefabInfo.power += playerStat.power * (prefabInfo.power / 100f);
     }
+
     public void OnEnable()
     {
+        if (player != null)
+            playerStat = player.GetComponent<CharaStat>();
+    }
+
+    public void Activate()
+    {
         if (prefabInfo == null)
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+        {
+            Debug.LogWarning($"{name} : prefabInfo가 NULL입니다.");
+            return;
+        }
 
         if (playerStat == null)
-            Debug.LogError($"{name} : playerStat이 NULL입니다.");
-
-        if (targetStat == null)
-            Debug.LogError($"{name} : targetStat이 NULL입니다.");
+        {
+            Debug.LogWarning($"{name} : playerStat이 NULL입니다.");
+            return;
+        }
 
         switch (skillType)
         {
@@ -74,6 +89,7 @@ public class PaladinSkillLogic : MonoBehaviour
 
             case SkillType.PaladinHandOfGod:
                 playerStat.playerController.isAttacking  = true;
+                if (targetStat == null) return;
                 targetStat.Slowdown(prefabInfo.duration, prefabInfo.speed);
                 break;
         }
@@ -82,15 +98,17 @@ public class PaladinSkillLogic : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         if (prefabInfo == null)
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
-
-        if (targetStat == null)
-            Debug.LogError($"{name} : targetStat이 NULL입니다.");
+        {
+            Debug.LogWarning($"{name} : prefabInfo가 NULL입니다.");
+            return;
+        }
 
         switch (skillType)
         {
             case SkillType.PaladinDefaultAttack:
-                targetStat.Hit(prefabInfo.power);
+                CharaStat hitStat = other.GetComponent<CharaStat>();
+                if (hitStat != null)
+                    hitStat.Hit(prefabInfo.power);
                 break;
         }
     }
