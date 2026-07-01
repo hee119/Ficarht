@@ -28,8 +28,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool IsLocallyControlled => isOwned || !NetworkClient.active;
 
-    public float mouseSensitivity = 100f;
-    private float mouseInputY = 0f;
+    // 마우스 감도는 CameraFollow가 자체적으로 처리하므로 PlayerController에서는 사용 안 함
 
     [Header("Jump")]
     public float jumpForce = 5f;
@@ -192,9 +191,40 @@ public class PlayerController : NetworkBehaviour
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
         if (pn != null && !pn.CanMove()) return;
 
-        Vector3 velocity = transform.TransformDirection(moveInput) * currentSpeed;
+        // 카메라 기준 이동 방향 계산
+        Vector3 worldMove = GetCameraRelativeMove();
+
+        // 이동 중 캐릭터가 이동 방향을 바라보도록 자동 회전
+        if (worldMove.magnitude > 0.1f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(worldMove);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, targetRot, 10f * Time.fixedDeltaTime);
+        }
+
+        Vector3 velocity = worldMove * currentSpeed;
         velocity.y = rb.linearVelocity.y;
         rb.linearVelocity = velocity;
+    }
+
+    // 카메라 yaw 기준으로 moveInput을 월드 방향으로 변환
+    private Vector3 GetCameraRelativeMove()
+    {
+        if (moveInput.magnitude < 0.01f) return Vector3.zero;
+
+        Camera cam = Camera.main;
+        if (cam != null)
+        {
+            Vector3 camForward = cam.transform.forward;
+            camForward.y = 0f;
+            camForward.Normalize();
+            Vector3 camRight = cam.transform.right;
+            camRight.y = 0f;
+            camRight.Normalize();
+            return (camForward * moveInput.z + camRight * moveInput.x).normalized;
+        }
+        // 카메라가 없으면 캐릭터 로컬 방향으로 폴백
+        return transform.TransformDirection(moveInput).normalized;
     }
 
     // ─────────────────────────────────────────────
@@ -244,8 +274,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsLocallyControlled) return;
         Vector2 mouseInput = context.ReadValue<Vector2>();
-        mouseInputY += mouseInput.x * mouseSensitivity * Time.deltaTime;
-        transform.rotation = Quaternion.Euler(0f, mouseInputY, 0f);
+        // 캐릭터를 직접 돌리지 않고 카메라 Yaw만 변경
+        // CameraFollow.mouseSensitivity가 감도를 처리함
+        CameraFollow cam = Camera.main?.GetComponent<CameraFollow>();
+        cam?.AddYawDelta(mouseInput.x);
     }
 
     public void OnAttack(InputAction.CallbackContext context)

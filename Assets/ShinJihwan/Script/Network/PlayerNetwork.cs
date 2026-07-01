@@ -331,23 +331,35 @@ public class PlayerNetwork : NetworkBehaviour
     [TargetRpc]
     public void TargetEnterBattleMode(NetworkConnection target)
     {
-        // 렌더러 전부 숨기기 (캐릭터 모델이 맵 밖에 보이는 현상 제거)
+        // ① 렌더러 전부 숨기기
         foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
             r.enabled = false;
 
-        // CharacterController 비활성화 → 물리 낙하 방지
+        // ② Rigidbody 완전 정지 (kinematic + 속도 0)
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic      = true;
+            rb.linearVelocity   = Vector3.zero;
+            rb.angularVelocity  = Vector3.zero;
+        }
+
+        // ③ CharacterController 비활성화
         CharacterController cc = GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 
-        // Rigidbody가 있다면 운동학 모드로 전환
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null) rb.isKinematic = true;
-
-        // PlayerController 비활성화 → CameraFollow 탐색 대상에서 제외
+        // ④ PlayerController 비활성화 → CameraFollow 탐색 대상에서 제외
         PlayerController pc = GetComponent<PlayerController>();
         if (pc != null) pc.enabled = false;
 
-        Debug.Log("[PlayerNetwork] 전투씬 진입 → 로비 오브젝트 시각/물리 비활성화");
+        // ⑤ PlayerInput 비활성화 → 키 입력이 로비 오브젝트에 전달되지 않음
+        var pi = GetComponent<UnityEngine.InputSystem.PlayerInput>();
+        if (pi != null) pi.enabled = false;
+
+        // ⑥ 맵 밖 아주 먼 곳으로 이동 → 물리/카메라 충돌 원천 차단
+        transform.position = new Vector3(0f, -9999f, 0f);
+
+        Debug.Log("[PlayerNetwork] 전투씬 진입 → 로비 오브젝트 완전 은닉 (y=-9999)");
     }
 
     /// <summary>
