@@ -30608,14 +30608,19 @@ MonoBehaviour:
   skillCoolTimes:
   - animationName: Jump Attack
     coolTime: 10
+    staminaCost: 5
   - animationName: DefaltAttack
     coolTime: 0
+    staminaCost: 3
   - animationName: how
     coolTime: 20
+    staminaCost: 2
   - animationName: Roar
     coolTime: 25
+    staminaCost: 5
   - animationName: Roll
     coolTime: 0
+    staminaCost: 3
 --- !u!114 &5173253119519437085
 MonoBehaviour:
   m_ObjectHideFlags: 0
