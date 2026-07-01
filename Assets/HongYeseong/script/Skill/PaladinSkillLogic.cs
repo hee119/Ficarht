@@ -52,43 +52,29 @@ public class PaladinSkillLogic : MonoBehaviour, ISkillLogicBase
         switch (skillType)
         {
             case SkillType.PaladinDefenseBuff:
-                playerStat.playerController.isAttacking = true;
-                playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
-                break;
-
             case SkillType.PaladinDivineProtection:
-                playerStat.playerController.isAttacking = true;
-                playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
-                break;
-
             case SkillType.PaladinHolySword:
-                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinShield:
-                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyShield(prefabInfo.defense, prefabInfo.duration, gameObject);
                 break;
 
             case SkillType.PaladinHandOfGod:
                 if (targetStat != null)
-                {
-                    playerStat.playerController.isAttacking = true;
                     targetStat.Slowdown(prefabInfo.duration, prefabInfo.speed);
-                }
                 break;
         }
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        if (prefabInfo == null || targetStat == null) return;
+        if (prefabInfo == null) return;
 
         switch (skillType)
         {
             case SkillType.PaladinDefaultAttack:
-                playerStat.playerController.isAttacking = true;
                 CharaStat hitStat = other.GetComponent<CharaStat>();
                 if (hitStat != null)
                     hitStat.Hit(prefabInfo.power);

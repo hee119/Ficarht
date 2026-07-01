@@ -48,10 +48,7 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         prefabInfo.power += playerStat.intelligence * (prefabInfo.power / 100f);
 
         if (skillType == SkillType.buff)
-        {
-            playerStat.playerController.isAttacking = true;
             playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
-        }
     }
 
     public void OnTriggerEnter(Collider other)
@@ -62,21 +59,18 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         switch (skillType)
         {
             case SkillType.ice:
-                if (playerStat != null) playerStat.playerController.isAttacking = true;
                 targetStat.Hit(prefabInfo.power);
                 targetStat.Freezing(prefabInfo.duration);
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
             case SkillType.fire:
-                if (playerStat != null) playerStat.playerController.isAttacking = true;
                 targetStat.Hit(prefabInfo.power);
                 targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
             case SkillType.defaultAttack:
-                playerStat.playerController.isAttacking = true;
                 targetStat.Hit(prefabInfo.power);
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
