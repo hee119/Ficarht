@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PaladinHolySword
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   skillId: PaladinHolySword
-  attack: 0
+  attack: 20
   speed: 0
   cooldown: 0
   coolTime: 0
@@ -21,3 +21,5 @@ MonoBehaviour:
   duration: 5
   isBuff: 1
   isDebuff: 0
+  burnDamage: 0
+  staminaCost: 0
