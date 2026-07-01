@@ -422,6 +422,7 @@ public class PlayerController : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdNetworkDamage(float damage)
     {
+        Debug.Log($"[Server] CmdNetworkDamage: damage={damage:F1} | ownerPN={(_ownerPlayerNetwork != null ? _ownerPlayerNetwork.netId.ToString() : "NULL")} | target={name}");
         if (_ownerPlayerNetwork != null) _ownerPlayerNetwork.TakeDamage(damage);
         else GetComponent<CharaStat>()?.Hit(damage); // 오프라인 폴백
     }

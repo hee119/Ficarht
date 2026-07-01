@@ -36,7 +36,11 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         }
 
         prefabInfo.Init();
-        prefabInfo.power += playerStat.intelligence * (prefabInfo.power / 100f);
+        float baseP = prefabInfo.power;
+        float intel  = playerStat != null ? playerStat.intelligence : 0f;
+        prefabInfo.power += intel * (prefabInfo.power / 100f);
+
+        Debug.Log($"[MageSkill] SetOwner: skillType={skillType} | skillData.attack={prefabInfo.skillData?.attack} | baseP={baseP} | intel={intel} | finalPower={prefabInfo.power}");
 
         if (skillType == SkillType.buff)
             playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
@@ -55,6 +59,8 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         if (hitStat == null || hitStat == playerStat) return;
 
         PlayerController targetPC = hitStat.GetComponent<PlayerController>();
+
+        Debug.Log($"[MageSkill] OnTriggerEnter: skillType={skillType} | power={prefabInfo.power} | target={hitStat.name} | targetPC={targetPC?.name ?? "null"}");
 
         switch (skillType)
         {
