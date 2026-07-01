@@ -42,6 +42,7 @@ public class BerserkerSkillLogic : MonoBehaviour, ISkillLogicBase
         {
             case SkillType.BerserkerAttackBuff:
             case SkillType.BerserkerAttackAndSpeedBuff:
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
         }
@@ -63,17 +64,12 @@ public class BerserkerSkillLogic : MonoBehaviour, ISkillLogicBase
         switch (skillType)
         {
             case SkillType.BerserkerDefaultSlash:
-<<<<<<< HEAD
                 NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
                 break;
 
             case SkillType.BerserkerBloodyAxeChopping:
                 playerStat.playerController.isAttacking = true;
                 NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
-=======
-            case SkillType.BerserkerBloodyAxeChopping:
-                targetStat.Hit(prefabInfo.power);
->>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
                 break;
         }
     }

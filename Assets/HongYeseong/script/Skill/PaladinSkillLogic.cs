@@ -45,36 +45,24 @@ public class PaladinSkillLogic : MonoBehaviour, ISkillLogicBase
             case SkillType.PaladinDefenseBuff:
             case SkillType.PaladinDivineProtection:
             case SkillType.PaladinHolySword:
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinShield:
-<<<<<<< HEAD
                 playerStat.playerController.isAttacking = true;
                 playerStat.StartCoroutine(playerStat.ApplyShield(prefabInfo.defense, prefabInfo.duration, gameObject));
                 break;
 
             case SkillType.PaladinHandOfGod:
-                if (playerStat != null)
-                {
-                    playerStat.playerController.isAttacking = true;
-                    // HandOfGod: 이미 SetOwner 단계에서 대상이 필요 → OnTriggerEnter에서 처리
-                }
-=======
-                playerStat.ApplyShield(prefabInfo.defense, prefabInfo.duration, gameObject);
-                break;
-
-            case SkillType.PaladinHandOfGod:
-                if (targetStat != null)
-                    targetStat.Slowdown(prefabInfo.duration, prefabInfo.speed);
->>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
+                // HandOfGod 슬로우는 OnTriggerEnter에서 처리
+                playerStat.playerController.isAttacking = true;
                 break;
         }
     }
 
     public void OnTriggerEnter(Collider other)
     {
-<<<<<<< HEAD
         if (prefabInfo == null || playerStat == null) return;
 
         // 소유자 클라이언트에서만 데미지/상태이상 처리
@@ -85,9 +73,6 @@ public class PaladinSkillLogic : MonoBehaviour, ISkillLogicBase
         if (hitStat == null || hitStat == playerStat) return;
 
         PlayerController targetPC = hitStat.GetComponent<PlayerController>();
-=======
-        if (prefabInfo == null) return;
->>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
 
         switch (skillType)
         {

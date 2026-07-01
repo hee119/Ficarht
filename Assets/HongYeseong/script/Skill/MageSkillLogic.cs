@@ -51,7 +51,6 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         PlayerController ownerPC = playerStat.GetComponent<PlayerController>();
         if (ownerPC != null && !ownerPC.isOwned && NetworkClient.active) return;
 
-        // 트리거에 닿은 오브젝트에서 동적으로 적 CharaStat 탐색
         CharaStat hitStat = other.GetComponentInParent<CharaStat>();
         if (hitStat == null || hitStat == playerStat) return;
 
@@ -60,26 +59,16 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         switch (skillType)
         {
             case SkillType.ice:
-<<<<<<< HEAD
                 playerStat.playerController.isAttacking = true;
                 NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
                 NetworkApplyFreeze(targetPC, hitStat, prefabInfo.duration);
-=======
-                targetStat.Hit(prefabInfo.power);
-                targetStat.Freezing(prefabInfo.duration);
->>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
             case SkillType.fire:
-<<<<<<< HEAD
                 playerStat.playerController.isAttacking = true;
                 NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
                 NetworkApplyBurn(targetPC, hitStat, prefabInfo.duration, prefabInfo.burnDamage);
-=======
-                targetStat.Hit(prefabInfo.power);
-                targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
->>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
