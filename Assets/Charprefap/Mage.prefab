@@ -72526,6 +72526,7 @@ GameObject:
   - component: {fileID: 2731289624372044923}
   - component: {fileID: 6901572479294296042}
   - component: {fileID: -94125727514289}
+  - component: {fileID: 2371766344977008831}
   m_Layer: 0
   m_Name: Mage
   m_TagString: Player
@@ -72886,6 +72887,21 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &2371766344977008831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230640250319075831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c9edc87193f34497b23f4f09f380c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawner
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &2233223906761100503
 GameObject:
   m_ObjectHideFlags: 0

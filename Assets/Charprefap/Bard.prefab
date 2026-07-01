@@ -253242,6 +253242,7 @@ GameObject:
   - component: {fileID: 3977056870271520196}
   - component: {fileID: 2128126361640025184}
   - component: {fileID: 366947719891248231}
+  - component: {fileID: -1063972138403692977}
   m_Layer: 0
   m_Name: Bard
   m_TagString: Untagged
@@ -253375,18 +253376,18 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerInput: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
-  mouseSensitivity: 100
   jumpForce: 5
-  groundCheck: {fileID: 0}
-  groundCheckDistance: 0.4
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
-  isRoll: 0
+  gravity: -20
   rollSpeed: 8
   rollDuration: 1
+  isRoll: 0
+  isAttacking: 0
 --- !u!114 &3200149748035539356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253462,6 +253463,7 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   staminaBar: {fileID: 0}
   playerInput: {fileID: 0}
+  playerController: {fileID: 0}
   iceObject: {fileID: 0}
   faintingObject: {fileID: 0}
   fireObject: {fileID: 0}
@@ -253509,6 +253511,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-1063972138403692977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7582188109018444819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c9edc87193f34497b23f4f09f380c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawner
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &7584944862387424090
 GameObject:
   m_ObjectHideFlags: 0
