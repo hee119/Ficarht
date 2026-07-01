@@ -50,6 +50,12 @@ public class AnimManager : MonoBehaviour
 
             if (context.started)
             {
+                // 동상(Freezing) 상태에서는 구르기/스킬 등 어떤 트리거 애니메이션도 실행하지 않음
+                if (charaStat != null && charaStat.currentStatus == CharaStat.Status.Freezing)
+                {
+                    break;
+                }
+
                 if (IsTrigger(animName))
                 {
                     // 다른 트리거 애니메이션 재생 중이면 무시
