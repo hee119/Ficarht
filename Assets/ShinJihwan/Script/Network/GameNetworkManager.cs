@@ -11,6 +11,9 @@ public class GameNetworkManager : NetworkManager
     // 카드 선택 완료 플레이어 추적
     private HashSet<NetworkConnectionToClient> cardReadyPlayers = new HashSet<NetworkConnectionToClient>();
 
+    // OnServerAddPlayer 중복 호출 방어 (씬 전환 후 Mirror가 재호출할 수 있음)
+    private HashSet<int> _lobbyPlayerSpawned = new HashSet<int>();
+
 
     // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
     private string _pendingMapScene = "";
@@ -106,27 +109,37 @@ public class GameNetworkManager : NetworkManager
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
+        // 연결 해제 시 추적 목록에서 제거 → 재접속 시 정상 처리
+        _lobbyPlayerSpawned.Remove(conn.connectionId);
         base.OnServerDisconnect(conn);
         Debug.Log($"[Server] 클라이언트 연결 해제: connId={conn.connectionId}");
     }
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        // 이미 player 오브젝트가 있으면 중복 생성 방지 (씬 전환 후 재호출 방어)
+        // ① HashSet 기반 중복 방어 (씬 전환 후 Mirror 재호출 포함)
+        if (_lobbyPlayerSpawned.Contains(conn.connectionId))
+        {
+            Debug.Log($"[Server] conn {conn.connectionId} 이미 로비 플레이어 있음 — 스킵");
+            NetworkServer.SetClientReady(conn);
+            return;
+        }
+        // ② Mirror 내부 상태도 이중 확인
         if (conn.identity != null)
         {
-            Debug.Log($"[Server] conn {conn.connectionId} 이미 플레이어 있음 — OnServerAddPlayer 스킵");
+            _lobbyPlayerSpawned.Add(conn.connectionId);
+            Debug.Log($"[Server] conn {conn.connectionId} identity 존재 — 스킵");
             NetworkServer.SetClientReady(conn);
             return;
         }
 
-        Debug.Log("🔥 OnServerAddPlayer 호출됨");
+        Debug.Log($"[Server] OnServerAddPlayer: conn {conn.connectionId}");
 
         GameObject player = Instantiate(playerPrefab);
         // 씬 전환 후에도 playerPrefab이 살아있어야 selectedCharacterId 등 데이터 보존
         DontDestroyOnLoad(player);
+        _lobbyPlayerSpawned.Add(conn.connectionId);
         NetworkServer.AddPlayerForConnection(conn, player);
-        // RpcNotifyPlayer2Joined는 CmdJoinRoom 코드 검증 성공 후에만 호출
     }
 
     public override void OnClientDisconnect()
@@ -214,7 +227,16 @@ public class GameNetworkManager : NetworkManager
                 ? spawnPointMap[targetSpawnID]
                 : fallbackSpawnPositions[spawnIndex % fallbackSpawnPositions.Length];
 
-            GameObject character = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+            // 스폰 Y 보정: 스폰 포인트 아래에 실제 바닥이 있는지 체크
+            // → SpawnPoint가 바닥 면보다 살짝 낮거나 안으로 박혀있는 경우 떨어지는 버그 방지
+            Vector3 adjustedPos = spawnPos;
+            if (Physics.Raycast(spawnPos + Vector3.up * 3f, Vector3.down, out RaycastHit groundHit, 8f))
+            {
+                adjustedPos.y = groundHit.point.y + 0.05f;
+                Debug.Log($"[Server] 스폰 Y 보정: {spawnPos.y:F2} → {adjustedPos.y:F2} (바닥 {groundHit.point.y:F2})");
+            }
+
+            GameObject character = Instantiate(prefabToSpawn, adjustedPos, Quaternion.identity);
 
             // CharaStat.characterStats가 null이면 캐싱된 SO로 강제 할당 후 초기화.
             // prefab 참조가 런타임에 유실되는 경우(guid 충돌 등)를 방어한다.
