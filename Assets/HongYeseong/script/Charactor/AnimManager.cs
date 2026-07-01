@@ -56,7 +56,10 @@ public class AnimManager : MonoBehaviour
             string animName = AnimatorState[i];
 
             if (IsKeyDown(key))
+            {
+                Debug.Log($"[AnimManager] KeyDown 감지: '{key}' → '{animName}' | isTriggerPlaying={isTriggerPlaying}");
                 HandleKeyStarted(animName);
+            }
 
             if (IsKeyUp(key))
                 HandleKeyCanceled(animName);
@@ -71,12 +74,22 @@ public class AnimManager : MonoBehaviour
 
             if (staminaCost > 0f && charaStat.stamina < staminaCost)
             {
-                Debug.Log($"{animName} : 스태미너 부족 ({charaStat.stamina:F1} / {staminaCost})");
+                Debug.Log($"[AnimManager] {animName}: 스태미너 부족 ({charaStat.stamina:F1} / {staminaCost})");
                 return;
             }
 
-            if (isTriggerPlaying || !coolTime.CoolTimeCheck(animName))
+            if (isTriggerPlaying)
+            {
+                Debug.Log($"[AnimManager] {animName}: isTriggerPlaying=true → 다른 트리거 재생 중이라 무시됨");
                 return;
+            }
+
+            bool coolOK = coolTime.CoolTimeCheck(animName);
+            if (!coolOK)
+            {
+                Debug.Log($"[AnimManager] {animName}: 쿨타임 중 → 무시됨");
+                return;
+            }
 
             if (staminaCost > 0f)
             {
@@ -90,7 +103,7 @@ public class AnimManager : MonoBehaviour
 
             isTriggerPlaying             = true;
             playerController.isAttacking = true;
-            animator.CrossFadeInFixedTime(animName, 0.1f);
+            animator.SetTrigger(animName);
             playerController.BroadcastAnimTrigger(animName);
 
             if (animName == "Roll") playerController.Roll();
@@ -139,9 +152,15 @@ public class AnimManager : MonoBehaviour
             case "leftButton":   return Mouse.current?.leftButton.wasPressedThisFrame   ?? false;
             case "rightButton":  return Mouse.current?.rightButton.wasPressedThisFrame  ?? false;
             case "middleButton": return Mouse.current?.middleButton.wasPressedThisFrame ?? false;
+            // Unity Key 열거형에 "Ctrl"은 없고 LeftCtrl/RightCtrl만 있으므로 alias 처리
+            case "ctrl":
+            case "Ctrl":
+                return (Keyboard.current?.leftCtrlKey.wasPressedThisFrame  ?? false) ||
+                       (Keyboard.current?.rightCtrlKey.wasPressedThisFrame ?? false);
         }
         if (Enum.TryParse<Key>(keyName, true, out Key k))
             return Keyboard.current?[k].wasPressedThisFrame ?? false;
+        Debug.LogWarning($"[AnimManager] IsKeyDown: '{keyName}' → Key 열거형 파싱 실패. 키 이름을 확인하세요 (예: LeftCtrl, RightCtrl, Space, Q)");
         return false;
     }
 
@@ -152,6 +171,10 @@ public class AnimManager : MonoBehaviour
             case "leftButton":   return Mouse.current?.leftButton.wasReleasedThisFrame   ?? false;
             case "rightButton":  return Mouse.current?.rightButton.wasReleasedThisFrame  ?? false;
             case "middleButton": return Mouse.current?.middleButton.wasReleasedThisFrame ?? false;
+            case "ctrl":
+            case "Ctrl":
+                return (Keyboard.current?.leftCtrlKey.wasReleasedThisFrame  ?? false) ||
+                       (Keyboard.current?.rightCtrlKey.wasReleasedThisFrame ?? false);
         }
         if (Enum.TryParse<Key>(keyName, true, out Key k))
             return Keyboard.current?[k].wasReleasedThisFrame ?? false;
