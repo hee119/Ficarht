@@ -45,6 +45,7 @@ public class PaladinSkillLogic : MonoBehaviour, ISkillLogicBase
             case SkillType.PaladinDefenseBuff:
             case SkillType.PaladinDivineProtection:
             case SkillType.PaladinHolySword:
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
@@ -54,11 +55,8 @@ public class PaladinSkillLogic : MonoBehaviour, ISkillLogicBase
                 break;
 
             case SkillType.PaladinHandOfGod:
-                if (playerStat != null)
-                {
-                    playerStat.playerController.isAttacking = true;
-                    // HandOfGod: 이미 SetOwner 단계에서 대상이 필요 → OnTriggerEnter에서 처리
-                }
+                // HandOfGod 슬로우는 OnTriggerEnter에서 처리
+                playerStat.playerController.isAttacking = true;
                 break;
         }
     }
