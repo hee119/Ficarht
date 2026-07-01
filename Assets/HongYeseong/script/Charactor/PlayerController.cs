@@ -18,6 +18,7 @@ public class PlayerController : NetworkBehaviour
     private CharacterController cc;
     private Animator          animator;
     private CharaStat         characterStats;
+    public  UnityEngine.InputSystem.PlayerInput playerInput;
 
     [Header("Speed")]
     public float walkSpeed = 3f;
@@ -94,6 +95,7 @@ public class PlayerController : NetworkBehaviour
         cc             = GetComponent<CharacterController>();
         animator       = GetComponent<Animator>();
         characterStats = GetComponent<CharaStat>();
+        playerInput    = GetComponent<UnityEngine.InputSystem.PlayerInput>();
     }
 
     void Start()
