@@ -60,26 +60,16 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         switch (skillType)
         {
             case SkillType.ice:
-<<<<<<< HEAD
                 playerStat.playerController.isAttacking = true;
                 NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
                 NetworkApplyFreeze(targetPC, hitStat, prefabInfo.duration);
-=======
-                targetStat.Hit(prefabInfo.power);
-                targetStat.Freezing(prefabInfo.duration);
->>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
             case SkillType.fire:
-<<<<<<< HEAD
                 playerStat.playerController.isAttacking = true;
                 NetworkApplyDamage(targetPC, hitStat, prefabInfo.power);
                 NetworkApplyBurn(targetPC, hitStat, prefabInfo.duration, prefabInfo.burnDamage);
-=======
-                targetStat.Hit(prefabInfo.power);
-                targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
->>>>>>> 1a1a276e33f49843816153acaf894bfbcec09c24
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
 
