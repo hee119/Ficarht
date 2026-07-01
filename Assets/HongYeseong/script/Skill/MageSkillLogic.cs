@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-public class MageSkillLogic : MonoBehaviour
+public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
 {
     [SerializeField]
     SkillType skillType;
@@ -21,69 +20,65 @@ public class MageSkillLogic : MonoBehaviour
         defaultAttack
     }
 
-    void Start()
+    void Awake()
     {
-        if (prefabInfo == null)
-        {
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
-            return;
-        }
-
-        if (playerStat == null)
-        {
-            Debug.LogError($"{name} : playerStat이 NULL입니다.");
-            return;
-        }
-
-        prefabInfo.power += playerStat.intelligence * (prefabInfo.power / 100f);
+        prefabInfo = GetComponent<PrefabInfo>();
     }
-    
-    public void OnEnable()
-    {
-        if (prefabInfo == null)
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
 
-        if (playerStat == null)
-            Debug.LogError($"{name} : playerStat이 NULL입니다.");
+    // OnEnable: playerStat 주입 전이므로 아무것도 실행하지 않음.
+    // 버프 로직은 SetOwner() 에서 실행됩니다.
+    public void OnEnable() { }
+
+    /// <summary>
+    /// CoolTime.UseSkill() 이 풀에서 꺼낸 직후 호출합니다.
+    /// playerStat 주입 + 즉시 발동 스킬 실행.
+    /// </summary>
+    public void SetOwner(CharaStat ownerStat)
+    {
+        playerStat = ownerStat;
+
+        if (prefabInfo == null)
+        {
+            Debug.LogError($"{name}: SetOwner 시 prefabInfo가 NULL (PrefabInfo 컴포넌트 확인)");
+            return;
+        }
+
+        // 인텔리전스 기반 파워 스케일링 (풀 재사용 시 누적 방지를 위해 PrefabInfo.Init 후 적용)
+        prefabInfo.Init();
+        prefabInfo.power += playerStat.intelligence * (prefabInfo.power / 100f);
 
         if (skillType == SkillType.buff)
         {
-            playerStat.playerController.isAttacking  = true;
+            playerStat.playerController.isAttacking = true;
             playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
         }
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        if (prefabInfo == null)
-            Debug.LogError($"{name} : prefabInfo가 NULL입니다.");
+        if (prefabInfo == null || targetStat == null) return;
+        if (other.gameObject != target) return;
 
-        if (targetStat == null)
-            Debug.LogError($"{name} : targetStat이 NULL입니다.");
-
-        if (other.gameObject == target)
+        switch (skillType)
         {
-            switch (skillType)
-            {
-                case SkillType.ice:
-                    playerStat.playerController.isAttacking  = true;
-                    targetStat.Hit(prefabInfo.power);
-                    targetStat.Freezing(prefabInfo.duration);
-                    PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
-                    break;
+            case SkillType.ice:
+                if (playerStat != null) playerStat.playerController.isAttacking = true;
+                targetStat.Hit(prefabInfo.power);
+                targetStat.Freezing(prefabInfo.duration);
+                PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
+                break;
 
-                case SkillType.fire:
-                    playerStat.playerController.isAttacking  = true;
-                    targetStat.Hit(prefabInfo.power);
-                    targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
-                    PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
-                    break;
+            case SkillType.fire:
+                if (playerStat != null) playerStat.playerController.isAttacking = true;
+                targetStat.Hit(prefabInfo.power);
+                targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
+                PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
+                break;
 
-                case SkillType.defaultAttack:
-                    targetStat.Hit(prefabInfo.power);
-                    PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
-                    break;
-            }
+            case SkillType.defaultAttack:
+                targetStat.Hit(prefabInfo.power);
+                PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
+                break;
         }
     }
 }
