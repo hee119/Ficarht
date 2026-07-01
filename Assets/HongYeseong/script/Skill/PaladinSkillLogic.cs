@@ -88,7 +88,9 @@ public class PaladinSkillLogic : MonoBehaviour, ISkillLogicBase
         switch (skillType)
         {
             case SkillType.PaladinDefaultAttack:
-                targetStat.Hit(prefabInfo.power);
+                CharaStat hitStat = other.GetComponent<CharaStat>();
+                if (hitStat != null)
+                    hitStat.Hit(prefabInfo.power);
                 break;
         }
     }
