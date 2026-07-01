@@ -44,6 +44,17 @@ public class PlayerController : NetworkBehaviour
 
     [SyncVar] private uint ownerPlayerNetId;
 
+    // ── 상대방 시각화를 위한 Transform·애니메이션 동기화 ─────────────────────
+    // 서버가 관리하는 SyncVar → 모든 클라이언트에 자동 전파
+    [SyncVar] private Vector3    _syncPos;
+    [SyncVar] private Quaternion _syncRot   = Quaternion.identity;
+    [SyncVar] private float      _syncMoveX;
+    [SyncVar] private float      _syncMoveY;
+    [SyncVar] private float      _syncSpeed;
+
+    private float _syncTimer;
+    private const float SyncInterval = 0.05f; // 20 Hz
+
     private bool IsLocallyControlled => isOwned || !NetworkClient.active;
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -81,10 +92,20 @@ public class PlayerController : NetworkBehaviour
         ownerPlayerNetId = owner != null ? owner.netId : 0;
     }
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        // 스폰 직후 초기 위치·회전을 SyncVar에 기록 → 클라이언트에 정확한 초기 위치 전달
+        _syncPos = transform.position;
+        _syncRot = transform.rotation;
+    }
+
     public override void OnStartClient()
     {
         base.OnStartClient();
-        if (!isOwned) { this.enabled = false; return; }
+        // 비소유 캐릭터도 Update()가 돌아야 SyncVar 수신 및 애니메이션 적용이 가능
+        // → this.enabled = false 제거 (입력 처리는 IsLocallyControlled 가드로 차단)
+        if (!isOwned) return;
         RegisterCamera();
     }
 
@@ -102,7 +123,23 @@ public class PlayerController : NetworkBehaviour
     // ─────────────────────────────────────────────────────────────────────────
     void Update()
     {
-        if (!IsLocallyControlled || isRoll) return;
+        if (!IsLocallyControlled)
+        {
+            // ── 비소유 캐릭터: 서버 SyncVar → Transform·Animator 적용 ──────────
+            // 위치·회전 부드럽게 보간
+            transform.position = Vector3.Lerp(transform.position,  _syncPos, Time.deltaTime * 20f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, _syncRot, Time.deltaTime * 20f);
+            // 애니메이션 파라미터 적용 (idle 포함)
+            if (animator != null)
+            {
+                animator.SetFloat("MoveX", _syncMoveX);
+                animator.SetFloat("MoveY", _syncMoveY);
+                animator.SetFloat("Speed", _syncSpeed);
+            }
+            return;
+        }
+
+        if (isRoll) return;
 
         if (characterStats != null && characterStats.stamina <= 0)
             isRunning = false;
@@ -114,9 +151,45 @@ public class PlayerController : NetworkBehaviour
             ? (isRunning ? runSpeed : walkSpeed) * GetEffectiveSpeedMultiplier(pn)
             : 0f;
 
-        animator.SetFloat("MoveX", canMove ? moveInput.x : 0f);
-        animator.SetFloat("MoveY", canMove ? moveInput.z : 0f);
-        animator.SetFloat("Speed", currentSpeed);
+        float mx = canMove ? moveInput.x : 0f;
+        float my = canMove ? moveInput.z : 0f;
+        animator?.SetFloat("MoveX", mx);
+        animator?.SetFloat("MoveY", my);
+        animator?.SetFloat("Speed", currentSpeed);
+
+        // ── 소유 캐릭터: 주기적으로 서버에 Transform·애니메이션 상태 전송 ──────
+        if (NetworkClient.active)
+        {
+            _syncTimer -= Time.deltaTime;
+            if (_syncTimer <= 0f)
+            {
+                _syncTimer = SyncInterval;
+                if (isServer)
+                {
+                    // 호스트: SyncVar 직접 설정 (Command 불필요)
+                    _syncPos   = transform.position;
+                    _syncRot   = transform.rotation;
+                    _syncMoveX = mx;
+                    _syncMoveY = my;
+                    _syncSpeed = currentSpeed;
+                }
+                else
+                {
+                    // 클라이언트: Command로 서버에 전송 → SyncVar 갱신 → 상대방에 전파
+                    CmdSyncState(transform.position, transform.rotation, mx, my, currentSpeed);
+                }
+            }
+        }
+    }
+
+    [Command]
+    private void CmdSyncState(Vector3 pos, Quaternion rot, float mx, float my, float spd)
+    {
+        _syncPos   = pos;
+        _syncRot   = rot;
+        _syncMoveX = mx;
+        _syncMoveY = my;
+        _syncSpeed = spd;
     }
 
     // ─────────────────────────────────────────────────────────────────────────

@@ -250,6 +250,10 @@ public class GameNetworkManager : NetworkManager
             {
                 playerNet.currentCharacter = character;
                 battlePlayers.Add(characterNet != null ? characterNet : playerNet);
+
+                // 로비용 DontDestroyOnLoad PlayerNetwork 오브젝트의 시각/물리/입력 비활성화
+                // → 맵 밖에서 떨어지거나 카메라가 잘못 고정되는 문제 방지
+                playerNet.TargetEnterBattleMode(conn);
             }
 
             Debug.Log($"[Server] P{spawnIndex + 1} (conn={conn.connectionId}) charId={charId} → {targetSpawnID} {spawnPos}");

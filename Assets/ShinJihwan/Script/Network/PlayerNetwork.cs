@@ -318,6 +318,38 @@ public class PlayerNetwork : NetworkBehaviour
     // 데미지 처리
     // ─────────────────────────────────────────────
 
+    // ─────────────────────────────────────────────
+    // 전투씬 진입: 로비용 PlayerNetwork 오브젝트 숨기기
+    // GameNetworkManager.SpawnCharacters()에서 캐릭터 스폰 후 호출됨
+    // ─────────────────────────────────────────────
+
+    /// <summary>
+    /// 전투씬에서 실제 캐릭터가 별도로 스폰되므로,
+    /// DontDestroyOnLoad로 살아있는 이 로비 오브젝트의
+    /// 시각/물리/입력 컴포넌트를 비활성화해 충돌을 방지한다.
+    /// </summary>
+    [TargetRpc]
+    public void TargetEnterBattleMode(NetworkConnection target)
+    {
+        // 렌더러 전부 숨기기 (캐릭터 모델이 맵 밖에 보이는 현상 제거)
+        foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
+            r.enabled = false;
+
+        // CharacterController 비활성화 → 물리 낙하 방지
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
+
+        // Rigidbody가 있다면 운동학 모드로 전환
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+
+        // PlayerController 비활성화 → CameraFollow 탐색 대상에서 제외
+        PlayerController pc = GetComponent<PlayerController>();
+        if (pc != null) pc.enabled = false;
+
+        Debug.Log("[PlayerNetwork] 전투씬 진입 → 로비 오브젝트 시각/물리 비활성화");
+    }
+
     /// <summary>
     /// 서버에서만 호출. 방어력 계산 후 체력 감소.
     /// </summary>
