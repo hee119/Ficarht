@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="" />
+    <list default="true" id="034a1399-77f4-4723-a50c-688eba1e060b" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/BerserkerSkillLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/BerserkerSkillLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/MageSkillLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/MageSkillLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/PaladinSkillLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HongYeseong/script/Skill/PaladinSkillLogic.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -153,7 +157,7 @@
       <workItem from="1782724646151" duration="935000" />
       <workItem from="1782745334137" duration="704000" />
       <workItem from="1782806371971" duration="14666000" />
-      <workItem from="1782892340560" duration="3106000" />
+      <workItem from="1782892340560" duration="3464000" />
     </task>
     <servers />
   </component>

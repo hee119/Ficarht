@@ -69,6 +69,7 @@ public class BerserkerSkillLogic : MonoBehaviour, ISkillLogicBase
         switch (skillType)
         {
             case SkillType.BerserkerDefaultSlash:
+                playerStat.playerController.isAttacking = true;
                 targetStat.Hit(prefabInfo.power);
                 break;
 

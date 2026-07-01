@@ -76,6 +76,7 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
                 break;
 
             case SkillType.defaultAttack:
+                playerStat.playerController.isAttacking = true;
                 targetStat.Hit(prefabInfo.power);
                 PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                 break;
