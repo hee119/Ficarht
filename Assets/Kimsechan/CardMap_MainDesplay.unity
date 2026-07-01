@@ -1473,7 +1473,7 @@ Transform:
   m_GameObject: {fileID: 112508000}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 0.41248, y: 0.18736994, z: -0.028282404}
+  m_LocalPosition: {x: 0.191, y: 0.18736994, z: -0.028282404}
   m_LocalScale: {x: 0.021280589, y: 0.06030427, z: 0.06030427}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4909,7 +4909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1680692
+  GUIID: 59738
 --- !u!1001 &320917272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6398,7 +6398,7 @@ Transform:
   m_GameObject: {fileID: 398485488}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -0.29425, y: 0.18736994, z: 0.1879168}
+  m_LocalPosition: {x: -0.114, y: 0.18736994, z: 0.1879168}
   m_LocalScale: {x: 0.021280589, y: 0.06030427, z: 0.06030427}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7918,7 +7918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1680856
+  GUIID: 59902
 --- !u!1001 &505840413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10628,7 +10628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681022
+  GUIID: 60068
 --- !u!4 &758934123
 Transform:
   m_ObjectHideFlags: 0
@@ -18290,7 +18290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681392
+  GUIID: 60438
 --- !u!4 &1508753359
 Transform:
   m_ObjectHideFlags: 0
@@ -18470,6 +18470,63 @@ MonoBehaviour:
   timeX: 0.5
   timeZ: 0.5
   interval: 0.5
+--- !u!1001 &1534749081
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1393229664901701543, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_Name
+      value: Setting
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30.16685
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 9.66522
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 12.02611
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
 --- !u!4 &1542981303 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2456475089647040133, guid: eb217c5bf1e28a34cb6ce5266f25fb6d, type: 3}
@@ -20797,7 +20854,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1753613792
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21528,7 +21585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681542
+  GUIID: 60588
 --- !u!4 &1814983582
 Transform:
   m_ObjectHideFlags: 0
@@ -24623,7 +24680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681674
+  GUIID: 60720
 --- !u!4 &2087518430
 Transform:
   m_ObjectHideFlags: 0
@@ -25271,3 +25328,4 @@ SceneRoots:
   - {fileID: 610237088}
   - {fileID: 524749523}
   - {fileID: 1741421697}
+  - {fileID: 1534749081}

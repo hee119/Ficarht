@@ -6842,7 +6842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 59732
+  GUIID: 390760
 --- !u!4 &1217812101
 Transform:
   m_ObjectHideFlags: 0
@@ -7562,6 +7562,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7826742003457787024, guid: 3bc36d27fb36c2143af1eb403850a542, type: 3}
   m_PrefabInstance: {fileID: 1434151672}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1451867791
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1393229664901701543, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_Name
+      value: Setting
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30.16685
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 9.66522
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 12.02611
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7762450762639158514, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f77dd705235a4420ca5e10b3ab3a76c6, type: 3}
 --- !u!1001 &1458724206
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7871,6 +7928,7 @@ MonoBehaviour:
   requiredBuffCards: 2
   requiredTrapCards: 2
   selectionMessageDuration: 1.5
+  selectionMessageFadeDuration: 0.5
   turnDuration: 60
   playerHand: []
 --- !u!4 &1496772725
@@ -9847,7 +9905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 59914
+  GUIID: 390948
 --- !u!4 &1947411261
 Transform:
   m_ObjectHideFlags: 0
@@ -11145,3 +11203,4 @@ SceneRoots:
   - {fileID: 77988080}
   - {fileID: 1842327475}
   - {fileID: 1904644046}
+  - {fileID: 1451867791}
