@@ -42,6 +42,7 @@ public class BerserkerSkillLogic : MonoBehaviour, ISkillLogicBase
         {
             case SkillType.BerserkerAttackBuff:
             case SkillType.BerserkerAttackAndSpeedBuff:
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
         }

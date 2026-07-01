@@ -51,7 +51,6 @@ public class MageSkillLogic : MonoBehaviour, ISkillLogicBase
         PlayerController ownerPC = playerStat.GetComponent<PlayerController>();
         if (ownerPC != null && !ownerPC.isOwned && NetworkClient.active) return;
 
-        // 트리거에 닿은 오브젝트에서 동적으로 적 CharaStat 탐색
         CharaStat hitStat = other.GetComponentInParent<CharaStat>();
         if (hitStat == null || hitStat == playerStat) return;
 
