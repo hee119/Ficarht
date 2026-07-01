@@ -186,7 +186,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsLocallyControlled) return;
         if (isAttacking || isRoll) return;
-        if (rb == null) return;
 
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
         if (pn != null && !pn.CanMove()) return;
@@ -202,9 +201,18 @@ public class PlayerController : NetworkBehaviour
                 transform.rotation, targetRot, 10f * Time.fixedDeltaTime);
         }
 
-        Vector3 velocity = worldMove * currentSpeed;
-        velocity.y = rb.linearVelocity.y;
-        rb.linearVelocity = velocity;
+        if (rb != null)
+        {
+            // Rigidbody 있을 때: velocity로 이동 (물리 중력 유지)
+            Vector3 velocity = worldMove * currentSpeed;
+            velocity.y = rb.linearVelocity.y;
+            rb.linearVelocity = velocity;
+        }
+        else
+        {
+            // Rigidbody 없을 때: transform으로 직접 이동
+            transform.position += worldMove * currentSpeed * Time.fixedDeltaTime;
+        }
     }
 
     // 카메라 yaw 기준으로 moveInput을 월드 방향으로 변환
@@ -272,12 +280,8 @@ public class PlayerController : NetworkBehaviour
 
     public void OnMouseLook(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled) return;
-        Vector2 mouseInput = context.ReadValue<Vector2>();
-        // 캐릭터를 직접 돌리지 않고 카메라 Yaw만 변경
-        // CameraFollow.mouseSensitivity가 감도를 처리함
-        CameraFollow cam = Camera.main?.GetComponent<CameraFollow>();
-        cam?.AddYawDelta(mouseInput.x);
+        // CameraFollow.LateUpdate()에서 Input.GetAxis("Mouse X")로 직접 처리하므로
+        // 여기서는 아무 것도 하지 않음 (캐릭터 회전 없음)
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -346,23 +350,47 @@ public class PlayerController : NetworkBehaviour
     public IEnumerator IERoll()
     {
         isRoll = true;
-        if (rb != null) rb.linearVelocity = Vector3.zero;
-        float  duration = 0.7f;
-        float  elapsed  = 0f;
-        Vector3 start   = transform.position;
-        Vector3 target  = moveInput != Vector3.zero
-            ? start + transform.TransformDirection(moveInput) * 4f
-            : start + transform.forward * 4f;
 
-        while (elapsed < duration)
+        // 카메라 기준 구르기 방향 (이동 방향과 동일한 기준)
+        Vector3 rollDir = GetCameraRelativeMove();
+        if (rollDir.magnitude < 0.01f) rollDir = transform.forward;
+
+        const float rollSpeed    = 7f;   // 구르기 속도 (m/s)
+        const float rollDuration = 0.5f; // 구르기 지속 시간
+        float elapsed = 0f;
+
+        // 캐릭터가 구르기 방향을 바라보게 회전
+        transform.rotation = Quaternion.LookRotation(rollDir);
+
+        if (rb != null) rb.linearVelocity = Vector3.zero;
+
+        while (elapsed < rollDuration)
         {
             elapsed += Time.deltaTime;
+
             if (rb != null)
-                rb.MovePosition(Vector3.Lerp(start, target, elapsed / duration));
+            {
+                // Rigidbody velocity로 이동 → Collider가 벽 충돌을 처리
+                rb.linearVelocity = new Vector3(
+                    rollDir.x * rollSpeed,
+                    rb.linearVelocity.y,   // 중력은 유지
+                    rollDir.z * rollSpeed
+                );
+            }
             else
-                transform.position = Vector3.Lerp(start, target, elapsed / duration);
+            {
+                // Rigidbody 없을 때: 한 스텝씩 이동하며 Raycast로 벽 확인
+                Vector3 step = rollDir * rollSpeed * Time.deltaTime;
+                Vector3 origin = transform.position + Vector3.up * 0.5f;
+                if (!Physics.Raycast(origin, rollDir, step.magnitude + 0.2f))
+                    transform.position += step;
+            }
+
             yield return null;
         }
+
+        // 구르기 종료 시 속도 초기화
+        if (rb != null) rb.linearVelocity = Vector3.zero;
         isRoll = false;
     }
 
