@@ -6842,7 +6842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 390760
+  GUIID: 476354
 --- !u!4 &1217812101
 Transform:
   m_ObjectHideFlags: 0
@@ -7871,7 +7871,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardSystemManager
   characterDeck:
   - {fileID: 11400000, guid: 21036d93948a34ffb9090babcf2ec7bc, type: 2}
-  - {fileID: 11400000, guid: 1e306a109ee294de88667386f71b3f23, type: 2}
   - {fileID: 11400000, guid: 4d51e225b175e4630beec60799f0cc48, type: 2}
   buffDeck:
   - {fileID: 11400000, guid: 0452083496cdf4575a850d2cdd482718, type: 2}
@@ -9905,7 +9904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 390948
+  GUIID: 476544
 --- !u!4 &1947411261
 Transform:
   m_ObjectHideFlags: 0
