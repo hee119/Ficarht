@@ -187,6 +187,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsLocallyControlled) return;
         if (isAttacking || isRoll) return;
+        if (rb == null) return;
 
         PlayerNetwork pn = GetComponent<PlayerNetwork>();
         if (pn != null && !pn.CanMove()) return;
@@ -230,6 +231,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsLocallyControlled) return;
         if (!context.started) return;
+        if (rb == null) return;
 
         if (IsGrounded())
         {
@@ -312,7 +314,7 @@ public class PlayerController : NetworkBehaviour
     public IEnumerator IERoll()
     {
         isRoll = true;
-        rb.linearVelocity = Vector3.zero;
+        if (rb != null) rb.linearVelocity = Vector3.zero;
         float  duration = 0.7f;
         float  elapsed  = 0f;
         Vector3 start   = transform.position;
@@ -323,7 +325,10 @@ public class PlayerController : NetworkBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            rb.MovePosition(Vector3.Lerp(start, target, elapsed / duration));
+            if (rb != null)
+                rb.MovePosition(Vector3.Lerp(start, target, elapsed / duration));
+            else
+                transform.position = Vector3.Lerp(start, target, elapsed / duration);
             yield return null;
         }
         isRoll = false;
