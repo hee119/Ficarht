@@ -3,6 +3,7 @@ using UnityEngine.Serialization;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using MTextButton = TinyGiantStudio.Text.Button;
 
 public class CardSystemManager : MonoBehaviour
@@ -73,10 +74,14 @@ public class CardSystemManager : MonoBehaviour
 
     public float selectionMessageDuration = 1.5f;
 
+    public float selectionMessageFadeDuration = 0.5f;
+
     [Header("--- 타이머 ---")]
     public float turnDuration = 60f;
 
     public bool IsTurnActive => isTurnActive;
+
+    public bool IsInputBlocked => inputBlockCount > 0;
 
     public List<CardObject> playerHand =
         new List<CardObject>();
@@ -101,6 +106,12 @@ public class CardSystemManager : MonoBehaviour
     private int lastCollectFrame = -1;
 
     private MTextButton collectButton;
+
+    private Text runtimeSelectionMessageText;
+
+    private const string RuntimeSelectionMessageName = "CardSelectionMessageText";
+
+    private int inputBlockCount = 0;
 
     private void Awake()
     {
@@ -131,6 +142,9 @@ public class CardSystemManager : MonoBehaviour
     // -------------------------------------------------------
     private void HandleCardBoxClick()
     {
+        if (IsInputBlocked)
+            return;
+
         if (isTurnActive)
             return;
 
@@ -159,6 +173,16 @@ public class CardSystemManager : MonoBehaviour
                     StartGame();
             }
         }
+    }
+
+    public void PushInputBlock()
+    {
+        inputBlockCount++;
+    }
+
+    public void PopInputBlock()
+    {
+        inputBlockCount = Mathf.Max(0, inputBlockCount - 1);
     }
 
     // -------------------------------------------------------
@@ -572,7 +596,7 @@ public class CardSystemManager : MonoBehaviour
         return count;
     }
 
-    private void ShowSelectionMessage(
+    public void ShowSelectionMessage(
         string message
     )
     {
@@ -580,6 +604,8 @@ public class CardSystemManager : MonoBehaviour
             selectionMessageDuration;
 
         SetTimerText(message);
+
+        ShowRuntimeSelectionMessage(message);
 
         Debug.LogWarning(
             $"[CardSystemManager] {message}"
@@ -599,9 +625,12 @@ public class CardSystemManager : MonoBehaviour
         if (selectionMessageTimer > 0f)
         {
             selectionMessageTimer -= Time.deltaTime;
+            UpdateRuntimeSelectionMessageFade();
         }
         else
         {
+            HideRuntimeSelectionMessage();
+
             SetTimerText(
                 $"남은 시간: {Mathf.CeilToInt(turnTimer)}초"
             );
@@ -663,11 +692,79 @@ public class CardSystemManager : MonoBehaviour
     // 네트워크 전용 메서드
     // -------------------------------------------------------
 
-    /// <summary>서버 RpcStartCards()에서 호출 - 네트워크 시작 신호</summary>
+    /// <summary>서버 RpcStartCards()에서 호출 - 네트워크 시작 신호 (싱글플레이어 폴백)</summary>
     public void StartGameExternal()
     {
         if (isTurnActive) return;
         StartGame();
+    }
+
+    /// <summary>
+    /// 멀티플레이어 전용: 서버가 셔플한 덱 인덱스 배열로 카드를 뽑는다.
+    /// 플레이어마다 다른 인덱스를 받아 겹치지 않는 카드 보장.
+    /// </summary>
+    public void StartGameWithIndices(int[] charIndices, int[] buffIndices, int[] trapIndices)
+    {
+        if (isTurnActive) return;
+
+        ClearAll();
+
+        DrawCardsAtIndices(characterDeck, charIndices, characterDrawPositions);
+        DrawCardsAtIndices(buffDeck,       buffIndices, buffDrawPositions);
+        DrawCardsAtIndices(trapDeck,       trapIndices, trapDrawPositions);
+
+        // 맵 카드: Host만 (_drawMapCard = true)
+        _selectedMapCardData = null;
+        if (_drawMapCard && mapDeck != null && mapDeck.Count > 0)
+        {
+            var validMaps = mapDeck.FindAll(c => c != null);
+            if (validMaps.Count > 0)
+            {
+                _selectedMapCardData = validMaps[Random.Range(0, validMaps.Count)];
+                Debug.Log($"[CardSystem] 맵 카드 선택: {_selectedMapCardData.cardName}");
+            }
+        }
+
+        HandLayoutManager.Instance?.ArrangeHand(playerHand);
+        CardRevealSystem.Instance?.HideOpponentCards();
+
+        turnTimer = turnDuration;
+        isTurnActive = true;
+    }
+
+    /// <summary>지정된 덱 인덱스 배열에 해당하는 카드만 뽑아 손패에 추가.</summary>
+    private void DrawCardsAtIndices(List<CardData> deck, int[] indices, List<Transform> positions)
+    {
+        if (deck == null || deck.Count == 0 || indices == null || indices.Length == 0) return;
+        if (positions == null || positions.Count == 0)
+        {
+            Debug.LogWarning("[CardSystem] DrawCardsAtIndices: 드로우 포지션 없음");
+            return;
+        }
+
+        for (int i = 0; i < indices.Length; i++)
+        {
+            int idx = indices[i];
+            if (idx < 0 || idx >= deck.Count || deck[idx] == null) continue;
+
+            CardData data = deck[idx];
+            Transform spawnTf = positions[i % positions.Count];
+
+            if (data.cardPrefab == null)
+            {
+                Debug.LogError($"[프리팹 누락] {data.cardName}");
+                continue;
+            }
+
+            GameObject go = Instantiate(data.cardPrefab, spawnTf.position, spawnTf.rotation);
+            CardObject card = go.GetComponent<CardObject>();
+            if (card == null) { Destroy(go); continue; }
+
+            card.SetVisible(false);
+            card.Setup(data);
+            playerHand.Add(card);
+            drawOrder.Add(card);
+        }
     }
 
     /// <summary>멀티: NetworkCardBridge.RpcStartCards()에서 Host 여부 전달</summary>
@@ -897,6 +994,150 @@ public class CardSystemManager : MonoBehaviour
     public UnityEngine.Sprite GetSelectedMapCardImage()
     {
         return _selectedMapCardData?.cardImage;
+    }
+
+    private void ShowRuntimeSelectionMessage(string message)
+    {
+        Text messageText = GetOrCreateRuntimeSelectionMessageText();
+
+        if (messageText == null)
+            return;
+
+        messageText.text = message;
+        SetRuntimeSelectionMessageAlpha(1f);
+        messageText.gameObject.SetActive(true);
+    }
+
+    private void HideRuntimeSelectionMessage()
+    {
+        if (runtimeSelectionMessageText != null)
+        {
+            SetRuntimeSelectionMessageAlpha(0f);
+            runtimeSelectionMessageText.gameObject.SetActive(false);
+        }
+    }
+
+    private void UpdateRuntimeSelectionMessageFade()
+    {
+        if (runtimeSelectionMessageText == null)
+            return;
+
+        float fadeDuration = Mathf.Max(0.01f, selectionMessageFadeDuration);
+        float alpha = Mathf.Clamp01(selectionMessageTimer / fadeDuration);
+
+        SetRuntimeSelectionMessageAlpha(alpha);
+    }
+
+    private void SetRuntimeSelectionMessageAlpha(float alpha)
+    {
+        if (runtimeSelectionMessageText == null)
+            return;
+
+        Color textColor = runtimeSelectionMessageText.color;
+        textColor.a = alpha;
+        runtimeSelectionMessageText.color = textColor;
+
+        Outline outline = runtimeSelectionMessageText.GetComponent<Outline>();
+
+        if (outline != null)
+        {
+            Color outlineColor = outline.effectColor;
+            outlineColor.a = alpha;
+            outline.effectColor = outlineColor;
+        }
+    }
+
+    private Text GetOrCreateRuntimeSelectionMessageText()
+    {
+        if (runtimeSelectionMessageText != null)
+            return runtimeSelectionMessageText;
+
+        GameObject existingMessage = GameObject.Find(RuntimeSelectionMessageName);
+
+        if (existingMessage != null)
+        {
+            runtimeSelectionMessageText =
+                existingMessage.GetComponent<Text>();
+
+            if (runtimeSelectionMessageText != null)
+                return runtimeSelectionMessageText;
+        }
+
+        GameObject canvasObject = GameObject.Find("CardSystemMessageCanvas");
+
+        if (canvasObject == null)
+        {
+            canvasObject = new GameObject("CardSystemMessageCanvas");
+        }
+
+        Canvas canvas = canvasObject.GetComponent<Canvas>();
+
+        if (canvas == null)
+        {
+            canvas = canvasObject.AddComponent<Canvas>();
+        }
+
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 10000;
+
+        if (canvasObject.GetComponent<CanvasScaler>() == null)
+        {
+            CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+        }
+
+        if (canvasObject.GetComponent<GraphicRaycaster>() == null)
+        {
+            canvasObject.AddComponent<GraphicRaycaster>();
+        }
+
+        GameObject textObject = new GameObject(RuntimeSelectionMessageName);
+        textObject.transform.SetParent(canvas.transform, false);
+
+        RectTransform rect = textObject.AddComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.72f);
+        rect.anchorMax = new Vector2(0.5f, 0.72f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = Vector2.zero;
+        rect.sizeDelta = new Vector2(900f, 90f);
+
+        runtimeSelectionMessageText =
+            textObject.AddComponent<Text>();
+        runtimeSelectionMessageText.font = CreateKoreanUIFont();
+        runtimeSelectionMessageText.alignment = TextAnchor.MiddleCenter;
+        runtimeSelectionMessageText.color = Color.white;
+        runtimeSelectionMessageText.fontSize = 42;
+        runtimeSelectionMessageText.fontStyle = FontStyle.Bold;
+        runtimeSelectionMessageText.horizontalOverflow = HorizontalWrapMode.Wrap;
+        runtimeSelectionMessageText.verticalOverflow = VerticalWrapMode.Overflow;
+        runtimeSelectionMessageText.raycastTarget = false;
+
+        Outline outline = textObject.AddComponent<Outline>();
+        outline.effectColor = Color.black;
+        outline.effectDistance = new Vector2(2f, -2f);
+        runtimeSelectionMessageText.gameObject.SetActive(false);
+
+        return runtimeSelectionMessageText;
+    }
+
+    private Font CreateKoreanUIFont()
+    {
+        string[] fontNames =
+        {
+            "Apple SD Gothic Neo",
+            "AppleGothic",
+            "Noto Sans CJK KR",
+            "Malgun Gothic",
+            "Arial Unicode MS"
+        };
+
+        Font font = Font.CreateDynamicFontFromOSFont(fontNames, 42);
+
+        if (font != null)
+            return font;
+
+        return Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
     }
 
     // -------------------------------------------------------

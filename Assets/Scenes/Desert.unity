@@ -29030,10 +29030,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac2b488c5cbc4335a223b9796ebd8ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DesertMapManager
-  calmDuration: 3
-  stormDuration: 2
+  calmDuration: 15
+  stormDuration: 5
   tickInterval: 1
-  tickDamage: 5
+  tickDamage: 15
   sandstormEffect: {fileID: 0}
   warningBeforeStorm: 5
 --- !u!4 &2032525753

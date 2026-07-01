@@ -11,6 +11,7 @@ public class GameNetworkManager : NetworkManager
     // 카드 선택 완료 플레이어 추적
     private HashSet<NetworkConnectionToClient> cardReadyPlayers = new HashSet<NetworkConnectionToClient>();
 
+
     // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
     private string _pendingMapScene = "";
 
@@ -97,6 +98,18 @@ public class GameNetworkManager : NetworkManager
     // - conn.identity != null 가드: DontDestroyOnLoad 덕분에 씬 재진입 시
     //   Mirror가 다시 호출해도 playerPrefab 중복 생성 방지
     // ─────────────────────────────────────────────
+    public override void OnServerConnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerConnect(conn);
+        Debug.Log($"[Server] 클라이언트 연결: connId={conn.connectionId}");
+    }
+
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerDisconnect(conn);
+        Debug.Log($"[Server] 클라이언트 연결 해제: connId={conn.connectionId}");
+    }
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         // 이미 player 오브젝트가 있으면 중복 생성 방지 (씬 전환 후 재호출 방어)
@@ -113,14 +126,14 @@ public class GameNetworkManager : NetworkManager
         // 씬 전환 후에도 playerPrefab이 살아있어야 selectedCharacterId 등 데이터 보존
         DontDestroyOnLoad(player);
         NetworkServer.AddPlayerForConnection(conn, player);
+        // RpcNotifyPlayer2Joined는 CmdJoinRoom 코드 검증 성공 후에만 호출
+    }
 
-        // 두 번째 플레이어 접속 시 모든 클라이언트에 RPC로 알림
-        if (NetworkServer.connections.Count >= 2)
-        {
-            // 새로 접속한 플레이어의 PlayerNetwork를 통해 전체 브로드캐스트
-            PlayerNetwork newPn = player.GetComponent<PlayerNetwork>();
-            newPn?.RpcNotifyPlayer2Joined();
-        }
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
+        // 조인 중에 끊겼으면 (코드 검증 실패/타임아웃) UI 복구
+        RoomNetworkManager.Instance?.OnDisconnected();
     }
 
 
@@ -237,6 +250,10 @@ public class GameNetworkManager : NetworkManager
             {
                 playerNet.currentCharacter = character;
                 battlePlayers.Add(characterNet != null ? characterNet : playerNet);
+
+                // 로비용 DontDestroyOnLoad PlayerNetwork 오브젝트의 시각/물리/입력 비활성화
+                // → 맵 밖에서 떨어지거나 카메라가 잘못 고정되는 문제 방지
+                playerNet.TargetEnterBattleMode(conn);
             }
 
             Debug.Log($"[Server] P{spawnIndex + 1} (conn={conn.connectionId}) charId={charId} → {targetSpawnID} {spawnPos}");

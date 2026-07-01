@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-public class PaladinSkillLogic : MonoBehaviour
+public class PaladinSkillLogic : MonoBehaviour, ISkillLogicBase
 {
     [SerializeField]
     SkillType skillType;
@@ -22,86 +21,69 @@ public class PaladinSkillLogic : MonoBehaviour
         PaladinHolySword,
         PaladinShield
     }
-    
+
     void Awake()
     {
         prefabInfo = GetComponent<PrefabInfo>();
     }
 
-    void Start()
+    // OnEnable: playerStat 주입 전이므로 아무것도 실행하지 않음.
+    // 버프 로직은 SetOwner() 에서 실행됩니다.
+    public void OnEnable() { }
+
+    /// <summary>
+    /// CoolTime.UseSkill() 이 풀에서 꺼낸 직후 호출합니다.
+    /// playerStat 주입 + 즉시 발동 스킬 실행.
+    /// </summary>
+    public void SetOwner(CharaStat ownerStat)
     {
+        playerStat = ownerStat;
+
         if (prefabInfo == null)
         {
-            Debug.LogWarning($"{name} : prefabInfo가 NULL입니다.");
+            Debug.LogError($"{name}: SetOwner 시 prefabInfo가 NULL (PrefabInfo 컴포넌트 확인)");
             return;
         }
 
-        if (playerStat == null)
-        {
-            Debug.LogWarning($"{name} : playerStat이 NULL입니다.");
-            return;
-        }
-
+        // 파워 스케일링 (풀 재사용 시 누적 방지)
+        prefabInfo.Init();
         prefabInfo.power += playerStat.power * (prefabInfo.power / 100f);
-    }
-
-    public void OnEnable()
-    {
-        if (player != null)
-            playerStat = player.GetComponent<CharaStat>();
-    }
-
-    public void Activate()
-    {
-        if (prefabInfo == null)
-        {
-            Debug.LogWarning($"{name} : prefabInfo가 NULL입니다.");
-            return;
-        }
-
-        if (playerStat == null)
-        {
-            Debug.LogWarning($"{name} : playerStat이 NULL입니다.");
-            return;
-        }
 
         switch (skillType)
         {
             case SkillType.PaladinDefenseBuff:
-                playerStat.playerController.isAttacking  = true;
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinDivineProtection:
-                playerStat.playerController.isAttacking  = true;
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinHolySword:
-                playerStat.playerController.isAttacking  = true;
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
                 break;
 
             case SkillType.PaladinShield:
-                playerStat.playerController.isAttacking  = true;
+                playerStat.playerController.isAttacking = true;
                 playerStat.ApplyShield(prefabInfo.defense, prefabInfo.duration, gameObject);
                 break;
 
             case SkillType.PaladinHandOfGod:
-                playerStat.playerController.isAttacking  = true;
-                if (targetStat == null) return;
-                targetStat.Slowdown(prefabInfo.duration, prefabInfo.speed);
+                if (targetStat != null)
+                {
+                    playerStat.playerController.isAttacking = true;
+                    targetStat.Slowdown(prefabInfo.duration, prefabInfo.speed);
+                }
                 break;
         }
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        if (prefabInfo == null)
-        {
-            Debug.LogWarning($"{name} : prefabInfo가 NULL입니다.");
-            return;
-        }
+        if (prefabInfo == null || targetStat == null) return;
 
         switch (skillType)
         {

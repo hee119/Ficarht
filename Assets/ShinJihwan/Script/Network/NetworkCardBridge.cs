@@ -47,17 +47,64 @@ public class NetworkCardBridge : NetworkBehaviour
         _phaseActive = true;
 
         Debug.Log("[Server] 카드 페이즈 시작");
-        RpcStartCards();
+
+        CardSystemManager csm = CardSystemManager.Instance;
+        if (csm == null) { Debug.LogError("[Server] CardSystemManager 없음"); return; }
+
+        // 덱 전체를 한 번 셔플 → P1이 앞 N장, P2가 그 다음 N장
+        int[] charOrder = ShuffleIndices(csm.characterDeck.Count);
+        int[] buffOrder = ShuffleIndices(csm.buffDeck.Count);
+        int[] trapOrder = ShuffleIndices(csm.trapDeck.Count);
+
+        int playerIdx = 0;
+        foreach (var conn in NetworkServer.connections.Values)
+        {
+            NetworkCardBridge bridge = conn.identity?.GetComponent<NetworkCardBridge>();
+            if (bridge == null) continue;
+
+            bool drawMap = (conn == NetworkServer.localConnection);
+
+            int[] myChar = SliceIndices(charOrder, playerIdx * csm.drawCharacterCards, csm.drawCharacterCards);
+            int[] myBuff = SliceIndices(buffOrder, playerIdx * csm.drawBuffCards,      csm.drawBuffCards);
+            int[] myTrap = SliceIndices(trapOrder, playerIdx * csm.drawTrapCards,      csm.drawTrapCards);
+
+            bridge.TargetStartCards(conn, myChar, myBuff, myTrap, drawMap);
+
+            Debug.Log($"[Server] P{playerIdx + 1} 카드 인덱스 — char:{string.Join(",", myChar)} buff:{string.Join(",", myBuff)} trap:{string.Join(",", myTrap)}");
+            playerIdx++;
+        }
+
         StartCoroutine(ServerCardTimer());
     }
 
-    [ClientRpc]
-    void RpcStartCards()
+    // 0~count-1 배열을 Fisher-Yates로 셔플
+    private static int[] ShuffleIndices(int count)
     {
-        Debug.Log("[Client] 카드 드로우 시작");
-        // Host(NetworkServer.active=true)만 맵 카드 드로우
-        CardSystemManager.Instance?.SetDrawMapCard(NetworkServer.active);
-        CardSystemManager.Instance?.StartGameExternal();
+        int[] idx = new int[count];
+        for (int i = 0; i < count; i++) idx[i] = i;
+        for (int i = count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (idx[i], idx[j]) = (idx[j], idx[i]);
+        }
+        return idx;
+    }
+
+    // 배열에서 start 위치부터 len개 잘라 반환 (부족하면 앞에서 재사용)
+    private static int[] SliceIndices(int[] src, int start, int len)
+    {
+        int[] result = new int[len];
+        for (int i = 0; i < len; i++)
+            result[i] = src.Length > 0 ? src[(start + i) % src.Length] : 0;
+        return result;
+    }
+
+    [TargetRpc]
+    void TargetStartCards(NetworkConnection target, int[] charIdx, int[] buffIdx, int[] trapIdx, bool drawMapCard)
+    {
+        Debug.Log($"[Client] 카드 드로우 시작 — char:{charIdx.Length}장 buff:{buffIdx.Length}장 trap:{trapIdx.Length}장");
+        CardSystemManager.Instance?.SetDrawMapCard(drawMapCard);
+        CardSystemManager.Instance?.StartGameWithIndices(charIdx, buffIdx, trapIdx);
     }
 
     // ─────────────────────────────────────────────

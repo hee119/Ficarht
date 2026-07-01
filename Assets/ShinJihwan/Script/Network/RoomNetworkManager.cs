@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 using Mirror;
 using TinyGiantStudio.Text;
 using UnityEngine;
@@ -60,7 +61,13 @@ public class RoomNetworkManager : MonoBehaviour
 
     private IEnumerator RequestCreateRoomDelayed()
     {
-        yield return new WaitForSeconds(0.5f);
+        // localPlayer가 스폰될 때까지 최대 5초 대기
+        float waited = 0f;
+        while (GetLocalPlayerNetwork() == null && waited < 5f)
+        {
+            yield return new WaitForSeconds(0.1f);
+            waited += 0.1f;
+        }
 
         PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn == null)
@@ -69,8 +76,10 @@ public class RoomNetworkManager : MonoBehaviour
             yield break;
         }
 
-        pn.CmdCreateRoom();
-        Debug.Log("[RoomNetworkManager] 방 코드 생성 요청");
+        // 호스트의 LAN IP를 방 코드로 사용 (다른 기기에서 접속 가능하도록)
+        string hostIP = GetLocalIP();
+        pn.CmdCreateRoom(hostIP);
+        Debug.Log($"[RoomNetworkManager] 방 코드(IP) 생성 요청: {hostIP}");
     }
 
     // PlayerNetwork.TargetReceiveCode → LobbyManager3D.ShowMyCode에서 여기로도 연결
@@ -102,25 +111,38 @@ public class RoomNetworkManager : MonoBehaviour
     // ─────────────────────────────────────────────
     // 방 참가 (Join 버튼 → MenuController.JoinRoom 에서 호출)
     // ─────────────────────────────────────────────
+    // 조인 진행 중 여부 (OnClientDisconnect에서 구분용)
+    private bool _isJoining = false;
+
     public void OnJoinRoom()
     {
         string code = "";
         if (codeInputField != null)
-            code = codeInputField.Text?.Trim() ?? "";
+            code = codeInputField.Text?.Trim().ToUpper() ?? "";
 
         if (string.IsNullOrEmpty(code))
         {
             Debug.LogWarning("[RoomNetworkManager] 방 코드를 입력하세요");
+            OnJoinFailed();
             return;
         }
 
-        // 같은 LAN: 코드 = IP 마지막 부분 or 그냥 localhost (테스트용)
-        // 실제 배포시 코드 → IP 매핑 서버 필요
-        // 현재는 localhost로 연결 후 코드 검증
-        NetworkManager.singleton.networkAddress = "localhost";
+        _isJoining = true;
+        // 입력한 코드를 호스트 IP 주소로 사용 (같은 기기면 localhost, 다른 기기면 LAN IP)
+        NetworkManager.singleton.networkAddress = code;
         NetworkManager.singleton.StartClient();
 
         StartCoroutine(JoinRoomAfterConnect(code));
+    }
+
+    /// <summary>GameNetworkManager.OnClientDisconnect에서 호출 — 조인 중이었으면 UI 복구.</summary>
+    public void OnDisconnected()
+    {
+        if (_isJoining)
+        {
+            Debug.Log("[RoomNetworkManager] 조인 중 연결 끊김 → UI 복구");
+            OnJoinFailed();
+        }
     }
 
     private IEnumerator JoinRoomAfterConnect(string code)
@@ -134,32 +156,49 @@ public class RoomNetworkManager : MonoBehaviour
 
         if (!NetworkClient.isConnected)
         {
-            Debug.LogWarning("[RoomNetworkManager] 연결 실패");
+            Debug.LogWarning("[RoomNetworkManager] 연결 실패 (서버 없음 또는 잘못된 코드)");
+            // _isJoining이 false면 OnDisconnected에서 이미 처리됨 → 중복 방지
+            if (_isJoining)
+            {
+                NetworkManager.singleton.StopClient();
+                OnJoinFailed();
+            }
             yield break;
         }
 
-        yield return new WaitForSeconds(0.3f); // PlayerNetwork 스폰 대기
+        // PlayerNetwork가 스폰될 때까지 최대 5초 대기 (빌드 환경 대응)
+        PlayerNetwork pn = null;
+        float spawnWait = 0f;
+        while (pn == null && spawnWait < 5f)
+        {
+            pn = GetLocalPlayerNetwork();
+            if (pn == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+                spawnWait += 0.2f;
+            }
+        }
 
-        PlayerNetwork pn = GetLocalPlayerNetwork();
         if (pn != null)
         {
             pn.CmdJoinRoom(code);
-            StartCoroutine(ShowClientJoinedUI(code));
-            Debug.Log($"[RoomNetworkManager] 코드 [{code}] 방 참가");
+            Debug.Log($"[RoomNetworkManager] 코드 [{code}] 방 참가 요청 (대기: {spawnWait:F1}s)");
         }
         else
         {
-            Debug.LogWarning("[RoomNetworkManager] PlayerNetwork 없음 - 참가 실패");
+            Debug.LogWarning("[RoomNetworkManager] PlayerNetwork 5초 내 스폰 실패 - 연결 차단");
+            NetworkManager.singleton.StopClient();
+            OnJoinFailed();
         }
     }
 
     // ─────────────────────────────────────────────
-    // 두 번째 플레이어 접속 감지 → Player2 UI 업데이트 (Host측)
-    // GameNetworkManager.OnServerAddPlayer 에서 호출
+    // 방 참가 성공 (PlayerNetwork.TargetJoinSuccess에서 호출)
     // ─────────────────────────────────────────────
-    public void OnSecondPlayerConnected()
+    public void OnJoinSuccess(string code)
     {
-        StartCoroutine(OnSecondPlayerConnectedDelayed());
+        _isJoining = false;
+        StartCoroutine(ShowClientJoinedUI(code));
     }
 
     private IEnumerator ShowClientJoinedUI(string code)
@@ -175,6 +214,42 @@ public class RoomNetworkManager : MonoBehaviour
             player1Text.UpdateText("■ Player1");
         if (player2Text != null)
             player2Text.UpdateText("■ Player2");
+    }
+
+    // ─────────────────────────────────────────────
+    // 방 참가 실패 (PlayerNetwork.TargetJoinFailed에서 호출)
+    // ─────────────────────────────────────────────
+    public void OnJoinFailed()
+    {
+        _isJoining = false;
+        Debug.LogWarning("[RoomNetworkManager] 방 코드가 올바르지 않습니다.");
+
+        // 커넥티드 패널 숨기기
+        if (connectedPanel != null)
+            connectedPanel.SetActive(false);
+
+        // Next_UI()가 UI_Host를 비활성화했으므로 inactive 포함 탐색으로 복구
+        GameObject hostUI = FindInactiveByName("__________UI_Host__________");
+        if (hostUI != null)
+            hostUI.SetActive(true);
+    }
+
+    // 비활성 오브젝트를 포함해 씬 전체에서 이름으로 탐색
+    private static GameObject FindInactiveByName(string name)
+    {
+        foreach (GameObject go in Resources.FindObjectsOfTypeAll<GameObject>())
+            if (go.name == name && go.scene.isLoaded)
+                return go;
+        return null;
+    }
+
+    // ─────────────────────────────────────────────
+    // 두 번째 플레이어 접속 감지 → Player2 UI 업데이트 (Host측)
+    // GameNetworkManager.OnServerAddPlayer 에서 호출
+    // ─────────────────────────────────────────────
+    public void OnSecondPlayerConnected()
+    {
+        StartCoroutine(OnSecondPlayerConnectedDelayed());
     }
 
     private IEnumerator OnSecondPlayerConnectedDelayed()
@@ -220,19 +295,41 @@ public class RoomNetworkManager : MonoBehaviour
     // ─────────────────────────────────────────────
     private PlayerNetwork GetLocalPlayerNetwork()
     {
-        if (NetworkClient.localPlayer == null) return null;
-        return NetworkClient.localPlayer.GetComponent<PlayerNetwork>();
+        // 1순위: NetworkClient.localPlayer
+        if (NetworkClient.localPlayer != null)
+            return NetworkClient.localPlayer.GetComponent<PlayerNetwork>();
+
+        // 2순위: 씬에서 isOwned인 PlayerNetwork 탐색 (빌드 환경 폴백)
+        foreach (var pn in FindObjectsOfType<PlayerNetwork>(true))
+            if (pn.isOwned) return pn;
+
+        return null;
     }
 
     private string GetLocalIP()
     {
         try
         {
-            string localIP = "127.0.0.1";
+            // 실제 LAN IP (192.168.x.x 또는 10.x.x.x) 우선 반환
+            // — 172.16.x.x는 Docker/VPN 가상 인터페이스일 수 있어 다른 기기에서 접속 불가
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (ni.OperationalStatus != OperationalStatus.Up) continue;
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
+
+                foreach (UnicastIPAddressInformation addr in ni.GetIPProperties().UnicastAddresses)
+                {
+                    if (addr.Address.AddressFamily != AddressFamily.InterNetwork) continue;
+                    string ip = addr.Address.ToString();
+                    if (ip.StartsWith("192.168.") || ip.StartsWith("10."))
+                        return ip;
+                }
+            }
+
+            // 폴백: UDP 소켓으로 외부 IP 감지
             using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
             socket.Connect("8.8.8.8", 65530);
-            localIP = ((IPEndPoint)socket.LocalEndPoint).Address.ToString();
-            return localIP;
+            return ((IPEndPoint)socket.LocalEndPoint).Address.ToString();
         }
         catch
         {

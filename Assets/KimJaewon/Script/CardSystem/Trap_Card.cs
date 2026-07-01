@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class Trap_Card : MonoBehaviour
@@ -186,7 +187,6 @@ public class Trap_Card : MonoBehaviour
         }
 
         StartCooldown(trapId);
-        InGameUIController.Instance?.PlayTrapUsed(actor);
         Debug.Log($"[CARD TEST][TRAP] 발동 완료: {trapId}");
         return true;
     }
@@ -225,54 +225,57 @@ public class Trap_Card : MonoBehaviour
     public void ApplyFractureTrap(PlayerNetwork actor)
     {
         float damage = actor.maxHealth * fractureMaxHealthDamageRate;
-        actor.TakeTrueDamage(damage);
+        ApplyTrueDamage(actor, damage);
     }
 
     public void ApplyHeavyStepTrap(PlayerNetwork actor)
     {
-        actor.ApplySlow(heavyStepSlowDuration, heavyStepSpeedMultiplier);
+        ApplySlow(actor, heavyStepSlowDuration, heavyStepSpeedMultiplier);
     }
 
     public void ApplyCowardTrap(PlayerNetwork actor)
     {
-        actor.ApplySlow(2f, 0.7f);
+        ApplySlow(actor, 2f, 0.7f);
     }
 
     public void ApplyThornArmorTrap(PlayerNetwork actor)
     {
-        actor.TakeTrueDamage(actor.maxHealth * 0.02f);
+        ApplyTrueDamage(actor, actor.maxHealth * 0.02f);
     }
 
     public void ApplyNaturalDisasterTrap(PlayerNetwork actor)
     {
         foreach (PlayerNetwork player in players)
         {
-            player?.TakeTrueDamage(player.maxHealth * 0.015f);
+            if (player == null)
+                continue;
+
+            ApplyTrueDamage(player, player.maxHealth * 0.015f);
         }
     }
 
     public void ApplyLastResistanceTrap(PlayerNetwork actor)
     {
         if (actor.health <= actor.maxHealth * 0.3f)
-            actor.ApplyStun(1f);
+            ApplyStun(actor, 1f);
     }
 
     public void ApplyNoViolenceTrap(PlayerNetwork actor)
     {
-        actor.ApplyStun(1f);
+        ApplyStun(actor, 1f);
     }
 
     public void ApplyFairWorldTrap(PlayerNetwork actor)
     {
         foreach (PlayerNetwork player in players)
         {
-            player?.ApplySlow(1.5f, 0.8f);
+            ApplySlow(player, 1.5f, 0.8f);
         }
     }
 
     public void ApplyLackOfFocusTrap(PlayerNetwork actor)
     {
-        actor.TakeTrueDamage(actor.maxHealth * 0.01f);
+        ApplyTrueDamage(actor, actor.maxHealth * 0.01f);
     }
 
     public void ApplyPositionSwapTrap(PlayerNetwork actor)
@@ -298,7 +301,7 @@ public class Trap_Card : MonoBehaviour
 
     public void ApplyAnxietyTrap(PlayerNetwork actor)
     {
-        actor.ApplySlow(2f, 0.75f);
+        ApplySlow(actor, 2f, 0.75f);
     }
 
     public void ApplyWhateverTrap(PlayerNetwork actor)
@@ -308,16 +311,147 @@ public class Trap_Card : MonoBehaviour
         switch (randomEffect)
         {
             case 0:
-                actor.TakeTrueDamage(actor.maxHealth * 0.015f);
+                ApplyTrueDamage(actor, actor.maxHealth * 0.015f);
                 break;
 
             case 1:
-                actor.ApplySlow(2f, 0.75f);
+                ApplySlow(actor, 2f, 0.75f);
                 break;
 
             case 2:
-                actor.ApplyStun(0.5f);
+                ApplyStun(actor, 0.5f);
                 break;
         }
+    }
+
+    private void ApplyTrueDamage(PlayerNetwork actor, float damage)
+    {
+        if (actor == null || actor.isDead)
+            return;
+
+        if (NetworkServer.active)
+        {
+            actor.TakeTrueDamage(damage);
+            return;
+        }
+
+        if (NetworkClient.active)
+            return;
+
+        actor.health = Mathf.Max(0f, actor.health - damage);
+        SyncLocalCharaHealth(actor);
+
+        if (actor.health <= 0f)
+            actor.isDead = true;
+
+        Debug.Log($"[CARD TEST][SINGLE][TRAP] 고정 피해 {damage:F1} / 남은 HP {actor.health:F1}");
+    }
+
+    private void ApplySlow(PlayerNetwork actor, float duration, float multiplier)
+    {
+        if (actor == null || actor.isDead)
+            return;
+
+        if (NetworkServer.active)
+        {
+            actor.ApplySlow(duration, multiplier);
+            return;
+        }
+
+        if (NetworkClient.active)
+            return;
+
+        actor.currentState = PlayerStateType.Slow;
+        GetLocalController(actor)?.ApplyTemporarySpeedMultiplier(multiplier, duration);
+        StartCoroutine(ClearLocalStateAfter(actor, duration, PlayerStateType.Slow));
+
+        Debug.Log($"[CARD TEST][SINGLE][TRAP] 슬로우 적용: {duration:F1}s x{multiplier:F2}");
+    }
+
+    private void ApplyStun(PlayerNetwork actor, float duration)
+    {
+        if (actor == null || actor.isDead)
+            return;
+
+        if (NetworkServer.active)
+        {
+            actor.ApplyStun(duration);
+            return;
+        }
+
+        if (NetworkClient.active)
+            return;
+
+        actor.currentState = PlayerStateType.Stun;
+        CharaStat charaStat = GetLocalCharaStat(actor);
+
+        if (charaStat != null && charaStat.playerInput != null)
+            charaStat.playerInput.enabled = false;
+
+        StartCoroutine(ClearLocalStateAfter(actor, duration, PlayerStateType.Stun));
+
+        Debug.Log($"[CARD TEST][SINGLE][TRAP] 스턴 적용: {duration:F1}s");
+    }
+
+    private IEnumerator ClearLocalStateAfter(
+        PlayerNetwork actor,
+        float duration,
+        PlayerStateType state
+    )
+    {
+        yield return new WaitForSeconds(duration);
+
+        if (actor == null || actor.currentState != state)
+            yield break;
+
+        actor.currentState = PlayerStateType.Normal;
+
+        CharaStat charaStat = GetLocalCharaStat(actor);
+
+        if (charaStat != null && charaStat.playerInput != null)
+            charaStat.playerInput.enabled = true;
+    }
+
+    private void SyncLocalCharaHealth(PlayerNetwork actor)
+    {
+        CharaStat charaStat = GetLocalCharaStat(actor);
+
+        if (charaStat == null)
+            return;
+
+        charaStat.maxHealth = Mathf.Max(actor.maxHealth, 1f);
+        charaStat.health = Mathf.Clamp(actor.health, 0f, charaStat.maxHealth);
+
+        if (charaStat.healthBar != null)
+        {
+            charaStat.healthBar.maxValue = charaStat.maxHealth;
+            charaStat.healthBar.value = charaStat.health;
+        }
+    }
+
+    private CharaStat GetLocalCharaStat(PlayerNetwork actor)
+    {
+        if (actor == null)
+            return null;
+
+        CharaStat charaStat = actor.GetComponent<CharaStat>();
+
+        if (charaStat == null && actor.currentCharacter != null)
+            charaStat = actor.currentCharacter.GetComponent<CharaStat>();
+
+        return charaStat;
+    }
+
+    private PlayerController GetLocalController(PlayerNetwork actor)
+    {
+        if (actor == null)
+            return null;
+
+        PlayerController controller = actor.GetComponent<PlayerController>();
+
+        if (controller == null && actor.currentCharacter != null)
+            controller = actor.currentCharacter.GetComponent<PlayerController>();
+
+        return controller;
     }
 }

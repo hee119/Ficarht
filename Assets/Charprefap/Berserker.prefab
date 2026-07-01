@@ -30390,6 +30390,7 @@ GameObject:
   - component: {fileID: 7409745627702458228}
   - component: {fileID: -7307367926355436953}
   - component: {fileID: -6591563974508186924}
+  - component: {fileID: -1414463441470464940}
   m_Layer: 0
   m_Name: Berserker
   m_TagString: Player
@@ -30473,18 +30474,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playerInput: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
+  isAttacking: 0
   jumpForce: 12
+  groundCheck: {fileID: 0}
+  groundCheckDistance: 0.4
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  gravity: -20
-  rollSpeed: 8
-  rollDuration: 1
   isRoll: 0
-  isAttacking: 0
 --- !u!114 &8836462767790654131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30765,6 +30764,33 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!54 &-1414463441470464940
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755554410987823595}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &758676446763522889
 GameObject:
   m_ObjectHideFlags: 0

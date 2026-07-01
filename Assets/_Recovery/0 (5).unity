@@ -4909,7 +4909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1680692
+  GUIID: 53558
 --- !u!1001 &320917272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7918,7 +7918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1680856
+  GUIID: 53760
 --- !u!1001 &505840413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10628,7 +10628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681022
+  GUIID: 53998
 --- !u!4 &758934123
 Transform:
   m_ObjectHideFlags: 0
@@ -18290,7 +18290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681392
+  GUIID: 54680
 --- !u!4 &1508753359
 Transform:
   m_ObjectHideFlags: 0
@@ -21528,7 +21528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681542
+  GUIID: 54962
 --- !u!4 &1814983582
 Transform:
   m_ObjectHideFlags: 0
@@ -24623,7 +24623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b69eb3f1c55974bb1bcc1dbc547a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp-firstpass::TinyGiantStudio.Text.TextUpdater
-  GUIID: 1681674
+  GUIID: 55200
 --- !u!4 &2087518430
 Transform:
   m_ObjectHideFlags: 0

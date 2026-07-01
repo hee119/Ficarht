@@ -22,8 +22,8 @@ public class CameraFollow : MonoBehaviour
     [Header("부드러운 이동 속도 (높을수록 빠름)")]
     public float smoothSpeed = 8f;
 
-    [Header("마우스 감도 (도/픽셀)")]
-    public float mouseSensitivity = 0.2f;
+    [Header("마우스 감도")]
+    public float mouseSensitivity = 2f;
 
     [Header("벽 충돌 방지")]
     [Tooltip("카메라와 플레이어 사이 장애물 감지 레이어")]
@@ -47,6 +47,9 @@ public class CameraFollow : MonoBehaviour
 
     void LateUpdate()
     {
+        // 마우스 수평 이동으로 카메라 Yaw 업데이트 (CameraFollow가 직접 처리)
+        _yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
+
         // 타겟이 없거나 파괴된 경우 재탐색
         if (target == null)
         {
@@ -82,9 +85,7 @@ public class CameraFollow : MonoBehaviour
         transform.LookAt(lookAt);
     }
 
-    // ─────────────────────────────────────────────
-    // PlayerController.OnMouseLook 에서 호출
-    // ─────────────────────────────────────────────
+    // 외부에서 Yaw를 조정해야 할 때 사용 (현재는 LateUpdate에서 직접 처리)
     public void AddYawDelta(float delta)
     {
         _yaw += delta * mouseSensitivity;
@@ -99,6 +100,9 @@ public class CameraFollow : MonoBehaviour
 
         foreach (var pc in controllers)
         {
+            // 비활성화된 컴포넌트 무시 (전투씬에서 숨겨진 로비 PlayerNetwork 오브젝트 제외)
+            if (!pc.enabled) continue;
+
             // Mirror 멀티플레이: 내 소유 캐릭터만
             if (NetworkClient.active)
             {

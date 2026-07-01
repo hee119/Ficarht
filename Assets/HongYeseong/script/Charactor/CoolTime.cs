@@ -101,6 +101,9 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
             charaStat.projectileSpeed,
             charaStat.cooldown,
             charaStat.duration);
+
+        // playerStat 주입 + 즉시 발동 버프/효과 실행
+        skillObj.GetComponent<ISkillLogicBase>()?.SetOwner(charaStat);
     }
 }
 

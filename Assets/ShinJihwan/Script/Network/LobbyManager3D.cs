@@ -1,3 +1,6 @@
+using System.Net;
+using System.Net.Sockets;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using TMPro;
 using Mirror;
@@ -72,7 +75,7 @@ public class LobbyManager3D : MonoBehaviour
         }
 
         PlayerNetwork pn = NetworkClient.localPlayer.GetComponent<PlayerNetwork>();
-        pn?.CmdCreateRoom();
+        pn?.CmdCreateRoom(GetLocalIP());
     }
 
     // 방 코드 받으면 표시 (PlayerNetwork.TargetReceiveCode에서 호출)
@@ -204,5 +207,28 @@ public class LobbyManager3D : MonoBehaviour
     {
         if (inputHintText != null)
             inputHintText.text = msg;
+    }
+
+    private string GetLocalIP()
+    {
+        try
+        {
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (ni.OperationalStatus != OperationalStatus.Up) continue;
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
+                foreach (UnicastIPAddressInformation addr in ni.GetIPProperties().UnicastAddresses)
+                {
+                    if (addr.Address.AddressFamily != AddressFamily.InterNetwork) continue;
+                    string ip = addr.Address.ToString();
+                    if (ip.StartsWith("192.168.") || ip.StartsWith("10."))
+                        return ip;
+                }
+            }
+            using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+            socket.Connect("8.8.8.8", 65530);
+            return ((IPEndPoint)socket.LocalEndPoint).Address.ToString();
+        }
+        catch { return "127.0.0.1"; }
     }
 }
