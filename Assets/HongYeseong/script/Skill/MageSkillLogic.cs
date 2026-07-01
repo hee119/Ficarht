@@ -48,7 +48,7 @@ public class MageSkillLogic : MonoBehaviour
 
         if (skillType == SkillType.buff)
         {
-            playerStat.playerController.isAttacking = true;
+            playerStat.playerController.isAttacking  = true;
             playerStat.ApplyBuff(prefabInfo.power, prefabInfo.speed, prefabInfo.defense, prefabInfo.duration);
         }
     }
@@ -66,14 +66,14 @@ public class MageSkillLogic : MonoBehaviour
             switch (skillType)
             {
                 case SkillType.ice:
-                    playerStat.playerController.isAttacking = true;
+                    playerStat.playerController.isAttacking  = true;
                     targetStat.Hit(prefabInfo.power);
                     targetStat.Freezing(prefabInfo.duration);
                     PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);
                     break;
 
                 case SkillType.fire:
-                    playerStat.playerController.isAttacking = true;
+                    playerStat.playerController.isAttacking  = true;
                     targetStat.Hit(prefabInfo.power);
                     targetStat.Burn(prefabInfo.duration, prefabInfo.burnDamage);
                     PoolManager.Instance.Release(prefabInfo.skillData.skillId, gameObject);

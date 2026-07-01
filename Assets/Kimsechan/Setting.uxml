@@ -5,5 +5,65 @@
     xmlns:uie="UnityEditor.UIElements"
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
-    
+    <ui:VisualElement name="setting-root" style="flex-grow: 1; align-items: center; justify-content: center; padding-left: 24px; padding-right: 24px; padding-top: 20px; padding-bottom: 20px; background-color: rgba(0, 0, 0, 0.48);">
+        <ui:ScrollView name="setting-panel" vertical-scroller-visibility="Auto" horizontal-scroller-visibility="Hidden" style="width: 640px; max-width: 100%; max-height: 100%; padding-left: 30px; padding-right: 30px; padding-top: 26px; padding-bottom: 26px; background-color: rgba(31, 34, 40, 0.94); border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px; border-left-color: rgb(158, 144, 112); border-right-color: rgb(158, 144, 112); border-top-color: rgb(158, 144, 112); border-bottom-color: rgb(158, 144, 112); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+            <ui:Label name="setting-title" text="설정" style="font-size: 34px; -unity-font-style: bold; color: rgb(255, 245, 218); -unity-text-align: middle-center;" />
+
+            <ui:VisualElement name="setting-tabs" style="margin-top: 20px; height: 42px; flex-direction: row;">
+                <ui:Button name="general-tab-button" text="일반" style="flex-grow: 1; height: 40px; margin-right: 8px; font-size: 16px; -unity-font-style: bold; color: rgb(45, 34, 22); background-color: rgb(255, 224, 132);" />
+                <ui:Button name="sound-tab-button" text="소리" style="flex-grow: 1; height: 40px; font-size: 16px; -unity-font-style: bold; color: rgb(238, 238, 232); background-color: rgb(79, 83, 91);" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="general-section" style="margin-top: 22px;">
+                <ui:Label name="basic-title" text="기본 설정" style="font-size: 20px; -unity-font-style: bold; color: rgb(255, 224, 132);" />
+
+                <ui:VisualElement name="window-mode-row" style="height: 44px; margin-top: 12px; flex-direction: row; align-items: center;">
+                    <ui:Label name="window-mode-label" text="창모드" style="width: 92px; font-size: 16px; color: rgb(238, 238, 232);" />
+                    <ui:Toggle name="window-mode-toggle" value="true" style="width: 108px;" />
+                    <ui:Label name="window-mode-value" text="창모드" style="font-size: 14px; color: rgb(204, 214, 224);" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="resolution-row" style="height: 44px; flex-direction: row; align-items: center;">
+                    <ui:Label name="resolution-label" text="해상도" style="width: 92px; font-size: 16px; color: rgb(238, 238, 232);" />
+                    <ui:Button name="resolution-prev-button" text="&lt;" style="width: 38px; height: 32px; font-size: 16px; -unity-font-style: bold;" />
+                    <ui:Label name="resolution-value" text="1920 x 1080" style="width: 150px; font-size: 15px; color: rgb(238, 238, 232); -unity-text-align: middle-center;" />
+                    <ui:Button name="resolution-next-button" text="&gt;" style="width: 38px; height: 32px; font-size: 16px; -unity-font-style: bold;" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="fps-row" style="height: 44px; flex-direction: row; align-items: center;">
+                    <ui:Label name="fps-label" text="FPS" style="width: 92px; font-size: 16px; color: rgb(238, 238, 232);" />
+                    <ui:Button name="fps-prev-button" text="&lt;" style="width: 38px; height: 32px; font-size: 16px; -unity-font-style: bold;" />
+                    <ui:Label name="fps-value" text="60" style="width: 150px; font-size: 15px; color: rgb(238, 238, 232); -unity-text-align: middle-center;" />
+                    <ui:Button name="fps-next-button" text="&gt;" style="width: 38px; height: 32px; font-size: 16px; -unity-font-style: bold;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="sound-section" style="margin-top: 22px; display: none;">
+                <ui:Label name="sound-title" text="사운드 설정" style="font-size: 20px; -unity-font-style: bold; color: rgb(255, 224, 132);" />
+
+                <ui:VisualElement name="master-volume-row" style="height: 46px; margin-top: 12px; flex-direction: row; align-items: center;">
+                    <ui:Label name="master-volume-label" text="마스터" style="width: 92px; font-size: 16px; color: rgb(238, 238, 232);" />
+                    <ui:Slider name="master-volume-slider" low-value="0" high-value="100" value="80" style="flex-grow: 1;" />
+                    <ui:Label name="master-volume-value" text="80%" style="width: 48px; font-size: 14px; color: rgb(238, 238, 232); -unity-text-align: middle-right;" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="bgm-volume-row" style="height: 46px; flex-direction: row; align-items: center;">
+                    <ui:Label name="bgm-volume-label" text="BGM" style="width: 92px; font-size: 16px; color: rgb(238, 238, 232);" />
+                    <ui:Slider name="bgm-volume-slider" low-value="0" high-value="100" value="70" style="flex-grow: 1;" />
+                    <ui:Label name="bgm-volume-value" text="70%" style="width: 48px; font-size: 14px; color: rgb(238, 238, 232); -unity-text-align: middle-right;" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="sfx-volume-row" style="height: 46px; flex-direction: row; align-items: center;">
+                    <ui:Label name="sfx-volume-label" text="효과음" style="width: 92px; font-size: 16px; color: rgb(238, 238, 232);" />
+                    <ui:Slider name="sfx-volume-slider" low-value="0" high-value="100" value="80" style="flex-grow: 1;" />
+                    <ui:Label name="sfx-volume-value" text="80%" style="width: 48px; font-size: 14px; color: rgb(238, 238, 232); -unity-text-align: middle-right;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="setting-buttons" style="margin-top: 24px; flex-direction: row; justify-content: flex-end;">
+                <ui:Button name="setting-apply-button" text="적용" style="width: 112px; height: 40px; margin-right: 10px; font-size: 16px; -unity-font-style: bold; color: rgb(45, 34, 22); background-color: rgb(255, 224, 132);" />
+                <ui:Button name="setting-close-button" text="닫기" style="width: 112px; height: 40px; font-size: 16px; -unity-font-style: bold; color: rgb(238, 238, 232); background-color: rgb(79, 83, 91);" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
 </ui:UXML>

@@ -18,7 +18,7 @@ public class PlayerController : NetworkBehaviour
 
     // ─── Jump / Gravity ───────────────────────────────────────────────────────
     [Header("Jump")]
-    public float     jumpForce   = 5f;
+    public float     jumpForce   = 8f;
     public LayerMask groundLayer;        // 바닥 레이어 (보조 지면 판정용)
 
     [Header("Gravity")]
@@ -36,11 +36,24 @@ public class PlayerController : NetworkBehaviour
     private bool    isRunning;
     public  bool    isAttacking;
     private Vector3 velocity;        // Y축에 중력/점프 누적
+    private bool    isGrounded;      // FixedUpdate에서 갱신 — OnJump에서 참조
+    private bool    isJumping;       // 점프 직후 ground reset 방지용
 
     private Coroutine speedMultiplierRoutine;
     private float     speedMultiplier = 1f;
 
     [SyncVar] private uint ownerPlayerNetId;
+
+    // ── 상대방 시각화를 위한 Transform·애니메이션 동기화 ─────────────────────
+    // 서버가 관리하는 SyncVar → 모든 클라이언트에 자동 전파
+    [SyncVar] private Vector3    _syncPos;
+    [SyncVar] private Quaternion _syncRot   = Quaternion.identity;
+    [SyncVar] private float      _syncMoveX;
+    [SyncVar] private float      _syncMoveY;
+    [SyncVar] private float      _syncSpeed;
+
+    private float _syncTimer;
+    private const float SyncInterval = 0.05f; // 20 Hz
 
     private bool IsLocallyControlled => isOwned || !NetworkClient.active;
 
@@ -79,10 +92,20 @@ public class PlayerController : NetworkBehaviour
         ownerPlayerNetId = owner != null ? owner.netId : 0;
     }
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        // 스폰 직후 초기 위치·회전을 SyncVar에 기록 → 클라이언트에 정확한 초기 위치 전달
+        _syncPos = transform.position;
+        _syncRot = transform.rotation;
+    }
+
     public override void OnStartClient()
     {
         base.OnStartClient();
-        if (!isOwned) { this.enabled = false; return; }
+        // 비소유 캐릭터도 Update()가 돌아야 SyncVar 수신 및 애니메이션 적용이 가능
+        // → this.enabled = false 제거 (입력 처리는 IsLocallyControlled 가드로 차단)
+        if (!isOwned) return;
         RegisterCamera();
     }
 
@@ -100,23 +123,73 @@ public class PlayerController : NetworkBehaviour
     // ─────────────────────────────────────────────────────────────────────────
     void Update()
     {
-        playerInput.enabled = !isAttacking;
+        if (!IsLocallyControlled)
+        {
+            // ── 비소유 캐릭터: 서버 SyncVar → Transform·Animator 적용 ──────────
+            // 위치·회전 부드럽게 보간
+            transform.position = Vector3.Lerp(transform.position,  _syncPos, Time.deltaTime * 20f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, _syncRot, Time.deltaTime * 20f);
+            // 애니메이션 파라미터 적용 (idle 포함)
+            if (animator != null)
+            {
+                animator.SetFloat("MoveX", _syncMoveX);
+                animator.SetFloat("MoveY", _syncMoveY);
+                animator.SetFloat("Speed", _syncSpeed);
+            }
+            return;
+        }
 
-        if (!IsLocallyControlled || isRoll) return;
-
-        PlayerNetwork pn = GetPlayerNetwork();
-        if (pn != null && !pn.CanMove()) return;
+        if (isRoll) return;
 
         if (characterStats != null && characterStats.stamina <= 0)
             isRunning = false;
 
-        currentSpeed = moveInput.magnitude > 0.01f
+        PlayerNetwork pn = GetPlayerNetwork();
+        bool canMove = !isAttacking && (pn == null || pn.CanMove());
+
+        currentSpeed = (canMove && moveInput.magnitude > 0.01f)
             ? (isRunning ? runSpeed : walkSpeed) * GetEffectiveSpeedMultiplier(pn)
             : 0f;
 
-        animator.SetFloat("MoveX", moveInput.x);
-        animator.SetFloat("MoveY", moveInput.z);
-        animator.SetFloat("Speed", currentSpeed);
+        float mx = canMove ? moveInput.x : 0f;
+        float my = canMove ? moveInput.z : 0f;
+        animator?.SetFloat("MoveX", mx);
+        animator?.SetFloat("MoveY", my);
+        animator?.SetFloat("Speed", currentSpeed);
+
+        // ── 소유 캐릭터: 주기적으로 서버에 Transform·애니메이션 상태 전송 ──────
+        if (NetworkClient.active)
+        {
+            _syncTimer -= Time.deltaTime;
+            if (_syncTimer <= 0f)
+            {
+                _syncTimer = SyncInterval;
+                if (isServer)
+                {
+                    // 호스트: SyncVar 직접 설정 (Command 불필요)
+                    _syncPos   = transform.position;
+                    _syncRot   = transform.rotation;
+                    _syncMoveX = mx;
+                    _syncMoveY = my;
+                    _syncSpeed = currentSpeed;
+                }
+                else
+                {
+                    // 클라이언트: Command로 서버에 전송 → SyncVar 갱신 → 상대방에 전파
+                    CmdSyncState(transform.position, transform.rotation, mx, my, currentSpeed);
+                }
+            }
+        }
+    }
+
+    [Command]
+    private void CmdSyncState(Vector3 pos, Quaternion rot, float mx, float my, float spd)
+    {
+        _syncPos   = pos;
+        _syncRot   = rot;
+        _syncMoveX = mx;
+        _syncMoveY = my;
+        _syncSpeed = spd;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -125,28 +198,43 @@ public class PlayerController : NetworkBehaviour
     void FixedUpdate()
     {
         if (cc == null || !cc.enabled) return;
-        if (!IsLocallyControlled || isAttacking || isRoll) return;
+        if (!IsLocallyControlled || isRoll) return;
 
         PlayerNetwork pn = GetPlayerNetwork();
-        if (pn != null && !pn.CanMove()) return;
+        bool canMove = !isAttacking && (pn == null || pn.CanMove());
 
-        Vector3 moveDir = CalcMoveDir();
+        Vector3 moveDir = canMove ? CalcMoveDir() : Vector3.zero;
 
         // 이동 방향으로 회전
-        if (moveDir.magnitude > 0.01f)
+        if (canMove && moveDir.magnitude > 0.01f)
         {
             Quaternion target = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.fixedDeltaTime * 10f);
         }
 
-        // 접지 시 Y속도 초기화 (살짝 아래로 유지해야 cc.isGrounded 안정적)
-        if (IsGrounded() && velocity.y < 0f)
-            velocity.y = -2f;
+        // 접지 판정 (OnJump에서도 이 값을 참조)
+        isGrounded = IsGrounded();
+
+        if (isGrounded)
+        {
+            // 점프 중이 아닐 때만 Y속도 초기화 (점프 직후 덮어쓰기 방지)
+            if (!isJumping && velocity.y < 0f)
+                velocity.y = -2f;
+
+            // 실제로 공중에 떴다가 착지한 경우 플래그 해제
+            if (isJumping && velocity.y <= 0f)
+                isJumping = false;
+        }
+        else
+        {
+            // 공중에 있으면 플래그 해제
+            isJumping = false;
+        }
 
         // 중력 누적
         velocity.y += gravity * Time.fixedDeltaTime;
 
-        // 이동 적용 (수평 이동 + 중력)
+        // 이동 적용 (수평 이동 + 중력/점프)
         Vector3 move = moveDir * currentSpeed + Vector3.up * velocity.y;
         cc.Move(move * Time.fixedDeltaTime);
     }
@@ -207,9 +295,11 @@ public class PlayerController : NetworkBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!IsLocallyControlled || !context.started || !IsGrounded()) return;
+        // isGrounded는 FixedUpdate에서 갱신된 캐시값 — Update 타이밍의 cc.isGrounded보다 안정적
+        if (!IsLocallyControlled || !context.started || !isGrounded || isJumping || isAttacking) return;
 
-        velocity.y = jumpForce;
+        isJumping    = true;
+        velocity.y   = jumpForce;
 
         if (NetworkClient.active && isOwned) CmdNotifyJump();
         else if (!NetworkClient.active) Trap_Card.Instance?.NotifyJump(GetPlayerNetwork());
@@ -237,7 +327,6 @@ public class PlayerController : NetworkBehaviour
             PlayerNetwork local = GetComponent<PlayerNetwork>();
             local?.ServerRequestAttack();
             Trap_Card.Instance?.NotifyAttack(local);
-            StartCoroutine(AttackAnimation());
         }
     }
 
@@ -250,9 +339,9 @@ public class PlayerController : NetworkBehaviour
     {
         isRoll = true;
 
-        Vector3 dir = moveInput != Vector3.zero
-            ? transform.TransformDirection(moveInput).normalized
-            : transform.forward;
+        // CalcMoveDir()로 카메라 기준 방향 계산 — 없으면 현재 전방
+        Vector3 calcDir = CalcMoveDir();
+        Vector3 dir = calcDir.magnitude > 0.01f ? calcDir : transform.forward;
 
         float elapsed = 0f;
         while (elapsed < rollDuration)
@@ -313,19 +402,8 @@ public class PlayerController : NetworkBehaviour
         PlayerNetwork pn = GetPlayerNetwork();
         pn?.ServerRequestAttack();
         Trap_Card.Instance?.NotifyAttack(pn);
-        RpcPlayAttackAnimation();
     }
-
-    [ClientRpc] void RpcPlayAttackAnimation() => StartCoroutine(AttackAnimation());
-
-    IEnumerator AttackAnimation()
-    {
-        isAttacking = true;
-        animator?.SetTrigger("Attack");
-        yield return new WaitForSeconds(1f);
-        isAttacking = false;
-    }
-
+    
     private PlayerNetwork GetPlayerNetwork()
     {
         PlayerNetwork self = GetComponent<PlayerNetwork>();

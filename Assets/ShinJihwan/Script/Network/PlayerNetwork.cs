@@ -30,6 +30,7 @@ public class PlayerNetwork : NetworkBehaviour
     private List<SkillID> registeredSkills = new List<SkillID>();
 
     private List<TrapID> registeredTraps = new List<TrapID>();
+    public readonly SyncList<int> syncedTrapIds = new SyncList<int>();
 
     // ─────────────────────────────────────────────
     // 방 생성 / 참가 (기존 코드 유지)
@@ -39,24 +40,58 @@ public class PlayerNetwork : NetworkBehaviour
     [SyncVar] public string selectedMapScene = "";
     public GameObject currentCharacter;
 
-    [Command]
-    public void CmdCreateRoom()
-    {
-        // RoomManager 없이 직접 코드 생성
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        string code = "";
-        for (int i = 0; i < 6; i++)
-            code += chars[UnityEngine.Random.Range(0, chars.Length)];
+    // 서버에서 보관하는 활성 방 코드 (Host가 방 만들 때 저장)
+    private static string _activeRoomCode = "";
 
-        Debug.Log($"[Server] 방 코드 생성: {code}");
-        TargetReceiveCode(connectionToClient, code);
+    [Command]
+    public void CmdCreateRoom(string hostIP)
+    {
+        // 호스트 IP 자체를 방 코드로 사용
+        _activeRoomCode = hostIP;
+        Debug.Log($"[Server] 방 코드(IP) 저장: {hostIP}");
+        TargetReceiveCode(connectionToClient, hostIP);
     }
 
     [Command]
     public void CmdJoinRoom(string code)
     {
-        // 코드 검증 생략 (localhost 연결 자체가 인증)
-        Debug.Log($"[Server] 방 참가: {code}");
+        code = code?.Trim() ?? "";
+        Debug.Log($"[Server] CmdJoinRoom 수신: 입력='{code}', 서버코드='{_activeRoomCode}'");
+        // 서버에서 코드 검증
+        // _activeRoomCode가 비어있으면 CmdCreateRoom이 아직 실행 안 된 것 → 일단 허용
+        bool codeValid = string.IsNullOrEmpty(_activeRoomCode) || code == _activeRoomCode;
+        if (!codeValid)
+        {
+            Debug.LogWarning($"[Server] 잘못된 방 코드: '{code}' (실제 코드: '{_activeRoomCode}')");
+            // 즉시 서버에서 연결 차단 → 클라이언트의 OnClientDisconnect → OnDisconnected → OnJoinFailed
+            connectionToClient.Disconnect();
+            return;
+        }
+
+        Debug.Log($"[Server] 방 참가 성공: {code}");
+        TargetJoinSuccess(connectionToClient, code);
+        // 코드 검증 통과 후에만 Player2 접속 UI 표시
+        RpcNotifyPlayer2Joined();
+    }
+
+    private System.Collections.IEnumerator DelayedDisconnect(NetworkConnectionToClient conn)
+    {
+        yield return new WaitForSeconds(0.2f); // TargetRpc 전송 대기
+        if (conn != null) conn.Disconnect();
+    }
+
+    [TargetRpc]
+    void TargetJoinSuccess(NetworkConnection target, string code)
+    {
+        Debug.Log($"[Client] 방 참가 성공: {code}");
+        RoomNetworkManager.Instance?.OnJoinSuccess(code);
+    }
+
+    [TargetRpc]
+    void TargetJoinFailed(NetworkConnection target)
+    {
+        Debug.LogWarning("[Client] 방 코드가 올바르지 않습니다.");
+        RoomNetworkManager.Instance?.OnJoinFailed();
     }
 
     /// <summary>
@@ -131,10 +166,7 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void ApplyStatsToCharacterComponents(float hp, float stm, float pwr, float def, float intel)
     {
-        CharaStat charaStat = GetComponent<CharaStat>();
-
-        if (charaStat == null && currentCharacter != null)
-            charaStat = currentCharacter.GetComponent<CharaStat>();
+        CharaStat charaStat = GetCharaStatTarget();
 
         if (charaStat == null)
             return;
@@ -160,6 +192,33 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         GetComponent<PlayerController>()?.RefreshSpeed();
+    }
+
+    private CharaStat GetCharaStatTarget()
+    {
+        CharaStat charaStat = GetComponent<CharaStat>();
+
+        if (charaStat == null && currentCharacter != null)
+            charaStat = currentCharacter.GetComponent<CharaStat>();
+
+        return charaStat;
+    }
+
+    private void ApplyHealthToCharacterComponents(float value)
+    {
+        CharaStat charaStat = GetCharaStatTarget();
+
+        if (charaStat == null)
+            return;
+
+        charaStat.maxHealth = Mathf.Max(maxHealth, 1f);
+        charaStat.health = Mathf.Clamp(value, 0f, charaStat.maxHealth);
+
+        if (charaStat.healthBar != null)
+        {
+            charaStat.healthBar.maxValue = charaStat.maxHealth;
+            charaStat.healthBar.value = charaStat.health;
+        }
     }
 
     [Server]
@@ -193,6 +252,7 @@ public class PlayerNetwork : NetworkBehaviour
     private void SetRegisteredTraps(int[] trapInts)
     {
         registeredTraps.Clear();
+        syncedTrapIds.Clear();
 
         if (trapInts == null)
             return;
@@ -205,11 +265,26 @@ public class PlayerNetwork : NetworkBehaviour
                 continue;
 
             registeredTraps.Add(trapId);
+            syncedTrapIds.Add(trapInt);
         }
     }
 
     public List<TrapID> GetRegisteredTraps()
     {
+        if (registeredTraps.Count == 0 && syncedTrapIds.Count > 0)
+        {
+            List<TrapID> syncedTraps = new List<TrapID>();
+
+            foreach (int trapInt in syncedTrapIds)
+            {
+                TrapID trapId = (TrapID)trapInt;
+                if (trapId != TrapID.None)
+                    syncedTraps.Add(trapId);
+            }
+
+            return syncedTraps;
+        }
+
         return new List<TrapID>(registeredTraps);
     }
 
@@ -230,12 +305,50 @@ public class PlayerNetwork : NetworkBehaviour
         selectedCharacterId = source.selectedCharacterId;
         selectedMapScene = source.selectedMapScene;
         registeredSkills = new List<SkillID>(source.registeredSkills);
-        registeredTraps = new List<TrapID>(source.registeredTraps);
+
+        List<TrapID> sourceTraps = source.GetRegisteredTraps();
+        int[] trapInts = new int[sourceTraps.Count];
+        for (int i = 0; i < sourceTraps.Count; i++)
+            trapInts[i] = (int)sourceTraps[i];
+
+        SetRegisteredTraps(trapInts);
     }
 
     // ─────────────────────────────────────────────
     // 데미지 처리
     // ─────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────
+    // 전투씬 진입: 로비용 PlayerNetwork 오브젝트 숨기기
+    // GameNetworkManager.SpawnCharacters()에서 캐릭터 스폰 후 호출됨
+    // ─────────────────────────────────────────────
+
+    /// <summary>
+    /// 전투씬에서 실제 캐릭터가 별도로 스폰되므로,
+    /// DontDestroyOnLoad로 살아있는 이 로비 오브젝트의
+    /// 시각/물리/입력 컴포넌트를 비활성화해 충돌을 방지한다.
+    /// </summary>
+    [TargetRpc]
+    public void TargetEnterBattleMode(NetworkConnection target)
+    {
+        // 렌더러 전부 숨기기 (캐릭터 모델이 맵 밖에 보이는 현상 제거)
+        foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
+            r.enabled = false;
+
+        // CharacterController 비활성화 → 물리 낙하 방지
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
+
+        // Rigidbody가 있다면 운동학 모드로 전환
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+
+        // PlayerController 비활성화 → CameraFollow 탐색 대상에서 제외
+        PlayerController pc = GetComponent<PlayerController>();
+        if (pc != null) pc.enabled = false;
+
+        Debug.Log("[PlayerNetwork] 전투씬 진입 → 로비 오브젝트 시각/물리 비활성화");
+    }
 
     /// <summary>
     /// 서버에서만 호출. 방어력 계산 후 체력 감소.
@@ -268,6 +381,7 @@ public class PlayerNetwork : NetworkBehaviour
     private void ApplyDamageValue(float damage)
     {
         health = Mathf.Max(0f, health - damage);
+        ApplyHealthToCharacterComponents(health);
 
         RpcOnDamageEffect(damage);
 
@@ -413,7 +527,7 @@ public class PlayerNetwork : NetworkBehaviour
     void OnHealthChanged(float oldVal, float newVal)
     {
         Debug.Log($"[Client] 체력 변경: {oldVal:F1} → {newVal:F1}");
-        // HpBarUI는 Update에서 자동 갱신 (SyncVar 변경 후 다음 프레임 반영)
+        ApplyHealthToCharacterComponents(newVal);
     }
 
     void OnStateChanged(PlayerStateType oldState, PlayerStateType newState)

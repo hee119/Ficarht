@@ -99,6 +99,9 @@ public class CameraFollow : MonoBehaviour
 
         foreach (var pc in controllers)
         {
+            // 비활성화된 컴포넌트 무시 (전투씬에서 숨겨진 로비 PlayerNetwork 오브젝트 제외)
+            if (!pc.enabled) continue;
+
             // Mirror 멀티플레이: 내 소유 캐릭터만
             if (NetworkClient.active)
             {
