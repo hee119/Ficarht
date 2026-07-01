@@ -9,7 +9,7 @@ using Mirror;
 /// ■ 소유(Owned)  : 입력 → 카메라 기준 이동 + 20Hz 서버 전송
 /// ■ 비소유(Non-owned) : SyncVar → SmoothDamp 위치 보간
 ///
-/// 이동 우선순위: Rigidbody(non-kinematic) → CharacterController → transform.position
+/// 이동 우선순위: CharacterController(enabled) → Rigidbody(non-kinematic) → transform.position
 /// </summary>
 public class PlayerController : NetworkBehaviour
 {
@@ -87,9 +87,13 @@ public class PlayerController : NetworkBehaviour
 
         if (isOwned)
         {
-            // 소유 캐릭터: CharacterController가 있으면 활성화 보장
-            // (rb.isKinematic은 변경하지 않음 — rb와 cc 동시 보유 시 충돌 방지)
-            if (cc != null) cc.enabled = true;
+            if (cc != null)
+            {
+                cc.enabled = true;
+                // CC가 활성화되면 Rigidbody physics는 CC에 의해 무효화됨
+                // → rb가 gravity 등으로 CC와 충돌하지 않도록 kinematic으로 설정
+                if (rb != null) rb.isKinematic = true;
+            }
         }
         else
         {
@@ -205,25 +209,19 @@ public class PlayerController : NetworkBehaviour
     }
 
     /// <summary>
-    /// 이동 처리. Rigidbody(non-kinematic) → CharacterController → transform.position 순으로 시도.
+    /// 이동 처리.
+    /// Unity 규칙: CharacterController가 활성화되면 Rigidbody physics를 완전히 덮어씀.
+    /// → CC 활성 시 rb.linearVelocity 설정은 무효 → CC 우선 체크
+    ///
+    /// 우선순위: CharacterController(enabled) → Rigidbody(non-kinematic) → transform.position
     /// </summary>
     private void MoveCharacter(Vector3 worldMove)
     {
-        // ① Rigidbody (non-kinematic일 때만)
-        if (rb != null && !rb.isKinematic)
-        {
-            Vector3 vel = worldMove * currentSpeed;
-            vel.y = rb.linearVelocity.y;
-            rb.linearVelocity = vel;
-            return;
-        }
-
-        // ② CharacterController
+        // ① CharacterController 우선 (CC가 활성화되면 Rigidbody를 무효화함)
         if (cc != null && cc.enabled)
         {
             if (cc.isGrounded) _verticalVelocity = -2f;
             else               _verticalVelocity += Gravity * Time.fixedDeltaTime;
-            // 낙하 속도 제한
             _verticalVelocity = Mathf.Max(_verticalVelocity, -30f);
 
             Vector3 motion = worldMove * currentSpeed;
@@ -232,7 +230,16 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        // ③ 폴백: 순수 transform (CharacterController가 없거나 disabled인 경우)
+        // ② Rigidbody (CC 없거나 disabled일 때만, non-kinematic)
+        if (rb != null && !rb.isKinematic)
+        {
+            Vector3 vel = worldMove * currentSpeed;
+            vel.y = rb.linearVelocity.y;
+            rb.linearVelocity = vel;
+            return;
+        }
+
+        // ③ 폴백: 순수 transform
         transform.position += worldMove * currentSpeed * Time.fixedDeltaTime;
     }
 
@@ -387,18 +394,19 @@ public class PlayerController : NetworkBehaviour
         {
             elapsed += Time.deltaTime;
 
-            if (rb != null && !rb.isKinematic)
-            {
-                rb.linearVelocity = new Vector3(
-                    rollDir.x * RollSpeed, rb.linearVelocity.y, rollDir.z * RollSpeed);
-            }
-            else if (cc != null && cc.enabled)
+            // CC 우선 (CC가 활성화되면 Rigidbody 무효)
+            if (cc != null && cc.enabled)
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
                 _verticalVelocity  = Mathf.Max(_verticalVelocity, -30f);
                 Vector3 step = rollDir * RollSpeed;
                 step.y = _verticalVelocity;
                 cc.Move(step * Time.deltaTime);
+            }
+            else if (rb != null && !rb.isKinematic)
+            {
+                rb.linearVelocity = new Vector3(
+                    rollDir.x * RollSpeed, rb.linearVelocity.y, rollDir.z * RollSpeed);
             }
             else
             {
