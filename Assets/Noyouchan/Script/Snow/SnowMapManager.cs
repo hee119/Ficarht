@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class SnowMapManager : MonoBehaviour
@@ -75,8 +76,31 @@ public class SnowMapManager : MonoBehaviour
         freezeGauge[stat] = 0f;
         OnFreezeStart?.Invoke();
 
-        // CharaStat의 Freezing 상태 적용
+        // CharaStat의 Freezing 상태 적용 (동상 비주얼 · 입력 차단)
         stat.Freezing(freezeDuration);
+
+        // CharaStat.Freezing()은 PlayerInput만 비활성화하기 때문에, 얼기 직전까지
+        // 누르고 있던 이동 입력값이 그대로 남아 PlayerController.FixedUpdate에서
+        // 계속 적용되어 움직임이 완전히 멈추지 않는 문제가 있다.
+        // PlayerController는 항상 PlayerNetwork.CanMove()를 체크하므로,
+        // PlayerStateType.Freeze로 전환해야 이동이 완전히 정지한다.
+        PlayerNetwork playerNet = stat.GetComponent<PlayerNetwork>();
+        bool localFreezeFallback = false;
+        if (playerNet != null)
+        {
+            if (NetworkServer.active)
+            {
+                // 서버(호스트)에서만 상태를 갱신 → SyncVar로 모든 클라이언트에 전파
+                playerNet.ApplyFreeze(freezeDuration);
+            }
+            else if (!NetworkClient.active)
+            {
+                // 네트워킹이 전혀 없는 싱글 플레이 폴백
+                playerNet.currentState = PlayerStateType.Freeze;
+                localFreezeFallback = true;
+            }
+            // 순수 클라이언트는 서버가 보낸 currentState SyncVar가 곧 전파되므로 대기만 함
+        }
 
         yield return new WaitForSeconds(freezeDuration);
 
@@ -84,6 +108,9 @@ public class SnowMapManager : MonoBehaviour
         stat.speed    = stat.characterStats.speed;
         stat.runSpeed = stat.characterStats.runSpeed;
         stat.GetComponent<PlayerController>()?.RefreshSpeed();
+
+        if (localFreezeFallback && playerNet.currentState == PlayerStateType.Freeze)
+            playerNet.currentState = PlayerStateType.Normal;
 
         isFreezing[stat] = false;
         OnFreezeEnd?.Invoke();
