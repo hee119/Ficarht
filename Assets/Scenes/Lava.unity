@@ -9436,8 +9436,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c73cca1ad0e8c4849b1227fee41b09fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LavaMapManager
-  burnDuration: 3
-  burnDamagePerSecond: 10
+  burnDuration: 5
+  burnDamagePerSecond: 15
 --- !u!1001 &1524322353
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,8 +5,8 @@ using UnityEngine;
 public class LavaMapManager : MonoBehaviour
 {
     [Header("화상 데미지")]
-    public float burnDuration = 3f;
-    public float burnDamagePerSecond = 10f;
+    public float burnDuration = 5f;
+    public float burnDamagePerSecond = 15f;
 
     public event System.Action OnLavaEnter;
     public event System.Action OnLavaExit;

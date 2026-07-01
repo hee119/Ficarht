@@ -74,6 +74,8 @@ public class CharaStat : MonoBehaviour
     public Status currentStatus = Status.Default;
 
     private Coroutine statusCoroutine;
+    private Coroutine burnCoroutine;
+    private Coroutine hitFlashCoroutine;
 
     void Awake()
     {
@@ -219,8 +221,9 @@ public class CharaStat : MonoBehaviour
         if (healthBar != null)
             healthBar.value = health;
 
-        StopAllCoroutines();
-        StartCoroutine(HitFlash());
+        if (hitFlashCoroutine != null)
+            StopCoroutine(hitFlashCoroutine);
+        hitFlashCoroutine = StartCoroutine(HitFlash());
     }
     
     private IEnumerator HitFlash()
@@ -299,7 +302,9 @@ public class CharaStat : MonoBehaviour
         switch (newStatus)
         {
             case Status.Burn:
-                StartCoroutine(BurnDamage());
+                if (burnCoroutine != null)
+                    StopCoroutine(burnCoroutine);
+                burnCoroutine = StartCoroutine(BurnDamage());
                 break;
 
             case Status.Slowdown:
@@ -340,10 +345,11 @@ public class CharaStat : MonoBehaviour
         {
             if (burnDamage <= 0)
                 Debug.LogError($"{name} : burnDamage가 0입니다.");
-            Hit(health / burnDamage);
+            Hit(burnDamage);
             yield return new WaitForSeconds(1f);
         }
         fireObject.SetActive(false);
+        burnCoroutine = null;
     }
 
     private IEnumerator StatusTimer(float duration)
