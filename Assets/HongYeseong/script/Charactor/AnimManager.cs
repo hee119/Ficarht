@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
@@ -18,9 +19,9 @@ public class AnimManager : MonoBehaviour
     private CoolTime coolTime;
 
     private bool isTriggerPlaying = false;
-    
+
     public PlayerController playerController;
-    
+
     CharaStat charaStat;
 
     public enum CharactorType
@@ -33,94 +34,143 @@ public class AnimManager : MonoBehaviour
 
     private void Awake()
     {
-        coolTime = GetComponent<CoolTime>();
-        animator = GetComponent<Animator>();
+        coolTime         = GetComponent<CoolTime>();
+        animator         = GetComponent<Animator>();
         playerController = GetComponent<PlayerController>();
-        charaStat = GetComponent<CharaStat>();
+        charaStat        = GetComponent<CharaStat>();
     }
 
-    public void OnKey(InputAction.CallbackContext context)
+    // ─────────────────────────────────────────────
+    // Update: Keyboard.current 직접 폴링
+    // InputAction 콜백 방식은 Shift 등 모디파이어 키를 누른 채로
+    // 다른 키를 입력하면 이벤트가 막히는 문제가 있음.
+    // ─────────────────────────────────────────────
+    void Update()
     {
+        if (charaStat == null || charaStat.playerInput == null) return;
+        if (!charaStat.playerInput.enabled) return;
+
         for (int i = 0; i < KeyList.Count; i++)
         {
-            if (context.control.name != KeyList[i])
-                continue;
-
+            string key      = KeyList[i];
             string animName = AnimatorState[i];
 
-            if (context.started)
-            {
-                // 동상(Freezing) 상태에서는 구르기/스킬 등 어떤 트리거 애니메이션도 실행하지 않음
-                if (charaStat != null && charaStat.currentStatus == CharaStat.Status.Freezing)
-                {
-                    break;
-                }
+            if (IsKeyDown(key))
+                HandleKeyStarted(animName);
 
-                if (IsTrigger(animName))
-                {
-                    // 다른 트리거 애니메이션 재생 중이면 무시
-                    if (isTriggerPlaying || !coolTime.CoolTimeCheck(animName))
-                    {
-                        break;
-                    }
-
-                    isTriggerPlaying = true;
-                    animator.SetTrigger(animName);
-                    playerController.BroadcastAnimTrigger(animName); // 상대 클라이언트에 동기화
-                    if(animName == "Roll")
-                    {
-                        playerController.Roll();
-                    }
-                    break;
-                }
-
-                if (IsBool(animName))
-                {
-                    if (isTriggerPlaying)
-                    {
-                        break;
-                    }
-                    animator.SetBool(animName, true);
-                    playerController.BroadcastAnimBool(animName, true); // 동기화
-                    break;
-                }
-
-                if (animName == "1Hand_Up_Shield_Block_Idle_1")
-                {
-                    animator.SetBool(animName, true);
-                    playerController.BroadcastAnimBool(animName, true); // 동기화
-                    charaStat.isBlocking = true;
-                }
-            }
-
-            if (context.canceled)
-            {
-                if (IsBool(animName))
-                {
-                    animator.SetBool(animName, false);
-                    playerController.BroadcastAnimBool(animName, false); // 동기화
-                    break;
-                }
-                charaStat.isBlocking = false;
-            }
-
-            break;
+            if (IsKeyUp(key))
+                HandleKeyCanceled(animName);
         }
     }
+
+    void HandleKeyStarted(string animName)
+    {
+        if (IsTrigger(animName))
+        {
+            float staminaCost = coolTime.GetStaminaCost(animName);
+
+            if (staminaCost > 0f && charaStat.stamina < staminaCost)
+            {
+                Debug.Log($"{animName} : 스태미너 부족 ({charaStat.stamina:F1} / {staminaCost})");
+                return;
+            }
+
+            if (isTriggerPlaying || !coolTime.CoolTimeCheck(animName))
+                return;
+
+            if (staminaCost > 0f)
+            {
+                charaStat.UseStamina(staminaCost);
+                Debug.Log($"{animName} 스태미너 -{staminaCost} → 잔여 {charaStat.stamina:F1}");
+            }
+
+            animator.SetFloat("MoveX", 0f);
+            animator.SetFloat("MoveY", 0f);
+            animator.SetFloat("Speed", 0f);
+
+            isTriggerPlaying             = true;
+            playerController.isAttacking = true;
+            animator.CrossFadeInFixedTime(animName, 0.1f);
+            playerController.BroadcastAnimTrigger(animName);
+
+            if (animName == "Roll") playerController.Roll();
+            return;
+        }
+
+        if (IsBool(animName))
+        {
+            if (isTriggerPlaying) return;
+            animator.SetFloat("MoveX", 0f);
+            animator.SetFloat("MoveY", 0f);
+            animator.SetFloat("Speed", 0f);
+            playerController.isAttacking = true;
+            animator.SetBool(animName, true);
+            playerController.BroadcastAnimBool(animName, true);
+            return;
+        }
+
+        if (animName == "1Hand_Up_Shield_Block_Idle_1")
+        {
+            animator.SetBool(animName, true);
+            playerController.BroadcastAnimBool(animName, true);
+            charaStat.isBlocking = true;
+        }
+    }
+
+    void HandleKeyCanceled(string animName)
+    {
+        if (IsBool(animName))
+        {
+            animator.SetBool(animName, false);
+            playerController.isAttacking = false;
+            playerController.BroadcastAnimBool(animName, false);
+            return;
+        }
+        charaStat.isBlocking = false;
+    }
+
+    // ─────────────────────────────────────────────
+    // 키 이름 → 이번 프레임 눌림/뗌 여부
+    // ─────────────────────────────────────────────
+    static bool IsKeyDown(string keyName)
+    {
+        switch (keyName)
+        {
+            case "leftButton":   return Mouse.current?.leftButton.wasPressedThisFrame   ?? false;
+            case "rightButton":  return Mouse.current?.rightButton.wasPressedThisFrame  ?? false;
+            case "middleButton": return Mouse.current?.middleButton.wasPressedThisFrame ?? false;
+        }
+        if (Enum.TryParse<Key>(keyName, true, out Key k))
+            return Keyboard.current?[k].wasPressedThisFrame ?? false;
+        return false;
+    }
+
+    static bool IsKeyUp(string keyName)
+    {
+        switch (keyName)
+        {
+            case "leftButton":   return Mouse.current?.leftButton.wasReleasedThisFrame   ?? false;
+            case "rightButton":  return Mouse.current?.rightButton.wasReleasedThisFrame  ?? false;
+            case "middleButton": return Mouse.current?.middleButton.wasReleasedThisFrame ?? false;
+        }
+        if (Enum.TryParse<Key>(keyName, true, out Key k))
+            return Keyboard.current?[k].wasReleasedThisFrame ?? false;
+        return false;
+    }
+
+    // ─────────────────────────────────────────────
+    // PlayerInput 바인딩 유지용 스텁 (더 이상 실제 처리 안 함)
+    // ─────────────────────────────────────────────
+    public void OnKey(InputAction.CallbackContext context) { }
 
     bool IsTrigger(string parameterName)
     {
         for (int i = 0; i < animator.parameterCount; i++)
         {
-            AnimatorControllerParameter parameter = animator.parameters[i];
-
-            if (parameter.name == parameterName &&
-                parameter.type == AnimatorControllerParameterType.Trigger)
-            {
+            var p = animator.parameters[i];
+            if (p.name == parameterName && p.type == AnimatorControllerParameterType.Trigger)
                 return true;
-            }
         }
-
         return false;
     }
 
@@ -128,15 +178,10 @@ public class AnimManager : MonoBehaviour
     {
         for (int i = 0; i < animator.parameterCount; i++)
         {
-            AnimatorControllerParameter parameter = animator.parameters[i];
-
-            if (parameter.name == parameterName &&
-                parameter.type == AnimatorControllerParameterType.Bool)
-            {
+            var p = animator.parameters[i];
+            if (p.name == parameterName && p.type == AnimatorControllerParameterType.Bool)
                 return true;
-            }
         }
-
         return false;
     }
 
@@ -147,7 +192,7 @@ public class AnimManager : MonoBehaviour
 
     public void SetBool()
     {
-        isTriggerPlaying = false;
-        playerController.isAttacking  = false;
+        isTriggerPlaying             = false;
+        playerController.isAttacking = false;
     }
 }

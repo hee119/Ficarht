@@ -25,6 +25,11 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
         }
     }
 
+    public float GetStaminaCost(string animName)
+    {
+        return staminaCostTable.TryGetValue(animName, out float cost) ? cost : 0f;
+    }
+
     // =========================
     // 쿨타임 체크 (핵심)
     // =========================
@@ -60,15 +65,6 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
             return;
         }
 
-        if (staminaCostTable.TryGetValue(skillName, out float cost) && cost > 0f)
-        {
-            if (!charaStat.UseStamina(cost))
-            {
-                Debug.Log($"{skillName} : 스태미나 부족 ({charaStat.stamina:F1} / {cost})");
-                return;
-            }
-        }
-
         GameObject skillObj = PoolManager.Instance.GetPrefab(skillName, owner);
         if (skillObj == null)
         {
@@ -82,9 +78,6 @@ public class CoolTime : MonoBehaviour, ICharacterSkill
             Debug.LogWarning($"[CoolTime] '{skillName}' 오브젝트에 PrefabInfo 없음");
             return;
         }
-
-        if (charaStat?.playerController != null)
-            charaStat.playerController.isAttacking = true;
 
         skillObj.GetComponent<ISkillLogicBase>()?.SetOwner(charaStat);
     }
