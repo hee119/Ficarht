@@ -342,6 +342,11 @@ public class CharaStat : MonoBehaviour
                     rb.isKinematic = true;
                 }
 
+                // PlayerController를 꺼도 마지막으로 세팅된 Speed 값이 남아있어서
+                // 블렌드 트리가 계속 걷기 애니메이션을 재생하는 문제 방지
+                if (animator != null)
+                    animator.SetFloat("Speed", 0f);
+
                 if (iceObject != null)
                     iceObject.SetActive(true);
                 else

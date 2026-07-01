@@ -14,6 +14,9 @@ public class GameNetworkManager : NetworkManager
     // OnServerAddPlayer 중복 호출 방어 (씬 전환 후 Mirror가 재호출할 수 있음)
     private HashSet<int> _lobbyPlayerSpawned = new HashSet<int>();
 
+    // SpawnCharacters 중복 호출 방지 (OnServerSceneChanged가 여러 번 발화할 경우 대비)
+    private bool _spawnedThisScene = false;
+
 
     // Host가 선택한 맵 씬 이름 (LoadBattleScene에서 사용)
     private string _pendingMapScene = "";
@@ -159,6 +162,7 @@ public class GameNetworkManager : NetworkManager
     public override void OnServerSceneChanged(string sceneName)
     {
         Debug.Log($"[Server] OnServerSceneChanged: '{sceneName}'");
+        _spawnedThisScene = false; // 씬이 바뀌면 플래그 초기화
         if (!nonBattleScenes.Contains(sceneName))
         {
             Debug.Log($"[Server] 전투 씬 감지 ({sceneName}) → 캐릭터 스폰");
@@ -182,6 +186,14 @@ public class GameNetworkManager : NetworkManager
     [Server]
     void SpawnCharacters()
     {
+        // 중복 호출 방지
+        if (_spawnedThisScene)
+        {
+            Debug.LogWarning("[Server] SpawnCharacters 중복 호출 감지 — 스킵");
+            return;
+        }
+        _spawnedThisScene = true;
+
         // 씬의 SpawnPoint 수집 (spawnID → world position)
         var spawnPointMap = new Dictionary<string, Vector3>();
         foreach (SpawnPoint sp in FindObjectsOfType<SpawnPoint>())
@@ -227,13 +239,19 @@ public class GameNetworkManager : NetworkManager
                 ? spawnPointMap[targetSpawnID]
                 : fallbackSpawnPositions[spawnIndex % fallbackSpawnPositions.Length];
 
-            // 스폰 Y 보정: 스폰 포인트 아래에 실제 바닥이 있는지 체크
-            // → SpawnPoint가 바닥 면보다 살짝 낮거나 안으로 박혀있는 경우 떨어지는 버그 방지
+            // 스폰 Y 보정: SpawnPoint 바로 아래 1.5m만 검사
+            // ※ 이전에 3m 위에서 8m 아래로 쏘면 발판 위 스폰포인트에서
+            //   발판 아래의 바닥(용암 등)을 잘못 감지해 캐릭터가 낙사하는 버그가 있었음
             Vector3 adjustedPos = spawnPos;
-            if (Physics.Raycast(spawnPos + Vector3.up * 3f, Vector3.down, out RaycastHit groundHit, 8f))
+            if (Physics.Raycast(spawnPos + Vector3.up * 0.5f, Vector3.down, out RaycastHit groundHit, 1.5f))
             {
                 adjustedPos.y = groundHit.point.y + 0.05f;
                 Debug.Log($"[Server] 스폰 Y 보정: {spawnPos.y:F2} → {adjustedPos.y:F2} (바닥 {groundHit.point.y:F2})");
+            }
+            else
+            {
+                // 바닥을 못 찾으면 SpawnPoint 위치 그대로 사용 (발판 끝이나 허공일 경우 SpawnPoint를 수정해야 함)
+                Debug.Log($"[Server] Y 보정 없음 — SpawnPoint 위치 그대로 사용: {spawnPos}");
             }
 
             GameObject character = Instantiate(prefabToSpawn, adjustedPos, Quaternion.identity);
