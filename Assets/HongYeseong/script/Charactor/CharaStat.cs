@@ -34,6 +34,8 @@ public class CharaStat : MonoBehaviour
     
     private Renderer[] allRenderers;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
+    private Coroutine hitFlashCoroutine;
+    private Rigidbody rb;
 
     
     [Header("Hit Flash")]
@@ -82,6 +84,7 @@ public class CharaStat : MonoBehaviour
 
         playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
         playerController = GetComponent<PlayerController>();
+        rb = GetComponent<Rigidbody>();
 
         if (iceObject != null)
             iceObject.SetActive(false);
@@ -219,8 +222,13 @@ public class CharaStat : MonoBehaviour
         if (healthBar != null)
             healthBar.value = health;
 
-        StopAllCoroutines();
-        StartCoroutine(HitFlash());
+        // StopAllCoroutines()를 쓰면 BurnDamage/StatusTimer 등 진행 중인 상태이상
+        // 코루틴까지 전부 죽어서, 화상 데미지 틱마다 Hit()이 호출될 때 상태 해제
+        // 타이머가 계속 리셋되어 불(iceObject/fireObject)이 영원히 안 꺼지는 버그가 있었음.
+        // HitFlash 코루틴만 따로 추적해서 중복 실행만 막는다.
+        if (hitFlashCoroutine != null)
+            StopCoroutine(hitFlashCoroutine);
+        hitFlashCoroutine = StartCoroutine(HitFlash());
     }
     
     private IEnumerator HitFlash()
@@ -322,6 +330,18 @@ public class CharaStat : MonoBehaviour
             case Status.Freezing:
                 playerInput.enabled = false;
 
+                // PlayerController를 완전히 비활성화 + Rigidbody를 kinematic으로 고정해야
+                // 동상 걸리기 직전 입력값이 남아 계속 미끄러지는 문제 없이 완전히 멈춘다.
+                if (playerController != null)
+                    playerController.enabled = false;
+
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.isKinematic = true;
+                }
+
                 if (iceObject != null)
                     iceObject.SetActive(true);
                 else
@@ -371,6 +391,12 @@ public class CharaStat : MonoBehaviour
 
             case Status.Freezing:
                 playerInput.enabled = true;
+
+                if (playerController != null)
+                    playerController.enabled = true;
+
+                if (rb != null)
+                    rb.isKinematic = false;
 
                 if (iceObject != null)
                     iceObject.SetActive(false);
